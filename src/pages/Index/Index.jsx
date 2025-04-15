@@ -1,5 +1,5 @@
 import style from './Index.module.css';
-import axios from 'axios';
+import daxios from '../../axios/axiosConfig';
 import useAuthStore from '../../store/useAuthStore';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -18,7 +18,7 @@ const Index = () => {
     const handleLogin = (e) => {
         e.preventDefault();
 
-        axios.post('http://10.10.55.22/auth/login', login)
+        daxios.post('http://10.5.5.6/auth/login', login)
             .then((resp) => {
                 const token = resp.data;
                 sessionStorage.setItem("jwtToken", token);
