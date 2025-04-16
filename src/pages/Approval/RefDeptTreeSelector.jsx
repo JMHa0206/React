@@ -8,7 +8,8 @@ const RefDeptTreeSelector = ({ selected = [], onChange = () => {} }) => {
   // 부서 목록 호출
   useEffect(() => {
     daxios
-      .get("http://10.10.55.22/emp/selectAllDepts")
+      .get("http://221.150.27.169:8888/emp/selectAllDepts")
+
       .then((res) => setDepartments(res.data))
       .catch((err) => console.error("❌ 부서 목록 로딩 실패", err));
   }, []);

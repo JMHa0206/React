@@ -118,7 +118,7 @@ const Boardlist = () => {
                                 <th>작성자</th>
                                 <th>작성일</th>
                                 <th>조회수</th>
-                                <th>추천수</th>
+                         
                             </tr>
                         </thead>
                         <tbody>
@@ -140,7 +140,7 @@ const Boardlist = () => {
                                     <td>{message.post_writer}</td>
                                     <td>{formatDate(message.post_date)}</td>
                                     <td>{message.post_view}</td>
-                                    <td>{message.post_like}</td>
+                              
                                 </tr>
                             ))}
                         </tbody>

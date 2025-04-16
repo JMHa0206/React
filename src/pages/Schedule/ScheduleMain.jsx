@@ -4,14 +4,13 @@ import DemoApp from './DemoApp';
 
 
 
-const ScheduleMain = () => {
-  const [reloadKey, setReloadKey] = useState(0);
+const ScheduleMain = ({ reloadKey, onRefresh }) => {
   
   return (
     <div className={style.ScheContainer}>
       <div className={style.calender}>
       <h2>캘린더</h2>
-        <DemoApp key={reloadKey} onRefresh={() => setReloadKey(prev => prev + 1)}  reloadKey={reloadKey} />
+        <DemoApp key={reloadKey}  onRefresh={onRefresh}  reloadKey={reloadKey} />
     </div>
     </div>
   )

@@ -9,37 +9,42 @@ const MyReservation = ({ userInfo }) => {
 
     const [selected, setSelected] = useState(110);
     const [ myReservation, setMyReservation ] = useState([]);
-    useEffect (() => {
-        if (!userInfo) return;
-        caxios.get(`/reserve/myResv/${userInfo.emp_code_id}`).then((resp) => {
-            console.log("🔥 서버에서 받아온 예약 목록 원본:", resp.data);
-          
-            const formatResev = resp.data.map((resv) => {
-               return {
-                id: resv.resv_id,
-                title: resv.resv_title,
-                date: resv.resv_date,
-                startTime: resv.resv_stime,
-                endTime: resv.resv_etime,
-                emp_id: resv.resv_emp,
-                category: resv.resc_type_id,
-                resc_name : resv.resc_name
-              };
-            });
-          
-            setMyReservation(formatResev);
-          }).catch((error) => {
-            console.error("예약목록 불러오기 실패", error);
-          });
 
-    }, [userInfo])
+    const fetchMyReservation = () => {
+        if (!userInfo) return;
+    
+        caxios.get(`/reserve/myResv/${userInfo.emp_code_id}`)
+          .then((resp) => {
+            const formatResv = resp.data.map((resv) => ({
+              id: resv.resv_id,
+              title: resv.resv_title,
+              date: resv.resv_date,
+              startTime: resv.resv_stime,
+              endTime: resv.resv_etime,
+              emp_id: resv.resv_emp,
+              category: resv.resc_type_id,
+              resc_name: resv.resc_name,
+            }));
+            setMyReservation(formatResv);
+          })
+          .catch((error) => {
+            console.error("예약 목록 불러오기 실패", error);
+          });
+      };
+
+    useEffect (() => {
+        fetchMyReservation();
+    }, [userInfo]);
 
     const handleDelete = (resvId) => {
         const confirmDelete = window.confirm("해당 예약을 삭제하시겠습니까?");
         if (!confirmDelete) return;
 
         caxios.delete(`/reserve/${resvId}`)
-        .then(resp => {})
+        .then(() => {
+            alert("삭제되었습니다.");
+            fetchMyReservation();
+        })
         .catch((error) => {
           console.error("일정 삭제 실패", error);
         });

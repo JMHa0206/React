@@ -36,7 +36,7 @@ function Chatting() {
                 const empObj = {};
                 const empIdArray = [];
                 const nameList = targetName ? targetName.split(',').map(name => name.trim()) : [];
-    
+
                 resp.data.forEach(emp => {
                     empObj[emp.emp_code_id] = emp.emp_name;
                 });
@@ -45,13 +45,13 @@ function Chatting() {
                         empIdArray.push(emp.emp_code_id);
                     }
                 });
-    
+
                 setEmpId(empIdArray); // 방에 참여 중인 사원들의 코드 ID만 저장
                 setEmpMap(empObj);   // 방에 참여 중인 사원들의 이름 매핑
             });
     }, [targetName]);  // targetName이 변경될 때마다 실행
 
-    
+
 
     useEffect(() => {
         const userId = sessionStorage.getItem("userId");
@@ -67,7 +67,7 @@ function Chatting() {
         })
     }, []);
 
-   
+
 
     const showMessages = () => {
         axios.get("http://10.5.5.2/Employee/showMessages", {
@@ -75,7 +75,7 @@ function Chatting() {
                 seq: seq
             }
         }).then((resp) => {
-       
+
             const fetchedMessages = resp.data.map(msg => ({
                 ...msg,
                 isMine: msg.msg_emp_id === myId,
@@ -118,7 +118,7 @@ function Chatting() {
     }, [seq, isLoaded, empMap]);
 
     const sendMessage = () => {
-        if(message.length >2000) {
+        if (message.length > 2000) {
             alert("메시지는 2000자 이하로 입력해주세요.")
             return;
         }
@@ -149,13 +149,13 @@ function Chatting() {
         if (showPopup) {
             axios.get("http://10.5.5.2/Employee/SelectEmp")
                 .then((resp) => {
-                    console.log(resp.data);
+
                     const nameList = targetName ? targetName.split(',').map(name => name.trim()) : [];
                     if (myInfo?.emp_name) {
                         nameList.push(myInfo.emp_name);
                     }
                     const filtered = resp.data.filter(emp => !nameList.includes(emp.emp_name));
-                    console.log(filtered);
+
                     setEmployees(filtered);
 
                 })
@@ -180,24 +180,24 @@ function Chatting() {
             return;
         }
         const combinedData = {
-             myId: myInfo.emp_code_id,
-             selected: selected,
-             empId: empId
-        } 
-    
+            myId: myInfo.emp_code_id,
+            selected: selected,
+            empId: empId
+        }
+
         //그룹네임에 셋다 넣고 생성자에 내아이디 넣고 그룹멤버에 셋다
-        axios.post("http://10.5.5.2/Employee/inviteToChat",combinedData)
-        .then((resp)=>{
-            const seq = resp.data;
+        axios.post("http://10.5.5.2/Employee/inviteToChat", combinedData)
+            .then((resp) => {
+                const seq = resp.data;
 
-            const selectedNames = [...selected,...empId,myId]
-            .map(id => empMap[id]);
+                const selectedNames = [...selected, ...empId, myId]
+                    .map(id => empMap[id]);
 
-             navigate(`/messenger/chatting?chat=${selectedNames}&from=${myId}&seq=${seq}`)
-            setSelected([]);
-            setShowPopup(false);
+                navigate(`/messenger/chatting?chat=${selectedNames}&from=${myId}&seq=${seq}`)
+                setSelected([]);
+                setShowPopup(false);
 
-        })
+            })
 
 
     }
@@ -267,8 +267,11 @@ function Chatting() {
                 ))}
             </div>
             <div className={msgstyle.message}>
-                <textarea placeholder='메시지 입력' value={message} onChange={(e) => setMessage(e.target.value)}
+                <textarea placeholder='메시지 입력' value={message} maxLength={2000} onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={handleKeyDown}></textarea>
+            </div>
+            <div className={msgstyle.charCount}>
+                {message.length} / 2000자
             </div>
             <div className={msgstyle.service}>
                 <button className={msgstyle.add} title="대화상대 초대하기" onClick={togglePopup}>┼</button>

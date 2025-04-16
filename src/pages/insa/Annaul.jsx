@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import daxios from '../../axios/axiosConfig';
-import styles from './insapage.module.css';
+import styles from './Annal.module.css';
 import useWorkStore from '../../store/useWorkStore';
 
 const Annal = () => {
@@ -42,7 +42,7 @@ const Annal = () => {
   }, [checkInTime, checkOutTime, isCheckedOut]);
 
   useEffect(() => {
-    daxios.get("http://10.10.55.66/insa/admin-summary")
+    daxios.get("http://10.10.55.69/insa/admin-summary")
       .then(res => {
         setSummaryData(prev => ({ ...prev, ...res.data }));
       })
@@ -50,7 +50,7 @@ const Annal = () => {
         console.error("요약 정보 불러오기 실패:", err);
       });
 
-    daxios.get("http://10.10.55.66/insa/overtime")
+    daxios.get("http://10.10.55.69/insa/overtime")
       .then(res => {
         console.log("오버 타임 데이터확인", res);
         setSummaryData(prev => ({ ...prev, overtimeList: res.data }));
@@ -64,16 +64,13 @@ const Annal = () => {
     <div className={styles.container}>
       <div className={styles.pageHeader}>
         <h2>📊 휴가 / 출장 기록 관리</h2>
-        <div className={styles.statusBadge}>
-          {currentActivity || "대기 중"}
-        </div>
       </div>
 
       <div className={styles.summaryGrid}>
         {/* 📅 개인 출장 */}
         <div className={styles.summaryCard}>
           <div className={styles.cardHeader}>
-            <h3>📅 개인 출장</h3>
+            <h3>📅이 달 개인 출장</h3>
           </div>
           <ul>
             {summaryData.personalBusinessTrips.length > 0 ? (

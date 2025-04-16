@@ -12,8 +12,8 @@ const ApprovalMain = () => {
     const fetchData = async () => {
       try {
         const [waitingRes, draftRes] = await Promise.all([
-          daxios.get("http://10.10.55.22/api/edms/waiting"),
-          daxios.get("http://10.10.55.22/api/edms/mydrafts"),
+          daxios.get("http://10.5.5.6/api/edms/waiting"),
+          daxios.get("http://10.5.5.6/api/edms/mydrafts"),
         ]);
 
         console.log("✅ 대기 문서 응답:", waitingRes);

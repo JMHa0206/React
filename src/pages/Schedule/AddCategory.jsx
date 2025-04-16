@@ -5,7 +5,7 @@ import addCategoryStyle from './AddCategoryStyle.module.css';
 
 
 
-const AddCategory = ({ closeModal, selectedInfo }) => {
+const AddCategory = ({ closeModal,  onRefresh }) => {
 
 
   const [userInfo,setUserInfo] = useState(null);
@@ -19,8 +19,7 @@ const AddCategory = ({ closeModal, selectedInfo }) => {
           
       }, [])
 
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
+   
 
   const [calender, setCalender] = useState({
     c_id: '',
@@ -39,6 +38,10 @@ const AddCategory = ({ closeModal, selectedInfo }) => {
       emp_id: userInfo?.emp_code_id || '',
       dept_code: userInfo?.emp_dept_id || ''
     }));
+
+    if (name === 'color') {
+      setSelectedColor(value);
+    }
   };
 
   const colors = ['#ee5074', '#fa7227', '#ac725e', '#f7d915', '#a3b90a', '#57b92a', '#4fced8', '#5990d5', '#777dbf', '#844285'];
@@ -55,17 +58,30 @@ const AddCategory = ({ closeModal, selectedInfo }) => {
       return;
     }
 
-    if (calender.public_code === "20" && selectedTargets.length === 0) {
-      alert("공유 대상을 선택해주세요.");
-      return;
-    }
+    
 
+    const creatorTarget = {
+      target_id: userInfo.emp_code_id,
+      target_type: 'emp',
+      name: userInfo.emp_name || '본인'
+    };
+
+    const alreadyExists = selectedTargets.some(t => t.target_id === creatorTarget.target_id);
+
+    const finalTargets = calender.public_code === "20"
+      ? alreadyExists ? selectedTargets : [...selectedTargets, creatorTarget]
+      : [];
+
+    if (calender.public_code === "20" && selectedTargets.length === 0) {
+          alert("공유 대상을 선택해주세요.");
+          return;
+        }
 
     caxios.post("/calendar", calender)
     .then((resp)=> {
       const c_id = resp.data.c_id;
       console.log(c_id);
-      const shareData = selectedTargets.map(t => ({
+      const shareData = finalTargets.map(t => ({
         c_id: c_id,
         target_type: t.target_type,
         target_id: t.target_id
@@ -75,6 +91,7 @@ const AddCategory = ({ closeModal, selectedInfo }) => {
     })
     .then(() => {
       alert("캘린더가 성공적으로 추가되었습니다.");
+      if (onRefresh) onRefresh();
       closeModal(); 
     })
     .catch((error) => {
@@ -102,13 +119,15 @@ const AddCategory = ({ closeModal, selectedInfo }) => {
 
   const handleAddTarget = (e) => {
     const value = e.target.value;
+    const type = e.target.getAttribute("data-type");
     if (!value) return;
 
-    const exists = selectedTargets.some(t => t.id === value);
-    if (exists) return;
+    const alreadyExists = selectedTargets.some(t => t.target_id === Number(value) && t.target_type === type);
+  if (alreadyExists) return;
 
     const label = e.target.options[e.target.selectedIndex].text;
-    setSelectedTargets(prev => [...prev, { target_id: Number(value), target_type:label, name:label }]);
+    setSelectedTargets(prev => [...prev, { target_id: Number(value), target_type: type, name: label }]);
+
 
     e.target.selectedIndex = 0;
   };
@@ -122,25 +141,47 @@ const AddCategory = ({ closeModal, selectedInfo }) => {
   const [ departments, setDepartments ] = useState([]);
 
   useEffect(() => {
-    caxios.get("/emp/selectAllEmps").then((resp) => {
+    if (!userInfo) return;
+
+    const selectedEmpIds = selectedTargets
+    .filter(t => t.target_type === 'emp')
+    .map(t => t.target_id);
+
+    const selectedDeptIds = selectedTargets
+      .filter(t => t.target_type == 'dept')
+      .map(t => t.target_id);
+
+    caxios.get("/emp/selectAllEmps")
+    .then((resp) => {
       const emps = resp.data;
-      setEmployees(emps);
+
+      const filtered = emps.filter(emp =>
+        emp.emp_code_id !== userInfo.emp_code_id && // 본인 제외
+        !selectedEmpIds.includes(emp.emp_code_id) && // 이미 선택된 사원 제외
+        !selectedDeptIds.includes(emp.emp_dept_id) // 이미 선택된 부서 소속 사원 제외
+      );
+      
+      setEmployees(filtered);
 
     }).catch((error) => {
       if (error.response?.status === 404 || 500) {
-        alert("부서 목록을 불러오는데 실패했습니다.");
+        alert("사원 목록을 불러오는데 실패했습니다.");
     }});
 
     caxios.get("/emp/selectAllDepts").then((resp) => {
       const depts = resp.data;
-      setDepartments(depts);
+
+      const filteredDepts = depts.filter(dept => 
+        !selectedTargets.some(t => t.target_id === dept.dept_id)
+      );
+      setDepartments(filteredDepts);
 
     }).catch((error) => {
       if (error.response?.status === 404 || 500) {
         alert("부서 목록을 불러오는데 실패했습니다.");
     }});
 
-  },[])
+  },[userInfo, selectedTargets])
 
 
     return (
@@ -185,7 +226,7 @@ const AddCategory = ({ closeModal, selectedInfo }) => {
                     <option value="">개인</option>
                     {employees.map((emp) => (
                       <option key={emp.emp_code_id} value={emp.emp_code_id}>
-                        {emp.emp_name} {emp.job_}
+                        {emp.emp_name} : {emp.job_name}
                       </option>
                     ))}
                   </select>
@@ -251,6 +292,8 @@ const AddCategory = ({ closeModal, selectedInfo }) => {
 
             <div className={addCategoryStyle['modal-buttons']}>
               <button className={addCategoryStyle['form-button']} onClick={handleAddCalender}>저장</button>
+              
+              
             </div>
           </div>
         </div>

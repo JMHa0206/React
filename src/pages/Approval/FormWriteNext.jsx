@@ -45,15 +45,16 @@ const FormWriteNext = () => {
     const loadData = async () => {
       if (!state || !state.formId) return;
       try {
-        const codeRes = await daxios.get("http://10.10.55.22/api/employee/code");
+
+        const codeRes = await daxios.get("http://221.150.27.169:8888/api/employee/code");
         const code = codeRes.data;
 
-        const userRes = await daxios.get(`http://10.10.55.22/api/employee/${code}`);
-        setUserInfo({ empCodeId: code, empName: userRes.data.empName });
+        const userRes = await daxios.get(`http://221.150.27.169:8888/api/employee/${code}`);
 
         setFormData((prev) => ({ ...prev, ...state, comId: code }));
 
-        const res = await daxios.get(`http://10.10.55.22/api/forms/${state.formId}`);
+        const res = await daxios.get(`http://221.150.27.169:8888/api/forms/${state.formId}`);
+
         const template = res.data.formContent;
         setTemplateHtml(template);
 
@@ -139,7 +140,9 @@ const FormWriteNext = () => {
       };
 
       console.log("📤 제출할 formData:", JSON.stringify(payload, null, 2));
-      await daxios.post("http://10.10.55.22/api/edms/register", payload);
+
+      await daxios.post("http://221.150.27.169:8888/api/edms/register", payload);
+
       alert("✅ 제출 완료");
       navigate("/mainpage");
     } catch (err) {

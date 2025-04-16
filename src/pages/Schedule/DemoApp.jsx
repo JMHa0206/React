@@ -9,6 +9,7 @@ import useScheduleStore from '../../store/useScheduleStore';
 import koLocale from '@fullcalendar/core/locales/ko';
 
 
+
 const DemoApp = ({ onRefresh, reloadKey }) => {
   const [showWeekends, setShowWeekends] = useState(true);
   const { events, addEvent, setEvents, addEvents, removeEvent } = useScheduleStore();
@@ -23,7 +24,7 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
     endTime: '',
     content: '',
     color: '',
-    c_id: 1,
+    c_id: '',
     emp_id: 0
   });
 
@@ -125,8 +126,6 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
 
 
 
-  const [weekendsVisible, setWeekendsVisible] = useState(true);
-
   
 
 
@@ -150,6 +149,10 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
     const calendarApi = selectedInfo.view.calendar;
     calendarApi.unselect();
 
+    if (!eventInput.c_id) {
+      alert("캘린더를 선택해주세요.");
+      return;
+    }
     const newEvent = {
       id: Date.now().toString(),
       c_id: eventInput.c_id,
@@ -223,10 +226,6 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
   };
 
 
-
-  const handleWeekendsToggle = () => {
-    setWeekendsVisible(!weekendsVisible);
-  };
 
   const handleDelete = () => {
     removeEvent(selectedEvent.id)
@@ -347,11 +346,10 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
                  <option value="">캘린더 선택</option>
 
                  {
-                  // 일정 추가 시 캘린터 선택지에 직급에 따라 필터링 거는 중 (회사캘린더의 경우 부서장 이상만 일정 추가 가능)
                    calList
                    .filter((calendar) => {
                     return (
-                      (calendar.public_code === 30 && userInfo.job_id >= 1011) ||
+                      (calendar.public_code === 30 && userInfo.emp_job_id >= 1011) ||
                 
                       (calendar.public_code === 10 && userInfo.emp_code_id == calendar.emp_id) ||
                 
@@ -410,7 +408,7 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
              일정 내용
              <textarea
              name="content"
-             calssName={calenderStyle.schetextarea}
+             className={calenderStyle.schetextarea}
              value={eventInput.content}
              onChange={handleInput}
              placeholder="내용 입력"

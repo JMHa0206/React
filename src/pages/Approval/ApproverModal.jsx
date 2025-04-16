@@ -47,7 +47,7 @@ const ApproverModal = ({ isOpen, onClose, onSelect }) => {
   useEffect(() => {
     if (!isOpen) return;
     daxios
-      .get("http://10.10.55.22/emp/selectAllDepts")
+      .get("http://10.5.5.6/emp/selectAllDepts")
       .then((res) => setDepartments(res.data))
       .catch((err) => console.error("❌ 부서 목록 불러오기 실패", err));
   }, [isOpen]);
@@ -55,7 +55,8 @@ const ApproverModal = ({ isOpen, onClose, onSelect }) => {
   useEffect(() => {
     if (!selectedDeptId) return;
     daxios
-      .get("http://10.10.55.22/emp/selectAllEmps")
+      .get("http://221.150.27.169:8888/emp/selectAllEmps")
+
       .then((res) => {
         const filtered = res.data.filter(
           (emp) => emp.emp_dept_id === selectedDeptId

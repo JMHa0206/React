@@ -21,10 +21,20 @@ const MeetingRoom = ({ userInfo })=> {
     const [ resouceList, setResourceList ] = useState([]);
     const [ targetResc, setTargetResc ] = useState(0);
     const [ reservations, setReservations ] = useState([]);
+    const [reloadKey, setReloadKey] = useState(0);
 
     const handleDateSelect = (selectInfo) => {
-        setSelectedInfo(selectInfo);
-        setIsModalOpen(true);
+        const selectedResource = resouceList.find(
+            (resource) => resource.resc_id == targetResc
+          );
+        
+          if (selectedResource?.resc_status !== 'active') {
+            alert("해당 자원은 현재 사용 불가 상태입니다.");
+            return;
+          }
+        
+          setSelectedInfo(selectInfo);
+          setIsModalOpen(true);
       };
 
     useEffect(() => {
@@ -66,12 +76,19 @@ const MeetingRoom = ({ userInfo })=> {
             console.error("예약목록 불러오기 실패", error);
           });
       
-    }, [])
+    }, [reloadKey])
     
     const [showWeekends, setShowWeekends] = useState(true);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [ selectedResv , setSelectedResv] = useState(null); 
     const selectResv = (clickInfo) => {
+        const selectedResource = resouceList.find(
+            (resource) => resource.resc_id == targetResc
+          );
+          if (selectedResource?.resc_status !== 'active') {
+            alert("해당 자원은 현재 사용 불가 상태입니다.");
+            return; 
+          }
         setSelectedResv(clickInfo.event);
         console.log(clickInfo);
         setIsDetailOpen(true);
@@ -166,10 +183,9 @@ const MeetingRoom = ({ userInfo })=> {
             />
             </div>
         </div>
-        {isModalOpen && (<InputResev closeModal={() => setIsModalOpen(false)} selectedInfo={selectedInfo} resourceId={targetResc}  userInfo={userInfo}/>)}
+        {isModalOpen && (<InputResev closeModal={() => setIsModalOpen(false)} selectedInfo={selectedInfo} resourceId={targetResc}  userInfo={userInfo} onSuccess={() => setReloadKey(prev => prev + 1)}/>)}
 
-        {isDetailOpen && (<ResvDetail selectedResv={selectedResv} closeDetail={() => setIsDetailOpen(false)}  userInfo={userInfo}/>)}
-        
+        {isDetailOpen && (<ResvDetail selectedResv={selectedResv} closeDetail={() => setIsDetailOpen(false)} userInfo={userInfo} /> )}
         </div>
     )
 };

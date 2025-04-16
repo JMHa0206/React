@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import AddCategory from './AddCategory';
 import caxios from '../../Utils/caxios';
-import MySchedule from './MySchedule';
 import './ScheduleList.css';
+import CalendarDetail from './CalendarDetail';
 
 
-const ScheduleList = ({ closeModal }) => {
+const ScheduleList = ({ closeModal, onRefresh }) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [ isCalDetailOpen, setIsCalDetailOpen] = useState(false);
     const [selectedInfo, setSelectedInfo] = useState(null);
     const [getMyCalendar, setMyCalendar] = useState([]);
     const [getPublicCalendar, setPublicCalendar] = useState([]);
     const [getComCalendar, setGetComCalendar] = useState([]);
     const [userInfo, setUserInfo ] = useState(null);
-    const [weekendsVisible, setWeekendsVisible] = useState(true);
-    const handleWeekendsToggle = () => setWeekendsVisible(!weekendsVisible)
     
     const handleModalOpen = (selectInfo) => {
         setSelectedInfo(selectInfo);
@@ -53,7 +52,42 @@ const ScheduleList = ({ closeModal }) => {
             setGetComCalendar(resp.data);
     })};
     
+ 
+
+    const handleClickMy = (e, calendar) => {
+    e.preventDefault();
+    setSelectedInfo(calendar);
+    setIsCalDetailOpen(true);
+    };
+
+    const handleClickShare = (e, calendar) => {
+        e.preventDefault();
+        if(userInfo.emp_job_id >= 1010 || userInfo.emp_code_id == calendar.emp_id){
+            setSelectedInfo(calendar);
+            setIsCalDetailOpen(true);
+        }else{
+            alert("수정 및 삭제 권한이 없습니다.");
+        }
+        
+        
+        };
     
+    const handleClick = (e, calendar) => {
+        e.preventDefault();
+        if(userInfo.emp_job_id >= 1013){
+            setSelectedInfo(calendar);
+            setIsCalDetailOpen(true); 
+        }else{
+            alert("수정 및 삭제 권한이 없습니다.");
+        }
+    };
+
+    const handleRefreshAll = () => {
+        handleMyCal();
+        handlePublicCal();
+        handleComCal();
+        if (onRefresh) onRefresh();
+      };
 
 
 
@@ -80,7 +114,7 @@ const ScheduleList = ({ closeModal }) => {
                                     return true;
                                 })
                                 .map((calendar, index) => (
-                                    <div className="form-check" key={calendar.c_id}>
+                                    <div className="form-check" key={calendar.c_id} onClick={(e) => handleClickMy(e, calendar)}>
                                         <label className="form-check-label"style={{ display: 'inline-block', cursor: 'pointer', backgroundColor: `${calendar.color}` }}></label>
                                         <strong>{calendar.c_title}</strong>
                                     </div>
@@ -101,7 +135,7 @@ const ScheduleList = ({ closeModal }) => {
                             {
                                 getPublicCalendar
                                 .map((calendar) => (
-                                    <div className="form-check" key={calendar.c_id}>
+                                    <div className="form-check" key={calendar.c_id} onClick={(e) => handleClickShare(e, calendar)}>
                                         <label className="form-check-label"style={{ display: 'inline-block', cursor: 'pointer', backgroundColor: `${calendar.color}` }}></label>
                                         <strong>{calendar.c_title}</strong>
                                     </div>
@@ -120,7 +154,7 @@ const ScheduleList = ({ closeModal }) => {
                         <div className="accordion-body">
                             {
                                 getComCalendar.map((calendar) => (
-                                    <div className="form-check" key={calendar.c_id}>
+                                    <div className="form-check" key={calendar.c_id} onClick={(e) => handleClick(e, calendar)}>
                                         <label className="form-check-label"style={{ display: 'inline-block', cursor: 'pointer', backgroundColor: `${calendar.color}` }}></label>
                                         <strong>{calendar.c_title}</strong>
                                     </div>
@@ -130,9 +164,14 @@ const ScheduleList = ({ closeModal }) => {
                     </div>
                 </div>
             </div>
-            {isModalOpen && (<AddCategory closeModal={() => setIsModalOpen(false)} selectedInfo={selectedInfo} />)}
+            {isModalOpen && (<AddCategory closeModal={() => setIsModalOpen(false)} selectedInfo={selectedInfo} onRefresh={handleRefreshAll}/>)}
+            { isCalDetailOpen && ( <CalendarDetail closeModal={() => setIsCalDetailOpen(false)} selectedInfo={selectedInfo}  onRefresh={handleRefreshAll}/>)}
+
+           
         </div>
     )
+
+    
 
 
 }

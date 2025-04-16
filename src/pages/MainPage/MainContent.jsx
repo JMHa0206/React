@@ -1,6 +1,7 @@
 
 // ✅ MainContent.jsx
-import React from 'react';
+import React, { useState } from 'react';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { Routes, Route, useLocation, Link } from 'react-router-dom';
 import ApprovalMain from '../Approval/ApprovalMain';
 import ApprovalDetail from '../Approval/ApprovalDetail';
@@ -22,19 +23,19 @@ import Sidelist from '../../Components/Sidelist';
 import style from './MainContent.module.css';
 import InsaPage from '../insa/insapage';
 import Annaul from '../insa/Annaul';
-
+import Deptment from '../insa/Deptment';
+import ApplyForm from '../insa/ApplyForm ';
 
 const MainContent = () => {
 const location = useLocation();
 const hideSidelistPaths = ['/mainpage/maincontent/mypage']; // 더 숨기고 싶은 페이지가 있다면 배열에 추가
 const isSidelistVisible = !hideSidelistPaths.includes(location.pathname);
-
+const [reloadKey, setReloadKey] = useState(0);
 
 
   return (
     <div className={style.maincontainer}>
       <div className={style.mainSidebar}>
-      {/* <button className={style.toggleBtn} onClick={toggleSidelist}>{isSidelistOpen ? '◀' : '▶'}</button> */}
         <div className={style.icons}><Link to="/mainpage"><i className="fa-solid fa-2x fa-house"  style={{ color: "#ecf0f1" }}/></Link></div>
         <div className={style.icons}><Link to={{ pathname: "/mainpage/maincontent/approval"}}><i className="fa-solid fa-2x fa-inbox"  style={{ color: "#ecf0f1" }}/></Link></div>
         <div className={style.icons}><Link to={{ pathname: "/mainpage/maincontent/insa"}}><i className="fa-solid fa-2x fa-user" style={{ color: "#ecf0f1" }}/></Link></div>
@@ -57,6 +58,9 @@ const isSidelistVisible = !hideSidelistPaths.includes(location.pathname);
           <Route path='insa' element={<InsaPage />} />
           <Route path='insa/attend' element={<InsaPage/>}></Route>
           <Route path='insa/record' element={<Annaul/>}></Route>
+          <Route path='insa/deptment' element={<Deptment/>}></Route>
+          <Route path='insa/ApplyForm' element={<ApplyForm/>}></Route>
+
           
           <Route path='board/:boardId' element={<Board_business />} />
           <Route path='titlelink/:boardId' element={<Board_titlelink />} />
@@ -71,7 +75,7 @@ const isSidelistVisible = !hideSidelistPaths.includes(location.pathname);
          
 
           
-          <Route path='schedule' element={<ScheduleMain />} />
+          <Route path='schedule' element={<ScheduleMain reloadKey={reloadKey} onRefresh={() => setReloadKey(prev => prev + 1)} />} />
           <Route path='reserve/*' element={<ReserveMain />} />
           <Route path='msg' element={<ApprovalMain />} />
           <Route path='mypage' element={<Mypage />} />

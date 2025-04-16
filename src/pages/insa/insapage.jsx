@@ -34,12 +34,12 @@ const InsaPage = () => {
         const token = sessionStorage.getItem('jwtToken');
         console.log("📦 토큰 확인 (insaPage):", token);
 
-        const res = await daxios.get("http://10.10.55.66/insa/summary", {
+        const res = await daxios.get("http://10.10.55.69/insa/summary", {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-
+        console.log("1");
         setSummary(res.data);
       } catch (err) {
         console.error("❌ 근무 요약 정보 로딩 실패", err);

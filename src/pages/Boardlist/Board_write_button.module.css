@@ -184,7 +184,31 @@ input[type="file"] {
   background-color: #e0e0e0;
 }
 
-/* 드롭다운 선택창 스타일 */
+.demo-wrapper {
+  position: relative;
+  z-index: 10;
+}
+
+.public-DraftStyleDefault-block {
+  margin: 0 !important;
+}
+
+.rdw-editor-toolbar {
+  z-index: 1000 !important; /* 드롭다운들이 잘 보이게 */
+}
 .rdw-dropdown-wrapper {
-  border-radius: 4px;
+  z-index: 1100 !important;
+  position: relative; /* 꼭 넣어야 z-index가 작동합니다 */
+}
+
+/* 드롭다운 래퍼 (드롭다운 버튼 자체) */
+.rdw-dropdown-wrapper {
+  position: relative;
+  z-index: 1001 !important;
+}
+
+/* 드롭다운 메뉴 자체 */
+.rdw-dropdown-optionwrapper {
+  position: absolute !important;
+  z-index: 9999 !important;
 }

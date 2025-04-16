@@ -43,8 +43,6 @@ function GroupChatting({ openChat }) {
                                 return axios.get("http://10.5.5.2/Employee/getGroupInfo", {
                                     params: { groupId: room.msg_group_id }
                                 }).then((groupInfo) => {
-                                    console.log(groupInfo.data);
-
                                     return {
                                         ...room,
                                         group_member_list: filteredMembers,

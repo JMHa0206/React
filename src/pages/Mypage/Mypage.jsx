@@ -15,7 +15,7 @@ const Mypage = () => {
 
     useEffect(() => {
         if (!isInitialized || !userId) return;
-        authAxios.get("http://10.10.55.66/mypage/info")
+        authAxios.get("http://10.5.5.6/mypage/info")
             .then(res => {
                 setUserInfo(res.data);
                 setFormData({

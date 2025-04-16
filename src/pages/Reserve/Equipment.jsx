@@ -20,8 +20,17 @@ const Equipment = ({ userInfo })=> {
     const [ reservations, setReservations ] = useState([]);
 
     const handleDateSelect = (selectInfo) => {
-        setSelectedInfo(selectInfo);
-        setIsModalOpen(true);
+        const selectedResource = resouceList.find(
+            (resource) => resource.resc_id == targetResc
+          );
+        
+          if (selectedResource?.resc_status !== 'active') {
+            alert("해당 자원은 현재 사용 불가 상태입니다.");
+            return;
+          }
+        
+          setSelectedInfo(selectInfo);
+          setIsModalOpen(true);
       };
 
     useEffect(() => {
@@ -66,8 +75,17 @@ const Equipment = ({ userInfo })=> {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [ selectedResv , setSeletedResv] = useState(null); 
     const selectResv = (clickInfo) => {
-        setSeletedResv(clickInfo.event);
-        console.log(selectedResv);
+
+        console.log("선택한 자원 상태 확인 : " + selectedResource.resc_status)
+        const selectedResource = resouceList.find(
+            (resource) => resource.resc_id == targetResc
+          );
+          if (selectedResource?.resc_status !== 'active') {
+            alert("해당 자원은 현재 사용 불가 상태입니다.");
+            return; 
+          }
+          setSeletedResv(clickInfo.event);
+        console.log(clickInfo);
         setIsDetailOpen(true);
     };
 

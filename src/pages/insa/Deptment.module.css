@@ -1,0 +1,35 @@
+.container {
+    padding: 20px;
+  }
+  
+  .filterSection {
+    margin-bottom: 20px;
+  }
+  
+  .filterSection select {
+    margin-left: 10px;
+    padding: 5px;
+  }
+  
+  .listSection {
+    height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+  }
+  
+  .attendanceTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .attendanceTable th,
+  .attendanceTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .attendanceTable th {
+    background-color: #f4f4f4;
+  }
+  

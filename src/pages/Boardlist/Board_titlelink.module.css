@@ -143,13 +143,6 @@
     margin-bottom:50px;
   }
   
-  /* .gasyselect, .titlewrite, .file {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid #ddd;
-  } */
   
   
   .titlewrite {
@@ -184,14 +177,7 @@
   .text2 {
     color: #555;
   }
-  
-  /* .file .text2 {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    color: #007bff;
-  } */
+
   
   .download-icon {
     font-size: 18px;
@@ -264,19 +250,33 @@
   }
   
   
-  /* button {
-    padding: 10px 20px;
-    margin: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #f0f0f0;
-  } */
-  
   
   .mainContents{
     width:100%;
+  }
+
+  .ProseMirror {
+    min-height: 200px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+  }
+  
+  .ProseMirror:focus {
+    border-color: #005cc5;
+  }
+
+  .demo-wrapper {
+    position: relative;
+    z-index: 10;
+  }
+  
+  .public-DraftStyleDefault-block {
+    margin: 0 !important;
+  }
+  
+  .rdw-editor-toolbar {
+    z-index: 1000 !important; /* 드롭다운들이 잘 보이게 */
   }
