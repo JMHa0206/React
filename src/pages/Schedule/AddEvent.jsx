@@ -22,6 +22,9 @@ const AddEventform = ({ closeModal, selectedInfo }) => {
         <div className={addFormStyle['modal-overlay']}>
             <div className={addFormStyle['modal-container']}>
             <h2>일정 추가</h2>
+            <div className={addCategoryStyle.closeBtn}>
+              <button type="button" className="btn-close" aria-label="Close" onClick={closeModal}></button>
+            </div>
             <div>
                 일정 종류
                 <select name="category_id" value={eventInput.category_id} onChange={handleInput}>
@@ -83,7 +86,6 @@ const AddEventform = ({ closeModal, selectedInfo }) => {
             </div>
             <div className={addFormStyle['modal-buttons']}>
                 <button onClick={handleAddEvent}>저장</button>
-                <button onClick={() => setIsModalOpen(false)}>취소</button>
             </div>
             </div>
         </div>

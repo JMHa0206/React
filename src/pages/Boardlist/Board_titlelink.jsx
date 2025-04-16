@@ -33,9 +33,10 @@ const Board_titellink = () => {
     const [fileList, setFileList] = useState([]);
 
     //파일 수정
-    const [deletedFiles, setDeletedFiles] = useState([]); 
+    const [deletedFiles, setDeletedFiles] = useState([]);
     const [newFiles, setNewFiles] = useState([]);
     const [showUploadInput, setShowUploadInput] = useState(false);
+
 
 
     // 게시글 조회
@@ -44,7 +45,7 @@ const Board_titellink = () => {
             .then(res => {
                 setBoardData(res.data);
                 setMessage({ post_title: res.data.post_title });
-                setPostLike(res.data.post_like); 
+                setPostLike(res.data.post_like);
 
                 const blocksFromHtml = htmlToDraft(res.data.post_content || "");
                 const contentState = ContentState.createFromBlockArray(blocksFromHtml.contentBlocks);
@@ -82,7 +83,7 @@ const Board_titellink = () => {
             post_id: parseInt(boardId),
             post_title: message.post_title,
             post_content: htmlContent,
-            post_writer: boardData.post_writer ?? "", 
+            post_writer: boardData.post_writer ?? "",
             post_per: boardData.post_per ?? "",
             post_tag: boardData.post_tag ?? ""
         }).then(() => {
@@ -128,7 +129,7 @@ const Board_titellink = () => {
                 params: { board_id: boardId }
             })
                 .then(res => {
-                    setReplies(res.data); 
+                    setReplies(res.data);
                 });
 
             setNewReply("");
@@ -179,7 +180,7 @@ const Board_titellink = () => {
     const increaseLikeCount = () => {
         axios.post(`http://10.5.5.12/board/increaseLikeCount/${boardId}`)
             .then(response => {
-                setPostLike(prev => prev + 1); 
+                setPostLike(prev => prev + 1);
             })
             .catch(error => {
                 console.error("추천수 증가 실패:", error);
@@ -206,20 +207,20 @@ const Board_titellink = () => {
     const handleFileDownload = (sysname, oriname) => {
         const link = document.createElement('a');
         link.href = `http://10.5.5.12/download/${sysname}?oriname=${encodeURIComponent(oriname)}`;
-        link.setAttribute("download", oriname); 
+        link.setAttribute("download", oriname);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     };
     useEffect(() => {
-        console.log("📁 fileList", fileList); 
+        console.log("📁 fileList", fileList);
     }, [fileList]);
 
 
     const handleAllFileDownload = () => {
         if (fileList.length === 1) {
             const file = fileList[0];
-            handleFileDownload(file.b_sysname, file.b_oriname); 
+            handleFileDownload(file.b_sysname, file.b_oriname);
         } else if (fileList.length > 1) {
             const link = document.createElement("a");
             link.href = `http://10.5.5.12/download/all/${boardId}`;
@@ -233,9 +234,9 @@ const Board_titellink = () => {
     //수정시 파일 삭제 후 수정
     const handleFileDelete = (fileId) => {
         setFileList(prev => prev.filter(file => file.b_file_id !== fileId));
-        setDeletedFiles(prev => [...prev, fileId]); 
+        setDeletedFiles(prev => [...prev, fileId]);
 
-        setShowUploadInput(true); 
+        setShowUploadInput(true);
     };
 
     const handleFileUpdate = () => {
@@ -435,7 +436,9 @@ const Board_titellink = () => {
                 </div>
             )}
             <div className={bstyle.buttoncontainer}>
+              
                 <div className={bstyle.list3}><button onClick={() => navigate(-1)}>목록으로</button></div>
+            
                 <div className={bstyle.rightbuttons}>
                     <div className={bstyle.list4}>
                         {!editMode && <button onClick={() => setEditMode(true)}>수정</button>}

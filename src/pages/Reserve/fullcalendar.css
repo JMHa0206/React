@@ -1,0 +1,67 @@
+:root {
+    --fc-small-font-size: 0.9em;
+    --fc-page-bg-color: #f7fbff; /* 전체 배경 밝은 블루톤 */
+    --fc-neutral-bg-color: #e3edf5;
+    --fc-neutral-text-color: #5c7080;
+    --fc-border-color: #dce9f5;
+  
+    --fc-button-text-color: #fff;
+    --fc-button-bg-color: #1a3c6c; /* 진한 네이비 블루 */
+    --fc-button-border-color: #1a3c6c;
+    --fc-button-hover-bg-color: #15416e;
+    --fc-button-hover-border-color: #133b65;
+    --fc-button-active-bg-color: #0f2f4f;
+    --fc-button-active-border-color: #0c2540;
+  
+    --fc-event-bg-color: #4f7fd8; 
+    --fc-event-border-color: #4f7fd8;
+    --fc-event-text-color: #fff;
+    --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.123);
+  
+    --fc-more-link-bg-color: #d0e3f1;
+    --fc-more-link-text-color: #1a3c6c;
+  
+    --fc-event-resizer-thickness: 6px;
+    --fc-event-resizer-dot-total-width: 6px;
+    --fc-event-resizer-dot-border-width: 1px;
+  
+    --fc-non-business-color: #f1f4f8;
+    --fc-bg-event-color: #9fc6e7;
+    --fc-bg-event-opacity: 0.2;
+    --fc-highlight-color: rgba(154, 205, 224, 0.2);
+    --fc-today-bg-color: rgba(90, 178, 255, 0.1);
+    --fc-now-indicator-color: #020f20;
+    
+  }
+  a,
+a:link,
+a:visited {
+  color: black;         /* 텍스트 색상 */
+  text-decoration: none; /* 밑줄 제거 */
+}
+
+  @media (max-width: 1200px) {
+    /* 상단 툴바 */
+    .fc .fc-toolbar {
+    flex-direction: column;
+    }
+  
+    /* 툴바 안의 div */
+    .fc .fc-toolbar div {
+    margin: 0.3rem;
+    }
+    .demo-app {
+    height: 100% !important;
+    min-height: 55rem !important;
+    }
+    
+    .fc .fc-button{
+        height:2rem;
+    }
+
+    .fc .fc-toolbar-ltr-toolbar{
+        margin:0px !important;
+    }
+  
+    
+  }

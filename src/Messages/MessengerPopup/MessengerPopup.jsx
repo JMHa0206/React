@@ -111,6 +111,8 @@ function MessengerPopup({ onClose }) {
       navigate("/messenger/chattingroom");
     } else if (fromPage === "/messenger/employee") {
       navigate("/messenger/employee");
+    } else if (fromPage === "/messenger/groupchatting") {
+      navigate("/messenger/groupchatting");
     } else {
       navigate("/messenger");
     }
@@ -177,7 +179,10 @@ function MessengerPopup({ onClose }) {
 
       setCurrentChat(selectedNames);
 
-      navigate(`/messenger/chatting?chat=${selectedNames}&from=${myInfo.emp_code_id}&seq=${seq}`);
+      navigate(`/messenger/chatting?chat=${selectedNames}&from=${myInfo.emp_code_id}&seq=${seq}`,{
+        state: { fromPage: location.pathname }
+      });
+      
       setSelected([]);
       setShowPopup(false);
 

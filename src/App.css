@@ -8,26 +8,24 @@
 }
 
 .loader-container {
-  position: fixed; /* 스크롤과 무관하게 화면에 고정 */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-
+  background-color: rgba(255, 255, 255, 0.85); /* 반투명 배경 */
   display: flex;
   flex-direction: column;
-  justify-content: center; /* 수직 중앙 정렬 */
-  align-items: center;     /* 수평 중앙 정렬 */
-
-  background-color: rgba(255, 255, 255, 0.8); /* 선택 사항: 반투명 배경 */
-  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* 가장 위로 */
 }
 
 .spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid #ccc;
-  border-top: 5px solid #333;
+  width: 48px;
+  height: 48px;
+  border: 6px solid #ccc;
+  border-top: 6px solid #1a3c6c;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 16px;
@@ -35,11 +33,16 @@
 
 .message {
   font-size: 18px;
-  color: #333;
+  color: #1a3c6c;
+  font-weight: bold;
 }
 
+
+
+/* 회전 애니메이션 */
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
+

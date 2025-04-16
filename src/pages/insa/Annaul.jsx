@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import daxios from '../../axios/axiosConfig';
 import styles from './insapage.module.css';
 import useWorkStore from '../../store/useWorkStore';
 
@@ -15,48 +15,48 @@ const Annal = () => {
   const [summaryData, setSummaryData] = useState({
     personalBusinessTrips: [],
     departmentLeaves: [],
-    notCheckedInToday: []
+    notCheckedInToday: [],
+    overtimeList: []
   });
 
-  // 🕒 근무 시간 타이머
   useEffect(() => {
     let interval;
-
     if (checkInTime && !isCheckedOut) {
       interval = setInterval(() => {
         const now = new Date();
-        const start = new Date(checkInTime);
-        const diff = Math.floor((now - start) / 1000);
-
+        const diff = Math.floor((now - new Date(checkInTime)) / 1000);
         const hours = String(Math.floor(diff / 3600)).padStart(2, "0");
         const minutes = String(Math.floor((diff % 3600) / 60)).padStart(2, "0");
         const seconds = String(diff % 60).padStart(2, "0");
-
         setTodayWorkedTime(`${hours}:${minutes}:${seconds}`);
       }, 1000);
     } else if (checkInTime && checkOutTime) {
-      const start = new Date(checkInTime);
-      const end = new Date(checkOutTime);
-      const diff = Math.floor((end - start) / 1000);
-
+      const diff = Math.floor((new Date(checkOutTime) - new Date(checkInTime)) / 1000);
       const hours = String(Math.floor(diff / 3600)).padStart(2, "0");
       const minutes = String(Math.floor((diff % 3600) / 60)).padStart(2, "0");
       const seconds = String(diff % 60).padStart(2, "0");
-
       setTodayWorkedTime(`${hours}:${minutes}:${seconds}`);
     }
 
     return () => clearInterval(interval);
   }, [checkInTime, checkOutTime, isCheckedOut]);
 
-  // 📦 인사 데이터 로딩 (출장, 휴가, 출근X 인원)
   useEffect(() => {
-    axios.get("/insa/admin-summary")
+    daxios.get("http://10.10.55.66/insa/admin-summary")
       .then(res => {
-        setSummaryData(res.data);
+        setSummaryData(prev => ({ ...prev, ...res.data }));
       })
       .catch(err => {
-        console.error("데이터 불러오기 실패:", err);
+        console.error("요약 정보 불러오기 실패:", err);
+      });
+
+    daxios.get("http://10.10.55.66/insa/overtime")
+      .then(res => {
+        console.log("오버 타임 데이터확인", res);
+        setSummaryData(prev => ({ ...prev, overtimeList: res.data }));
+      })
+      .catch(err => {
+        console.error("오버타임 불러오기 실패:", err);
       });
   }, []);
 
@@ -70,7 +70,7 @@ const Annal = () => {
       </div>
 
       <div className={styles.summaryGrid}>
-        {/* 개인 출장 */}
+        {/* 📅 개인 출장 */}
         <div className={styles.summaryCard}>
           <div className={styles.cardHeader}>
             <h3>📅 개인 출장</h3>
@@ -86,7 +86,7 @@ const Annal = () => {
           </ul>
         </div>
 
-        {/* 부서 휴가 */}
+        {/* 🌿 부서 휴가 */}
         <div className={styles.summaryCard}>
           <div className={styles.cardHeader}>
             <h3>🌿 부서 휴가</h3>
@@ -97,12 +97,31 @@ const Annal = () => {
                 <li key={idx}>{leave.empName} - {leave.date} ({leave.type})</li>
               ))
             ) : (
-              <li>오늘 휴가 등록 없음</li>
+              <li>이 달 휴가 등록 없음</li>
+            )}
+          </ul>
+        </div>
+
+        {/* ⏱️ 추가 근무 요약 */}
+        <div className={styles.summaryCard}>
+          <div className={styles.cardHeader}>
+            <h3>⏱️ 추가 근무 (이번 달)</h3>
+          </div>
+          <ul>
+            {summaryData.overtimeList.length > 0 ? (
+              summaryData.overtimeList.map((item, idx) => (
+                <li key={idx}>
+                  {item.empName} ({item.deptName}) - 총근무 {item.workHours}h / 초과근무 {item.overtimeHours}h
+                </li>
+              ))
+            ) : (
+              <li>이 달 초과근무자 없음</li>
             )}
           </ul>
         </div>
       </div>
 
+      {/* ❌ 출근 안 한 인원 */}
       <div className={styles.detailsSection}>
         <div className={styles.detailCard}>
           <div className={styles.cardHeader}>

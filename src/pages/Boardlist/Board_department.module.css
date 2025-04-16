@@ -1,103 +1,145 @@
 .SBoardContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;  
+  align-items: center;
+  flex-wrap: wrap;      
+
+}
+.subcontainer{
+  width:1000px;
+  /* position: relative;  */
+  padding-bottom: 60px; 
+}
+
+.container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    border-collapse: collapse;
+
+  }
+  
+  .container th {
+    background-color: #f4f4f4;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+
+  
+
+  .gaysipan {
     display: flex;
-    flex-direction: row;
-    justify-content: center;  
+    justify-content: space-between;
+    align-items: start;
+
+    text-align: left;       
+    padding: 15px;          
+    font-size: 1.5rem;         
+    font-weight: bold;          
+    
+    border-radius: 8px;         
+  }
+  
+ 
+  .navi {
+   
+    color: #333;               
+    text-align: left;           
+    font-size: 1.2rem;          
+    font-weight: normal;        
+    border: 1px solid #ccc;    
+    padding: 10px;              
+  }
+  
+ 
+  
+ 
+  .navi th {
+    padding-top:30px;
+    padding-left: 10px;  
+   
+  }
+
+
+  
+  
+  
+  hr {
+    border: 0;
+    height: 1px;
+    background-color: #ccc;
+   
+  }
+  
+ 
+  .list {
+    width: 100%;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    border-collapse: collapse;
+  }
+  
+  .list th, .list td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+  }
+  
+  .list th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  .list td {
+    background-color: #fafafa;
+  }
+  
+  .list tr:nth-child(even) td {
+    background-color: #f9f9f9;
+  }
+  
+  .list tr:hover td {
+    background-color: #f0f0f0;
+  }
+
+
+  .writeButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+  justify-content: center;
+  }
+  
+  /* .boardgasyfound{
+    display: flex;
+    justify-content: center;
     align-items: center;
-    flex-wrap: wrap;      
-  
+  } */
+
+  .boardgasyfound input {
+    width: 300px;       
+    padding: 8px 12px; 
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+ 
   }
-  
-  .subcontainer{
-    width:1000px;
-  }
-  .container {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      border-collapse: collapse;
-     
-    }
-    
-    .container th {
-      background-color: #f4f4f4;
-      padding: 10px;
-      text-align: center;
-      font-weight: bold;
-    }
-    
-  
-    .gaysipan {
-      display: flex;
-      justify-content: space-between;
-      align-items: start;
-  
-      text-align: left;       
-      padding: 15px;          
-      font-size: 1.5rem;         
-      font-weight: bold;          
-      
-      border-radius: 8px;         
-    }
-    
-   
-    .navi {
-     
-      color: #333;               
-      text-align: left;           
-      font-size: 1.2rem;          
-      font-weight: normal;        
-      border: 1px solid #ccc;    
-      padding: 10px;              
-    }
-    
-   
-    
-   
-    .navi th {
-      padding-top:30px;
-      padding-left: 10px;  
-     
-    }
-  
-  
-    
-    
-    
-    hr {
-      border: 0;
-      height: 1px;
-      background-color: #ccc;
-     
-    }
-    
-   
-    .list {
-      width: 100%;
-      border: 1px solid #ccc;
-      margin-top: 10px;
-      border-collapse: collapse;
-    }
-    
-    .list th, .list td {
-      padding: 10px;
-      text-align: center;
-      border: 1px solid #ccc;
-    }
-    
-    .list th {
-      background-color: #f4f4f4;
-      font-weight: bold;
-    }
-    
-    .list td {
-      background-color: #fafafa;
-    }
-    
-    .list tr:nth-child(even) td {
-      background-color: #f9f9f9;
-    }
-    
-    .list tr:hover td {
-      background-color: #f0f0f0;
-    }
-  
+
+.boardinputbutton button{
+  border:1px solid black;
+  padding:5px;
+  padding-left:20px;
+  padding-right:20px;
+  font-size:13px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}

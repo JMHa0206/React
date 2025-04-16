@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { formatDate } from '@fullcalendar/core'
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
+import React, { useState, useEffect } from 'react';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
 import calenderStyle from './DemoApp.module.css';
 import caxios from '../../Utils/caxios';
 import useScheduleStore from '../../store/useScheduleStore';
@@ -11,6 +10,7 @@ import koLocale from '@fullcalendar/core/locales/ko';
 
 
 const DemoApp = ({ onRefresh, reloadKey }) => {
+  const [showWeekends, setShowWeekends] = useState(true);
   const { events, addEvent, setEvents, addEvents, removeEvent } = useScheduleStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedInfo, setSelectedInfo] = useState(null);
@@ -314,16 +314,22 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
         initialView='dayGridMonth'
         locales={[koLocale]}
         locale="ko"
+        customButtons={{
+          toggleWeekend: {
+            text: showWeekends ? '주말 숨기기' : '주말 보이기',
+            click: () => setShowWeekends(prev => !prev)
+          }
+        }}
         headerToolbar={{
           left: 'prev,next today',
           center: 'title',
-          right: 'dayGridMonth,dayGridWeek'
+          right: 'toggleWeekend dayGridMonth,dayGridWeek'
         }}
         editable={true}
         selectable={true}
         selectMirror={true}
         dayMaxEvents={true}
-        weekends={weekendsVisible}
+        weekends={showWeekends}
         select={handleDateSelect}
         eventContent={renderEventContent}
         events={events}

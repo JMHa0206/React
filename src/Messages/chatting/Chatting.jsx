@@ -1,6 +1,6 @@
 import msgstyle from '../chatting/Chatting.module.css';
 import { useState, useEffect, useRef } from 'react';
-import { replace, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, replace, useLocation, useNavigate } from 'react-router-dom';
 import stompClient from "../../Components/websocket/websocket";
 import axios from 'axios';
 import dayjs from 'dayjs';
@@ -20,6 +20,7 @@ function Chatting() {
     const [showTooltip, setShowTooltip] = useState(false);
     const [empId, setEmpId] = useState({});
 
+    const navigate = useNavigate();
     const contentRef = useRef(null);
     const location = useLocation();
     const params = new URLSearchParams(location.search);
@@ -28,24 +29,29 @@ function Chatting() {
     const seq = Number(params.get("seq")); //방 번호
 
 
+
     useEffect(() => {
         axios.get("http://10.5.5.2/Employee/SelectEmp")
             .then(resp => {
                 const empObj = {};
-                const empCodeId = {};
+                const empIdArray = [];
                 const nameList = targetName ? targetName.split(',').map(name => name.trim()) : [];
+    
                 resp.data.forEach(emp => {
                     empObj[emp.emp_code_id] = emp.emp_name;
                 });
                 resp.data.forEach(emp => {
-                    if(nameList.includes(emp.emp_name)){
-                        empCodeId[emp.emp_code_id] = emp.emp_code_id;
+                    if (nameList.includes(emp.emp_name)) {
+                        empIdArray.push(emp.emp_code_id);
                     }
-                })
-                setEmpId(empCodeId);
-                setEmpMap(empObj);
-            })
-    }, []);
+                });
+    
+                setEmpId(empIdArray); // 방에 참여 중인 사원들의 코드 ID만 저장
+                setEmpMap(empObj);   // 방에 참여 중인 사원들의 이름 매핑
+            });
+    }, [targetName]);  // targetName이 변경될 때마다 실행
+
+    
 
     useEffect(() => {
         const userId = sessionStorage.getItem("userId");
@@ -61,13 +67,15 @@ function Chatting() {
         })
     }, []);
 
+   
+
     const showMessages = () => {
         axios.get("http://10.5.5.2/Employee/showMessages", {
             params: {
                 seq: seq
             }
         }).then((resp) => {
-            console.log(resp)
+       
             const fetchedMessages = resp.data.map(msg => ({
                 ...msg,
                 isMine: msg.msg_emp_id === myId,
@@ -90,7 +98,6 @@ function Chatting() {
 
         stompClient.onConnect = () => {
 
-            console.log(empId);
             console.log("WebSocket 연결 성공");
 
             stompClient.subscribe(`/topic/messages/${seq}`, (msg) => {
@@ -111,15 +118,17 @@ function Chatting() {
     }, [seq, isLoaded, empMap]);
 
     const sendMessage = () => {
+        if(message.length >2000) {
+            alert("메시지는 2000자 이하로 입력해주세요.")
+            return;
+        }
+
         if (message.trim() !== "") {
-
-
             const msgData = {
                 msg_content: message,
                 msg_group_id: seq,
                 msg_emp_id: myId
             }
-
 
             stompClient.publish({
                 destination: `/app/send/${seq}`,
@@ -170,7 +179,25 @@ function Chatting() {
             alert("초대할 대상을 선택하세요.")
             return;
         }
+        const combinedData = {
+             myId: myInfo.emp_code_id,
+             selected: selected,
+             empId: empId
+        } 
+    
+        //그룹네임에 셋다 넣고 생성자에 내아이디 넣고 그룹멤버에 셋다
+        axios.post("http://10.5.5.2/Employee/inviteToChat",combinedData)
+        .then((resp)=>{
+            const seq = resp.data;
 
+            const selectedNames = [...selected,...empId,myId]
+            .map(id => empMap[id]);
+
+             navigate(`/messenger/chatting?chat=${selectedNames}&from=${myId}&seq=${seq}`)
+            setSelected([]);
+            setShowPopup(false);
+
+        })
 
 
     }

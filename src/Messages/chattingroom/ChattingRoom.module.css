@@ -1,3 +1,4 @@
+
 .another {
     display: flex;
     align-items: center;
@@ -39,7 +40,7 @@
   
   .lastmsg {
     font-size: 14px;
-    color: #666;
+    color: #222;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -53,4 +54,29 @@
     align-self: flex-end;
     margin-top: 4px;
     cursor:default;
+  }
+
+  .contextMenu {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    width: 100px;
+  }
+  
+  .contextMenu li {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .contextMenu li:hover {
+    background-color: #f2f2f2;
+    color: red;
+    font-weight: bold;
   }

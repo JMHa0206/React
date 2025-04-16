@@ -27,7 +27,7 @@ const Sidebar = () => {
   const [todayWorkedTime, setTodayWorkedTime] = useState("00:00:00");
 
 
-  // ✅ 출근 시간 + attendance_id 받아오기qwe
+  // ✅ checkInTime 이거 App.js로 빼기ㄷ
 
   useEffect(() => {
     const fetchCheckInData = async () => {
@@ -36,13 +36,13 @@ const Sidebar = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        const res2 = await daxios.get("http://10.10.55.66/work/attendanceId", {
-          headers: { Authorization: `Bearer ${token}` }
-        });
 
         const checkIn = res1.data?.checkInTime;
         const checkOut = res1.data?.checkOutTime;
-        const id = res2.data;
+
+        console.log(checkIn);
+        console.log(checkOut);
+
 
         if (checkIn) {
           setCheckInTime(new Date(checkIn));
@@ -54,9 +54,6 @@ const Sidebar = () => {
           setIsCheckedOut(false);
         }
 
-        if (id) {
-          setTodayAttendanceId(id);
-        }
       } catch (error) {
         console.error("출근 정보 가져오기 실패", error);
         setIsCheckedIn(false);

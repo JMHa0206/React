@@ -23,6 +23,7 @@ import style from './MainContent.module.css';
 import InsaPage from '../insa/insapage';
 import Annaul from '../insa/Annaul';
 
+
 const MainContent = () => {
 const location = useLocation();
 const hideSidelistPaths = ['/mainpage/maincontent/mypage']; // 더 숨기고 싶은 페이지가 있다면 배열에 추가
@@ -57,6 +58,7 @@ const isSidelistVisible = !hideSidelistPaths.includes(location.pathname);
           <Route path='insa/attend' element={<InsaPage/>}></Route>
           <Route path='insa/record' element={<Annaul/>}></Route>
           
+          <Route path='board/:boardId' element={<Board_business />} />
           <Route path='titlelink/:boardId' element={<Board_titlelink />} />
           <Route path='write_button' element={<Board_write_button />} />
           <Route path='standard' element={<Boardlist />} />
@@ -66,7 +68,9 @@ const isSidelistVisible = !hideSidelistPaths.includes(location.pathname);
           <Route path='department' element={<Board_department />} />
           <Route path='business' element={<Board_business />} />
           <Route path='support' element={<Board_support />} />
+         
 
+          
           <Route path='schedule' element={<ScheduleMain />} />
           <Route path='reserve/*' element={<ReserveMain />} />
           <Route path='msg' element={<ApprovalMain />} />

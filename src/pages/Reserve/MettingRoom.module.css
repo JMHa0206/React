@@ -42,6 +42,10 @@
   .reservTable td {
     background-color: #ffffff;
   }
+
+  .infoTable{
+    margin-bottom: 50px;
+  }
   
   /* 반응형 처리 (선택) */
   @media (max-width: 768px) {

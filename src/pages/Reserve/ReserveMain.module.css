@@ -1,8 +1,11 @@
 .reservContainer{
     display: flex;
+    padding:24px;
     flex-direction: row;
     margin-left: 20px;
     width:100%;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #1a3c6c;
 }
 
 

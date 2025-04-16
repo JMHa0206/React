@@ -6,16 +6,18 @@
   flex-wrap: wrap;      
 
 }
-
 .subcontainer{
   width:1000px;
+  /* position: relative;  */
+  padding-bottom: 60px; 
 }
+
 .container {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
     border-collapse: collapse;
-   
+
   }
   
   .container th {
@@ -24,6 +26,8 @@
     text-align: center;
     font-weight: bold;
   }
+
+
   
 
   .gaysipan {
@@ -102,258 +106,40 @@
   }
 
 
-
-
-
-
-
-
-
-
- 
-
-
-
-
-/* 댓글부분 */
-.comment2 {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  width: 700px;
-}
-
-.comment3 {
-  font-weight: bold;
-  font-size: 16px;
-  padding-bottom: 10px;
-}
-
-.commentwrite {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-bottom: 10px;
-}
-
-.profile {
-  width: 50px;
-  height: 50px;
-  background-color: gray;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
+  .writeButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
   justify-content: center;
-  color: white;
-  font-size: 14px;
-  margin-left:10px;
+  }
+  
+  /* .boardgasyfound{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  } */
+
+  .boardgasyfound input {
+    width: 300px;       
+    padding: 8px 12px; 
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+ 
+  }
+
+.boardinputbutton button{
+  border:1px solid black;
+  padding:5px;
+  padding-left:20px;
+  padding-right:20px;
+  font-size:13px;
 }
 
-.userwrite {
+.pagination {
   display: flex;
-  flex-direction: column;
-  flex: 1;
-  margin-left:20px;
-  gap:10px;
-}
-
-.nametime {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.name3 {
-  font-weight: bold;
-}
-
-.writetime3 {
-  font-size: 12px;
-  color: gray;
-}
-
-.content4 {
-  margin-top: 5px;
-}
-
-.commentwrite2 {
-  display: flex;
-  gap: 10px;
-}
-
-
-
-  /* textarea {
-  width: 100%;
-  min-height: 70px;  
-  max-height: 150px; 
-  resize: vertical;  
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-
-  flex: 5;
-}   */
-
-
-
-.okbutton {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  flex: 0.5;
-}
-
-
-
-
-/* 게시글 클릭시 화면 */
-.standardwrite10{
-  font-weight:bold;
-  font-size: 20px;
-  margin-bottom:50px;
-}
-
-/* .gasyselect, .titlewrite, .file {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid #ddd;
-} */
-
-
-.titlewrite {
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  margin-bottom: 20px;
-}
-
-.title2 {
-  font-weight: bold; 
-  flex:1;
-}
-
-.text2 {
-flex:5;
-}
-.text2 input {
-  width: 95%; 
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc; 
-}
-
-
-
-.title2 {
-  font-weight: bold;
-  color: #333;
-}
-
-.text2 {
-  color: #555;
-}
-
-/* .file .text2 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  color: #007bff;
-} */
-
-.download-icon {
-  font-size: 18px;
-}
-
-.contentwrite {
-  margin-top: 15px;
-  padding: 15px;
-  min-height: 120px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background: white;
-}
-
-
-.good2{
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
-}
-
-.thumbsbutton {
-  display: flex;
-  flex-direction: column; 
-  align-items: center; 
-  justify-content: center; 
-  padding: 5px 20px; 
-  border: 2px solid lightcoral; 
-  border-radius: 50%; 
-  width: 50px;
-  height: 50px; 
-  background-color: white; 
-  cursor: pointer; 
-  font-size: 24px; 
-  text-align: center; 
-  margin-top:20px;
-}
-
-.finger{
-  font-size: 18px; 
-  flex:1;
-  margin-bottom:0px;
-}
-
-.plus{
-  flex:1;
-  margin-top:0px;
-  font-size: 15px;
-}
-
-
-.buttoncontainer {
-  display: flex;
-  justify-content: space-between;  
-  align-items: center;            
-  width: 100%;                   
-}
-
-
-.list3 {
-  flex: 1;                        
-  text-align: center;              
-  margin-left:150px;
-}
-
-
-.rightbuttons {
-  display: flex;                  
-  justify-content: flex-end;        
-}
-
-
-
-/* button {
-  padding: 10px 20px;
-  margin: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #f0f0f0;
-} */
-
-
-.mainContents{
-  width:100%;
+  justify-content: center;
+  margin-top: 20px;
 }

@@ -5,22 +5,33 @@ import caxios from '../../Utils/caxios';
 
 
 
-const InputResev = ({ closeModal, selectedInfo, resourceId }) => {
+const InputResev = ({ closeModal, selectedInfo, resourceId, userInfo }) => {
   useEffect(() => {
-    console.log("넘어온 리소스:", resourceId);
-  }, [resourceId]);
-  
+    if (!resourceId || Number(resourceId) === 0) {
+      alert("자원을 먼저 선택해주세요.");
+      closeModal();
+    }
+  }, [resourceId, closeModal]);
 
-  const [ userInfo, setUserInfo ] = useState({});
-  useEffect(()=>{
-      caxios.get("/mypage/info").then((resp)=>{
-        const info = resp.data;
-        console.log(info);
-        setUserInfo(info);
-      }).catch((error) => {
-          console.error("실패", error);
-      });
-  }, [])
+    useEffect(() => {
+      console.log("넘어온 리소스:", resourceId);
+    }, [resourceId]);
+  
+    useEffect(() => {
+      if (selectedInfo) {
+        const date = selectedInfo.startStr.substring(0, 10);  // yyyy-mm-dd
+        const stime = selectedInfo.startStr.substring(11, 16); // HH:mm
+        const etime = selectedInfo.endStr.substring(11, 16);   // HH:mm
+    
+        setResvInput(prev => ({
+          ...prev,
+          resv_date: date,
+          resv_stime: stime,
+          resv_etime: etime
+        }));
+      }
+    }, [selectedInfo]);
+
 
   const [resvInput, setResvInput] = useState({
     resv_id : 0,
@@ -49,8 +60,16 @@ const InputResev = ({ closeModal, selectedInfo, resourceId }) => {
       resv_title: resvInput.resv_title
     };
     console.log("저장 전 예약 내용:", reservation);
-    caxios.post("/reserve/addReserve", reservation).catch((error) =>{
-      console.error("예약 실패:", error);
+    caxios.post("/reserve/addReserve", reservation)
+    .then(resp => {
+      alert("예약이 완료되었습니다.");
+    })
+    .catch((error) =>{
+      if (error.response?.status === 409) {
+        alert("⚠️ 이미 예약된 시간입니다. 다른 시간대를 선택해 주세요.");
+      } else {
+        alert("예약 중 오류가 발생했습니다.");
+      }
     })
     closeModal();
 
@@ -61,11 +80,14 @@ const InputResev = ({ closeModal, selectedInfo, resourceId }) => {
     return (
         <div className={resvStyle['modal-overlay']}>
           <div className={resvStyle['modal-container']}>
+            <div className={resvStyle.closeBtn}>
+              <button type="button" className="btn-close" aria-label="Close" onClick={closeModal}></button>
+            </div>
             <h2>예약 하기</h2>
             
             <div>
               날짜
-              <input name="resv_date" type="date" value={resvInput.resv_date} onChange={handleInput} />
+              <input className="resv_date" type="date" value={resvInput.resv_date} onChange={handleInput} />
             </div>
             <div>
               예약 시간<br></br>
@@ -99,7 +121,6 @@ const InputResev = ({ closeModal, selectedInfo, resourceId }) => {
             </div>
             <div className={resvStyle['modal-buttons']}>
               <button onClick={AddReservation}>저장</button>
-              <button onClick={closeModal}>취소</button>
             </div>
           </div>
         </div>

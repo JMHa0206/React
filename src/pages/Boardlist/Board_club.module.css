@@ -1,114 +1,132 @@
 .SBoardContainer{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;  
-    align-items: center;
-    flex-wrap: wrap;      
-  
-  }
-  .subcontainer{
-    width:1000px;
-  }
+  display: flex;
+  flex-direction: row;
+  justify-content: center;  
+  align-items: center;
+  flex-wrap: wrap;      
 
-  /* 자유/동아리 게시판 */
+}
+
+.subcontainer{
+  width:1000px;
+}
+
+/* 자유/동아리 게시판 */
 
 *{box-sizing: border-box;}
 
 
 .navi {
-   
-  color: #333;               
-  text-align: left;           
-  font-size: 1.2rem;          
-  font-weight: normal;        
-  border: 1px solid #ccc;    
-  padding: 10px;              
+ 
+color: #333;               
+text-align: left;           
+font-size: 1.2rem;          
+font-weight: normal;        
+border: 1px solid #ccc;    
+padding: 10px;              
 }
 
 
 .navi div {
-  padding-top:30px;
-  padding-left: 10px;  
- font-weight: bold;
+padding-top:30px;
+padding-left: 10px;  
+font-weight: bold;
 }
 
 .navibelow{
-  display: flex;
+display: flex;
 }
 
 .navibelowleft{
-  flex:9;
+flex:9;
 }
 
 .navibelowright{
-  flex:1;
+flex:1;
 }
 
-  .freelist {
-    display: flex;
-    width: 100%;  
-    padding: 20px;
-    border:1px solid black;
-  }
-  
-  .photo {
-    flex: 1.5;  
-    background-color: #f0f0f0;  
-    margin-right: 20px;  
-    border:1px solid black;
-  }
-  
-  .write {
-    flex: 4.5;  
-    display: flex;
-    flex-direction: column;
-    border:1px solid black;
-  }
-  
-  .title {
-    flex: 1;  
-    padding: 10px;
-    border:1px solid black;
-  }
-  
-  .content {
-    flex: 3;  
-    padding: 10px;
-    border:1px solid black;
-  }
-  
-  .writeElse {
-    flex: 2;  
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border:1px solid black;
-  }
-  
-  .writer,
-  .good,
-  .look,
-  .writeTime {
-    flex: 1;  
-    background-color: #dcdcdc;  
-    padding: 5px;
-    text-align: center;
-    border-radius: 5px;
-    border:1px solid black;
-  }
-  
-  .writer {
-    background-color: #ffcccb;
-  }
-  
-  .good {
-    background-color: #c6e7d0;
-  }
-  
-  .look {
-    background-color: #cce7f7;
-  }
-  
-  .writeTime {
-    background-color: #e7e7e7;
-  }
+hr {
+  border: 0;
+  height: 1px;
+  background-color: #ccc;
+ 
+}
+
+.freelist {
+  display: flex;
+  width: 100%;  
+  padding: 20px;
+  border:1px solid black;
+  flex-direction: column;
+}
+
+.photo {
+  flex: 1.5;  
+  background-color: #f0f0f0;  
+  margin-right: 20px;  
+  border:1px solid black;
+}
+
+.write {
+  flex: 4.5;  
+  display: flex;
+  flex-direction: column;
+  border:1px solid black;
+}
+
+.title {
+  flex: 1;  
+  padding: 10px;
+  border:1px solid black;
+}
+
+.content {
+  flex: 3;  
+  padding: 10px;
+  border:1px solid black;
+}
+
+.writeElse {
+  flex: 2;  
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border:1px solid black;
+}
+
+.writer,
+.good,
+.look,
+.writeTime {
+  flex: 1;  
+  background-color: #dcdcdc;  
+  padding: 5px;
+  text-align: center;
+  border-radius: 5px;
+  border:1px solid black;
+}
+
+.writer {
+  background-color: #ffcccb;
+}
+
+.good {
+  background-color: #c6e7d0;
+}
+
+.look {
+  background-color: #cce7f7;
+}
+
+.writeTime {
+  background-color: #e7e7e7;
+}
+
+.postItem {
+  display: flex;           /* 게시물은 flex로 배치 */
+  flex-direction: row;     /* photo와 write는 가로로 정렬 */
+  width: 100%;             /* 전체 넓이는 100% */
+  padding: 20px;
+  margin-bottom: 20px;     /* 게시물 간 간격 */
+  border: 1px solid #ccc; /* 각 게시물의 구분선 */
+}

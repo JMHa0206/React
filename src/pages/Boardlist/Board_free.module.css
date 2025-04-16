@@ -57,6 +57,7 @@ hr {
     width: 100%;  
     padding: 20px;
     border:1px solid black;
+    flex-direction: column;
   }
   
   .photo {
@@ -120,3 +121,12 @@ hr {
   .writeTime {
     background-color: #e7e7e7;
   }
+
+  .postItem {
+    display: flex;           /* 게시물은 flex로 배치 */
+    flex-direction: row;     /* photo와 write는 가로로 정렬 */
+    width: 100%;             /* 전체 넓이는 100% */
+    padding: 20px;
+    margin-bottom: 20px;     /* 게시물 간 간격 */
+    border: 1px solid #ccc; /* 각 게시물의 구분선 */
+}

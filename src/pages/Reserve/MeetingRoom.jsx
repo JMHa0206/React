@@ -1,3 +1,4 @@
+import './fullcalendar.css';
 import React, { useEffect,  useState } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -12,8 +13,9 @@ import koLocale from '@fullcalendar/core/locales/ko';
 
 
 
-const MeetingRoom = ()=> {
 
+const MeetingRoom = ({ userInfo })=> {
+ 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedInfo, setSelectedInfo] = useState(null);
     const [ resouceList, setResourceList ] = useState([]);
@@ -43,8 +45,6 @@ const MeetingRoom = ()=> {
             const formatResev = resp.data.map((resv) => {
               const startStr = `${fixDate(resv.resv_date)}T${resv.resv_stime}`;
               const endStr = `${fixDate(resv.resv_date)}T${resv.resv_etime}`;
-              const startDate = new Date(startStr);
-              const endDate = new Date(endStr);
           
                return {
                 id: resv.resv_id,
@@ -52,6 +52,7 @@ const MeetingRoom = ()=> {
                 start: startStr,
                 end: endStr,
                 allDay: false,
+                overlap: false,
                 extendedProps: {
                   emp_id: resv.resv_emp,
                   resource_id: resv.resource_id
@@ -59,6 +60,7 @@ const MeetingRoom = ()=> {
               };
             });
           
+            setTargetResc(1001);
             setReservations(formatResev);
           }).catch((error) => {
             console.error("예약목록 불러오기 실패", error);
@@ -66,11 +68,12 @@ const MeetingRoom = ()=> {
       
     }, [])
     
-
+    const [showWeekends, setShowWeekends] = useState(true);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
-    const [ selectedResv , setSeletedResv] = useState(null); 
+    const [ selectedResv , setSelectedResv] = useState(null); 
     const selectResv = (clickInfo) => {
-        setSeletedResv(clickInfo.event);
+        setSelectedResv(clickInfo.event);
+        console.log(clickInfo);
         setIsDetailOpen(true);
     };
 
@@ -80,8 +83,7 @@ const MeetingRoom = ()=> {
             <div>
                 회의실 예약 현황 조회
                 <br></br>
-                <select onChange={(e) => setTargetResc(e.target.value)}>
-                    <option value="">자원선택</option>
+                <select value={targetResc} onChange={(e) => setTargetResc(e.target.value)}>
                     {resouceList
                     .filter((resource)=>{
                         if(resource.resc_type_id != 110){
@@ -91,14 +93,14 @@ const MeetingRoom = ()=> {
                     })
                     .map((resc, index) => (
                         <option key={index} value={resc.resc_id}>
-                        {resc.resc_name}
+                            {resc.resc_name}
                         </option>
                     ))}
                 </select>
                 
             </div>
             <div>
-            <table>
+            <table className={rStyle.infoTable}>
                 <thead>
                     <tr>
                     <th>수용인원</th>
@@ -123,34 +125,50 @@ const MeetingRoom = ()=> {
                 </tbody>
                 </table>
             </div>
+            
         <div>
             <FullCalendar
             key={targetResc} 
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             allDaySlot={false} 
-            initialView='timeGridWeek'
+            initialView='timeGridDay'
             slotMinTime="08:00:00"
-            slotMaxTime="24:00:00"
+            slotMaxTime="21:00:00"
             slotDuration="00:30:00"
+            snapDuration="00:30:00"
             locales={[koLocale]}
             locale="ko"
-            headerToolbar={{
-                left: '',
-                center: 'prev today next',
-                right: 'dayGridMonth,timeGridWeek'
+            titleFormat={{
+                month: 'long',
+                day: 'numeric', 
+                weekday: 'short' 
             }}
-            
+            customButtons={{
+                toggleWeekend: {
+                  text: showWeekends ? '주말 숨기기' : '주말 보이기',
+                  click: () => setShowWeekends(prev => !prev)
+                }
+            }}
+            headerToolbar={{
+                left: 'prev next',
+                center: 'title',
+                right: 'toggleWeekend dayGridWeek,timeGridDay'
+            }}
+            weekends={showWeekends}
+            height='auto'
             selectable={true}
-            selectMirror={true}
+            selectOverlap={false}
+            selectMirror={false}
+            eventOverlap={false}
             select={handleDateSelect}
             events={reservations.filter(resv => resv.extendedProps.resource_id == Number(targetResc))}
             eventClick={selectResv}
             />
             </div>
         </div>
-        {isModalOpen && (<InputResev closeModal={() => setIsModalOpen(false)} selectedInfo={selectedInfo} resourceId={targetResc}/>)}
+        {isModalOpen && (<InputResev closeModal={() => setIsModalOpen(false)} selectedInfo={selectedInfo} resourceId={targetResc}  userInfo={userInfo}/>)}
 
-        {isDetailOpen && (<ResvDetail selectedResv={selectedResv} closeDetail={() => setIsDetailOpen(false)} />)}
+        {isDetailOpen && (<ResvDetail selectedResv={selectedResv} closeDetail={() => setIsDetailOpen(false)}  userInfo={userInfo}/>)}
         
         </div>
     )

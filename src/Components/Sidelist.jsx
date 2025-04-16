@@ -23,7 +23,8 @@ const Sidelist = () => {
   const hrPaths =[
     '/attend',
     '/record',
-    '/insa'
+    '/insa',
+    '/admin_insa'
   ];
 
 
@@ -98,6 +99,7 @@ const Sidelist = () => {
           <ul>
             <li><Link to="/mainpage/maincontent/insa/attend">개인 근태관리</Link></li>
             <li><Link to="/mainpage/maincontent/insa/record">휴가 / 출장 기록관리</Link></li>
+            <li><Link to="/mainpage/maincontent/admin_insa/admin">휴가/</Link></li>
           </ul>
         </div>
       </aside>

@@ -38,7 +38,7 @@ const useAuthStore = create((set) => ({
         const per_secure = parseInt(sessionStorage.getItem("per_secure"));
 
         console.log("initialize 실행중");
-
+        console.log(token+" : "+userId);
         if (token && userId) {
             set({
                 token,

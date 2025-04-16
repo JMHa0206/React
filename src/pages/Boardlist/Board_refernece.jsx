@@ -3,57 +3,68 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import bstyle from './Board_reference.module.css';
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom'; 
 
 const Board_reference = () => {
-    // const [group, setGroup] = useState([]);
     const navigate = useNavigate();
-
+    const location = useLocation();
+    
+    // boardId가 state로 전달되지 않으면 기본값을 0으로 설정
+    const boardId = location.state?.boardId || 114;
+    
+    const numericBoardId = parseInt(boardId, 10);  // 숫자형으로 변환
+    
     const [sortOption, setSortOption] = useState("option1");
     const [searchQuery, setSearchQuery] = useState("");
-    // const [filteredGroup, setFilteredGroup] = useState([]);
-
-    //네비게이터
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [boardList, setBoardList] = useState([]);
 
-    // 데이터 최초 로딩
-    // useEffect(() => {
-    //     axios.get('http://10.5.5.12/board')
-    //         .then(response => {
-    //             console.log("응답 성공", response.data);
-    //             setGroup(response.data);
-    //         })
-    //         .catch(error => {
-    //             console.error("🔥 오류 발생:", error);
-    //         });
-    // }, []);
+    // 📌 게시판 목록 불러오기
+    const getBoardList = () => {
+        axios.get(`http://10.5.5.12/board/navigator`, {
+            params: {
+                page: currentPage,
+                size: 10,
+                parent_board: numericBoardId
+            }
+        })
+        .then(res => {
+            setBoardList(res.data.list);
+            setTotalPages(res.data.totalPages);
+        })
+        .catch(err => {
+            console.error("페이지 데이터 로딩 실패:", err);
+        });
+    };
 
-    // 검색어 또는 정렬 옵션 변경 시 필터링 + 정렬
-    // useEffect(() => {
-    //     const query = searchQuery.toLowerCase();
+    useEffect(() => {
+        if (!isNaN(numericBoardId)) {
+          getBoardList();
+        }
+      }, [currentPage, numericBoardId]);
 
-    //     const sorted = [...group].sort((a, b) => {
-    //         if (sortOption === "option1") {
-    //             return new Date(b.post_date) - new Date(a.post_date);
-    //         } else if (sortOption === "option2") {
-    //             return b.post_view - a.post_view;
-    //         }
-    //         return 0;
-    //     });
+    // 📌 게시글 정렬 및 검색 필터링
+    const getFilteredAndSortedList = () => {
+        const query = searchQuery.toLowerCase();
+        const sorted = [...boardList].sort((a, b) => {
+            if (sortOption === "option1") {
+                return new Date(b.post_date) - new Date(a.post_date);
+            } else if (sortOption === "option2") {
+                return b.post_view - a.post_view;
+            }
+            return 0;
+        });
 
-    //     const filtered = sorted.filter(item =>
-    //         item.post_title.toLowerCase().includes(query)
-    //     );
+        return sorted.filter(item =>
+            item.post_title.toLowerCase().includes(query)
+        );
+    };
 
-    //     setFilteredGroup(filtered);
-    // }, [searchQuery, sortOption, group]);
-
-    // 조회수 증가 후 페이지 이동
+    // 📌 조회수 증가 후 상세 페이지로 이동
     const increaseViewCount = (post_id) => {
         axios.get(`http://10.5.5.12/board/increaseViewCount/${post_id}`)
-            .then(response => {
-                console.log('조회수 증가 성공:', response.data);
+            .then(() => {
                 navigate(`/mainpage/maincontent/titlelink/${post_id}`);
             })
             .catch(error => {
@@ -61,48 +72,11 @@ const Board_reference = () => {
             });
     };
 
-    // 날짜 형식 변환
+    // 📌 날짜 포맷
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
-        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        return date.toLocaleString('ko-KR');
     };
-
-    //네비게이터 페이지 정보 보내는 부분
-    useEffect(() => {
-        axios.get(`http://10.5.5.12/board/navigator`, {
-            params: { page: currentPage, size: 10 }
-        })
-            .then(res => {
-                setBoardList(res.data.list);
-                setTotalPages(res.data.totalPages);
-            })
-            .catch(err => {
-                console.error("페이지 데이터 로딩 실패:", err);
-            });
-    }, [currentPage]);
-
-    const getFilteredAndSortedList = () => {
-        const query = searchQuery.toLowerCase();
-      
-        const sorted = [...boardList].sort((a, b) => {
-          if (sortOption === "option1") {
-            return new Date(b.post_date) - new Date(a.post_date);
-          } else if (sortOption === "option2") {
-            return b.post_view - a.post_view;
-          }
-          return 0;
-        });
-      
-        return sorted.filter(item =>
-          item.post_title.toLowerCase().includes(query)
-        );
-      };
 
     return (
         <div className={bstyle.SBoardContainer}>
@@ -126,7 +100,10 @@ const Board_reference = () => {
                                     </div>
                                 </td>
                                 <td colSpan="4">
-                                    <select onChange={(e) => setSortOption(e.target.value)} value={sortOption}>
+                                    <select
+                                        onChange={(e) => setSortOption(e.target.value)}
+                                        value={sortOption}
+                                    >
                                         <option value="option1">최신순</option>
                                         <option value="option2">조회순</option>
                                     </select>
@@ -148,7 +125,11 @@ const Board_reference = () => {
                                     <td>
                                         <div
                                             onClick={() => increaseViewCount(message.post_id)}
-                                            style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
+                                            style={{
+                                                cursor: "pointer",
+                                                color: "blue",
+                                                textDecoration: "underline"
+                                            }}
                                         >
                                             {message.post_title}
                                         </div>
@@ -161,8 +142,9 @@ const Board_reference = () => {
                             ))}
                         </tbody>
                     </table>
+
+                    {/* 페이지네이션 */}
                     <div className={bstyle.pagination}>
-                        {/* 여기에 페이지 버튼 넣기 */}
                         {[...Array(totalPages)].map((_, idx) => (
                             <button
                                 key={idx}
@@ -173,8 +155,13 @@ const Board_reference = () => {
                             </button>
                         ))}
                     </div>
+
+                    {/* 작성하기 버튼 - boardId 전달 */}
                     <div className={bstyle.writeButton}>
-                        <Link to="/mainpage/maincontent/write_button" state={{ name: "board" }}>
+                        <Link
+                            to="/mainpage/maincontent/write_button"
+                            state={{ boardId: numericBoardId }} // 📌 여기서 boardId 넘김
+                        >
                             <button>작성하기</button>
                         </Link>
                     </div>

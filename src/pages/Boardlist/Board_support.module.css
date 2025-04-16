@@ -6,17 +6,18 @@
   flex-wrap: wrap;      
 
 }
-
 .subcontainer{
   width:1000px;
+  /* position: relative;  */
+  padding-bottom: 60px; 
 }
 
 .container {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
     border-collapse: collapse;
-   
+
   }
   
   .container th {
@@ -25,6 +26,8 @@
     text-align: center;
     font-weight: bold;
   }
+
+
   
 
   .gaysipan {
@@ -101,3 +104,42 @@
   .list tr:hover td {
     background-color: #f0f0f0;
   }
+
+
+  .writeButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+  justify-content: center;
+  }
+  
+  /* .boardgasyfound{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  } */
+
+  .boardgasyfound input {
+    width: 300px;       
+    padding: 8px 12px; 
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+ 
+  }
+
+.boardinputbutton button{
+  border:1px solid black;
+  padding:5px;
+  padding-left:20px;
+  padding-right:20px;
+  font-size:13px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
