@@ -12,7 +12,7 @@ const DeptAttendance = () => {
 
   // 📌 부서 목록 불러오기
   useEffect(() => {
-        daxios.get("http://10.10.55.69/insa/departments")
+        daxios.get("http://10.5.5.6/insa/departments")
       .then(res => {
         setDepartments(res.data);
       })
@@ -34,7 +34,7 @@ const DeptAttendance = () => {
   useEffect(() => {
     if (!selectedDept || !hasMore) return;
 
-    daxios.get(`http://10.10.55.69/insa/by-department`, {
+    daxios.get(`http://10.5.5.6/insa/by-department`, {
       params: {
         deptId: selectedDept,
         page: page,
@@ -53,7 +53,7 @@ const DeptAttendance = () => {
       });
   }, [selectedDept, page]);
 
-  // 📌 스크롤 하단 도달 시 다음 페이지 로딩ㄷ
+  // 📌 스크롤 하단 도달 시 다음 페이지 로딩
   const handleScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
     if (scrollTop + clientHeight >= scrollHeight - 20 && hasMore) {

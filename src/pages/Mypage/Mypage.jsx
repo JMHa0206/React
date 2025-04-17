@@ -7,13 +7,13 @@ import useProfileStore from "../../store/useProfileStore";
 
 const Mypage = () => {
     const [edit, setEdit] = useState(false);
-    const [formData, setFormData] = useState({});   
+    const [formData, setFormData] = useState({});
     const [userInfo, setUserInfo] = useState(null);
     const { userId, isInitialized } = useAuthStore();
-    const [profileImage, setProfileImage] = useState("/Default2.png"); // 기본 이미지 경로
+    const [profileImage, setProfileImage] = useState("/Default2.png");
+    const [originalProfileImage, setOriginalProfileImage] = useState(null); // ✅ 원래 이미지 저장용
     const [profileFile, setProfileFile] = useState(null);
-    const [imageLoaded, setImageLoaded] = useState(false);
-    const {setProfileImagePath } = useProfileStore();
+    const { setProfileImagePath } = useProfileStore();
 
     useEffect(() => {
         if (!isInitialized || !userId) return;
@@ -34,7 +34,8 @@ const Mypage = () => {
                 if (path) {
                     const fullPath = `http://10.5.5.6${path}`;
                     setProfileImage(fullPath);
-                    setProfileImagePath(fullPath); 
+                    setOriginalProfileImage(fullPath); // ✅ 원래 이미지 저장
+                    setProfileImagePath(fullPath);
                 }
             })
             .catch(err => {
@@ -63,7 +64,7 @@ const Mypage = () => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setProfileImage(URL.createObjectURL(file)); // 미리보기
+            setProfileImage(URL.createObjectURL(file));
             setProfileFile(file);
         }
     };
@@ -71,7 +72,7 @@ const Mypage = () => {
     const handleSave = () => {
         const formDataToSend = new FormData();
         const employeeBlob = new Blob(
-            [JSON.stringify(formData)], 
+            [JSON.stringify(formData)],
             { type: "application/json" }
         );
         formDataToSend.append("data", employeeBlob);
@@ -86,18 +87,19 @@ const Mypage = () => {
             }
         })
         .then(() => {
-            // 저장 후 최신 데이터 재요청
             return authAxios.get("http://10.5.5.6/mypage/info");
         })
         .then(res => {
             const path = res.data.profileDTO?.profile_path;
             if (path) {
                 const fullPath = `http://10.5.5.6${path}`;
-                setProfileImage(fullPath);            // ✅ 로컬 이미지 업데이트
-                setProfileImagePath(fullPath);        // 🔥 핵심 수정: 전역 상태도 함께 업데이트 (Header 반영됨!)
+                setProfileImage(fullPath);
+                setOriginalProfileImage(fullPath); // ✅ 저장 후 원본 이미지 갱신
+                setProfileImagePath(fullPath);
             }
             setUserInfo(res.data);
             setEdit(false);
+            setProfileFile(null);
             alert("수정이 완료되었습니다.");
         })
         .catch(err => {
@@ -132,11 +134,10 @@ const Mypage = () => {
                             alt="프로필" 
                             className={style.profileImage}
                             onError={handleImageError}
-                            onLoad={() => setImageLoaded(true)}
                             style={{ width: '100%', height: '100%' }}
                         />
                     </div>
-                    
+
                     {edit && (
                         <div className={style.fileInputContainer}>
                             <label htmlFor="profile-upload" className={style.fileInputLabel}>
@@ -152,12 +153,9 @@ const Mypage = () => {
                         </div>
                     )}
                 </div>
-                
+
                 <div className={style.infoSection}>
-                    <div className={style.row}>
-                        <label>이름:</label>
-                        <span>{userInfo.emp_name}</span>
-                    </div>
+                    <div className={style.row}><label>이름:</label><span>{userInfo.emp_name}</span></div>
                     <div className={style.row}>
                         <label>이메일:</label>
                         {edit ? (
@@ -165,7 +163,6 @@ const Mypage = () => {
                                 name="emp_email" 
                                 value={formData.emp_email}
                                 onChange={handleChange} 
-                                placeholder="이메일"
                                 className={style.formInput}
                             />
                         ) : (
@@ -179,7 +176,6 @@ const Mypage = () => {
                                 name="emp_phone" 
                                 value={formData.emp_phone}
                                 onChange={handleChange} 
-                                placeholder="전화번호"
                                 className={style.formInput}
                             />
                         ) : (
@@ -195,7 +191,6 @@ const Mypage = () => {
                                         name="postcode"
                                         value={formData.postcode}
                                         readOnly
-                                        placeholder="우편번호"
                                         className={style.postcodeInput}
                                     />
                                     <button 
@@ -210,14 +205,12 @@ const Mypage = () => {
                                     name="address1"
                                     value={formData.address1}
                                     readOnly
-                                    placeholder="주소"
                                     className={style.addressInput}
                                 />
                                 <input
                                     name="address2"
                                     value={formData.address2}
                                     onChange={handleChange}
-                                    placeholder="상세주소"
                                     className={style.addressInput}
                                 />
                             </div>
@@ -228,31 +221,26 @@ const Mypage = () => {
                             </span>
                         )}
                     </div>
-                    <div className={style.row}>
-                        <label>입사일:</label>
-                        <span>{new Date(userInfo.hire_date).toLocaleDateString()}</span>
-                    </div>
-                    <div className={style.row}>
-                        <label>급여:</label>
-                        <span>{userInfo.salary.toLocaleString()} 원</span>
-                    </div>
-                    <div className={style.row}>
-                        <label>부서:</label>
-                        <span>{userInfo.departDTO?.dept_name || "미지정"}</span>
-                    </div>
-                    <div className={style.row}>
-                        <label>직급:</label>
-                        <span>{userInfo.jobDTO?.job_name || "미지정"}</span>
-                    </div>
+                    <div className={style.row}><label>입사일:</label><span>{new Date(userInfo.hire_date).toLocaleDateString()}</span></div>
+                    <div className={style.row}><label>급여:</label><span>{userInfo.salary.toLocaleString()} 원</span></div>
+                    <div className={style.row}><label>부서:</label><span>{userInfo.departDTO?.dept_name || "미지정"}</span></div>
+                    <div className={style.row}><label>직급:</label><span>{userInfo.jobDTO?.job_name || "미지정"}</span></div>
 
                     <div className={style.actions}>
                         {edit ? (
                             <>
                                 <button onClick={handleSave} className={style.saveButton}>저장</button>
-                                <button onClick={() => setEdit(false)} className={style.cancelButton}>취소</button>
+                                <button onClick={() => {
+                                    setProfileImage(originalProfileImage); // ✅ 복원
+                                    setProfileFile(null);                 // ✅ 파일 초기화
+                                    setEdit(false);
+                                }} className={style.cancelButton}>취소</button>
                             </>
                         ) : (
-                            <button onClick={() => setEdit(true)} className={style.editButton}>수정</button>
+                            <button onClick={() => {
+                                setOriginalProfileImage(profileImage); // ✅ 백업
+                                setEdit(true);
+                            }} className={style.editButton}>수정</button>
                         )}
                     </div>
                 </div>

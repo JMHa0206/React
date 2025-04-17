@@ -29,7 +29,6 @@ function Chatting() {
     const seq = Number(params.get("seq")); //방 번호
 
 
-
     useEffect(() => {
         axios.get("http://10.5.5.6/Employee/SelectEmp")
             .then(resp => {
@@ -118,11 +117,7 @@ function Chatting() {
     }, [seq, isLoaded, empMap]);
 
     const sendMessage = () => {
-        if (message.length > 2000) {
-            alert("메시지는 2000자 이하로 입력해주세요.")
-            return;
-        }
-
+      
         if (message.trim() !== "") {
             const msgData = {
                 msg_content: message,
@@ -267,11 +262,11 @@ function Chatting() {
                 ))}
             </div>
             <div className={msgstyle.message}>
-                <textarea placeholder='메시지 입력' value={message} maxLength={2000} onChange={(e) => setMessage(e.target.value)}
+                <textarea placeholder='메시지 입력' value={message} maxLength={1300} onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={handleKeyDown}></textarea>
             </div>
             <div className={msgstyle.charCount}>
-                {message.length} / 2000자
+                {message.length} / 1300자
             </div>
             <div className={msgstyle.service}>
                 <button className={msgstyle.add} title="대화상대 초대하기" onClick={togglePopup}>┼</button>

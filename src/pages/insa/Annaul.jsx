@@ -42,7 +42,7 @@ const Annal = () => {
   }, [checkInTime, checkOutTime, isCheckedOut]);
 
   useEffect(() => {
-    daxios.get("http://10.10.55.69/insa/admin-summary")
+    daxios.get("http://10.5.5.6/insa/admin-summary")
       .then(res => {
         setSummaryData(prev => ({ ...prev, ...res.data }));
       })
@@ -50,7 +50,7 @@ const Annal = () => {
         console.error("요약 정보 불러오기 실패:", err);
       });
 
-    daxios.get("http://10.10.55.69/insa/overtime")
+    daxios.get("http://10.5.5.6/insa/overtime")
       .then(res => {
         console.log("오버 타임 데이터확인", res);
         setSummaryData(prev => ({ ...prev, overtimeList: res.data }));

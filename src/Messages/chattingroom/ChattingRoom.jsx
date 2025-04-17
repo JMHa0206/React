@@ -15,6 +15,7 @@ function ChattingRoom({ openChat }) {
                 myId: myId
             }
         }).then((room) => {
+            console.log(room.EMP_CODE_ID);
             const seqArray = room.data.map((roomItem) => roomItem.MSG_GROUP_ID);
             setSeq(seqArray);
 

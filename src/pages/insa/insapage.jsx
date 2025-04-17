@@ -17,8 +17,8 @@ const InsaPage = () => {
   const [summary, setSummary] = useState({
     weeklyWorkedDays: 0,
     weeklyWorkHours: 0,
-    averageCheckIn: "-",
-    averageCheckOut: "-",
+    averageCheckIn: "00:00",
+    averageCheckOut: "00:00",
     consecutiveDays: 0,
     totalAnnual: 0,
     usedAnnual: 0,

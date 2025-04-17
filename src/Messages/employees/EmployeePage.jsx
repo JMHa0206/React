@@ -80,7 +80,7 @@ function EmployeePage({openChat}) {
                 <div className={style.myprofile}>
                 <div className={style.imgbox}>
                     <div className={style.img}>
-                        <img src={`http://10.10.55.69${profileImg}`} style={{width:'100%',height:'100%', borderRadius:'50%',objectFit:'cover'}}></img> 
+                        <img src={`http://10.5.5.6${profileImg}`} style={{width:'100%',height:'100%', borderRadius:'50%',objectFit:'cover'}}></img> 
                     </div>
                 </div>
                 <div className={style.namebox}>
@@ -96,7 +96,7 @@ function EmployeePage({openChat}) {
                         <div key={index} className={style.another}>
                             <div className={style.imgbox}>
                                 <div className={style.anotherimg}>
-                                     <img src={profileMap[emp.emp_code_id] ? `http://10.10.55.69${profileMap[emp.emp_code_id]}` : `http://10.10.55.69/files/upload/profile/Default2.png`} style={{width:'100%',height:'100%', borderRadius:'50%',objectFit:'cover'}}></img> 
+                                     <img src={profileMap[emp.emp_code_id] ? `http://10.5.5.6${profileMap[emp.emp_code_id]}` : `http://10.5.5.6/files/upload/profile/Default2.png`} style={{width:'100%',height:'100%', borderRadius:'50%',objectFit:'cover'}}></img> 
                                 </div>
                             </div>
                             <div className={style.namebox} onDoubleClick={()=>openChat(emp.emp_code_id,myInfo?.emp_code_id,emp.emp_name)}>

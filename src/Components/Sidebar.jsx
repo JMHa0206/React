@@ -112,6 +112,7 @@ const Sidebar = () => {
       setIsCheckedIn(true);
       setCheckInTime(new Date(currentTime));
       setCurrentActivity("출근");
+      setActiveActivity("");
     } catch (error) {
       console.error('❌ 출근 실패', error);
     }
