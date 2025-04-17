@@ -108,10 +108,7 @@ const CalendarDetail = ({ closeModal, selectedInfo, onRefresh }) => {
           <button type="button" className="btn-close" aria-label="Close" onClick={closeModal}></button>
         </div>
         <h3>캘린더 수정 및 삭제</h3>
-        <select className={addCategoryStyle['form-select']} name="public_code" value={selectedInfo.public_code} onChange={handleCalInput} disabled>
-          <option value="10">내 캘린더</option>
-          <option value="20">공유 캘린더</option>
-        </select>
+        
 
         
 

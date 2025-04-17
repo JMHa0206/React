@@ -24,7 +24,7 @@ const Equipment = ({ userInfo })=> {
             (resource) => resource.resc_id == targetResc
           );
         
-          if (selectedResource?.resc_status !== 'active') {
+          if (selectedResource?.resc_status !== '예약가능') {
             alert("해당 자원은 현재 사용 불가 상태입니다.");
             return;
           }
@@ -35,8 +35,15 @@ const Equipment = ({ userInfo })=> {
 
     useEffect(() => {
         
-        caxios.get(`/reserve/resources`).then((resp)=>{
-            setResourceList(resp.data);
+        caxios.get(`/reserve/resources`)
+        .then((resp)=>{
+          const resources = resp.data;
+          setResourceList(resources);
+
+          const firstEquipment = resources.find(r => r.resc_type_id === 130);
+          if (firstEquipment) {
+            setTargetResc(firstEquipment.resc_id); 
+          }
         }).catch((error) => {
             console.error("자원 정보 불러오기 실패", error);
         })
@@ -64,7 +71,7 @@ const Equipment = ({ userInfo })=> {
                 }
               };
             });
-            setTargetResc(1003);
+            
             setReservations(formatResev);
           }).catch((error) => {
             console.error("예약목록 불러오기 실패", error);
@@ -76,11 +83,14 @@ const Equipment = ({ userInfo })=> {
     const [ selectedResv , setSeletedResv] = useState(null); 
     const selectResv = (clickInfo) => {
 
-        console.log("선택한 자원 상태 확인 : " + selectedResource.resc_status)
+        
         const selectedResource = resouceList.find(
             (resource) => resource.resc_id == targetResc
           );
-          if (selectedResource?.resc_status !== 'active') {
+
+        console.log("선택한 자원 상태 확인 : " + selectedResource.resc_status)
+
+          if (selectedResource?.resc_status !== '예약가능') {
             alert("해당 자원은 현재 사용 불가 상태입니다.");
             return; 
           }
@@ -95,7 +105,7 @@ const Equipment = ({ userInfo })=> {
             <div>
                 비품 예약 현황 조회
                 <br></br>
-                <select onChange={(e) => setTargetResc(e.target.value)}>
+                <select onChange={(e) => setTargetResc(Number(e.target.value))}>
                     {resouceList
                     .filter((resource)=>{
                         if(resource.resc_type_id != 130){
@@ -142,10 +152,11 @@ const Equipment = ({ userInfo })=> {
             key={targetResc} 
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             allDaySlot={false} 
-            initialView='timeGridWeek'
+            initialView='timeGridDay'
             slotMinTime="08:00:00"
-            slotMaxTime="24:00:00"
+            slotMaxTime="21:00:00"
             slotDuration="00:30:00"
+            snapDuration="00:30:00"
             locales={[koLocale]}
             locale="ko"
             titleFormat={{

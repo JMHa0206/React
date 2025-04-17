@@ -3,12 +3,15 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from "react-router-dom";
 import dayjs from 'dayjs';
+import stompClient from "../../Components/websocket/websocket";
 import "dayjs/locale/ko";
 dayjs.locale("ko");
+
 
 function GroupChatting({ openChat }) {
     const [roomEmployees, setRoomEmployees] = useState([]);
     const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, roomId: null });
+    const [groupSeqs, setGroupSeqs] = useState([]);
     const navigate = useNavigate();
     const myIdRef = useRef(null);
     const location = useLocation();
@@ -66,6 +69,8 @@ function GroupChatting({ openChat }) {
                             })
 
                             setRoomEmployees(sorted);
+
+                            setGroupSeqs(results.map(room => room.msg_group_id));
                         })
 
                     })
@@ -76,11 +81,34 @@ function GroupChatting({ openChat }) {
 
         firstData();
 
-        const interval = setInterval(firstData, 2500);
+    },[]);
 
-        return () => clearInterval(interval);
 
-    }, [])
+        useEffect(()=>{
+        stompClient.onConnect = () => {
+            groupSeqs.forEach(groupSeq => {
+                stompClient.subscribe(`/topic/messages/${groupSeq}`, (msg) => {
+                    const updatedRoom = JSON.parse(msg.body);
+                    setRoomEmployees(prevRooms => {
+                        return prevRooms.map(room =>
+                            room.msg_group_id === updatedRoom.msg_group_id
+                                ? { ...room, last_message: updatedRoom.msg_content, last_time: updatedRoom.send_date }
+                                : room
+                        );
+                    });
+                });
+            });
+        };
+
+        stompClient.activate(); 
+
+        
+        return () => {
+            stompClient.deactivate(); 
+        };
+    }, [groupSeqs]); 
+
+
 
     const handleContextMenu = (e, roomId) => {
         e.preventDefault();
@@ -100,8 +128,8 @@ function GroupChatting({ openChat }) {
 
     const handleDelete = () => {
         axios.put(`http://10.5.5.2/Employee/quitRoom`, {
-                myId:myIdRef.current,
-                msgGroupId: contextMenu.roomId
+            myId: myIdRef.current,
+            msgGroupId: contextMenu.roomId
         })
             .then(() => {
                 // 삭제 후 UI에서 해당 방 제거
@@ -112,7 +140,7 @@ function GroupChatting({ openChat }) {
     };
 
     const group = (selectedNames, myId, seq) => {
-        navigate(`/messenger/chatting?chat=${selectedNames}&from=${myId}&seq=${seq}`,{
+        navigate(`/messenger/chatting?chat=${selectedNames}&from=${myId}&seq=${seq}`, {
             state: { fromPage: location.pathname }
         });
     }
@@ -120,7 +148,7 @@ function GroupChatting({ openChat }) {
     const formatGroupName = (names, maxDisplay = 3) => {
         const displayNames = names.slice(0, maxDisplay);
         const extraCount = names.length - maxDisplay;
-    
+
         if (extraCount > 0) {
             return `${displayNames.join(", ")} 외 ${extraCount}명`;
         } else {
@@ -136,7 +164,7 @@ function GroupChatting({ openChat }) {
                     onContextMenu={(e) => handleContextMenu(e, room.msg_group_id)}>
                     <div className={style.imgbox}>
                         <div className={style.anotherimg}>
-                            {/* <img src=""></img> 프로필 이미지 넣는곳*/}
+                            <img src={`http://10.10.55.69/files/upload/profile/groupdefault.png`} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}></img>
                         </div>
                     </div>
                     <div className={style.namebox} >

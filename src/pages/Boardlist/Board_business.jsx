@@ -1,8 +1,9 @@
 import bstyle from './Board_business.module.css';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import daxios from '../../axios/axiosConfig';
 import { useNavigate, useLocation } from 'react-router-dom';
+import caxios from '../../Utils/caxios';
 
 
 const Board_business = () => {
@@ -22,19 +23,18 @@ const Board_business = () => {
     const [boardList, setBoardList] = useState([]);
 
 
+    
 
-    useEffect(() => {
-        const token = localStorage.getItem('jwtToken');
-        axios.get("http://10.5.5.12/mypage/info", {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+        useEffect(()=>{
+            
+        caxios.get("/mypage/info")
         .then((resp) => {
+            console.log("🧾 로그인 사용자 정보 로딩 완료:", resp.data); 
             setUserInfo(resp.data);
+            console.log("👤 현재 로그인 사용자 이름:", resp.data.emp_name);
         })
         .catch((error) => {
-            console.error("실패", error);
+            console.error("❌ 사용자 정보 불러오기 실패:", error);
         });
     }, []);
 
@@ -45,20 +45,35 @@ const Board_business = () => {
             currentPage
         });
 
-        axios.get(`http://10.5.5.12/board/navigator`, {
+        caxios.get(`/board/navigator`, {
             params: {
                 page: currentPage,
                 size: 10,
-                parent_board: numericBoardId
+                parent_board: numericBoardId, 
+                emp_info: userInfo
             }
         })
         .then(res => {
-            console.log("📦 게시글 데이터:", res.data);
-            setBoardList(res.data.list);
-            setTotalPages(res.data.totalPages);
+            console.log("🟡 응답 데이터 전체:", res.data);
+            const data = res.data;
+    
+            if (!data.list || !Array.isArray(data.list)) {
+                console.warn("📛 게시글 목록이 없습니다.");
+                setBoardList([]);
+                setTotalPages(1);
+                return;
+            }
+    
+            console.log("📦 게시글 데이터:", data);
+            setBoardList(data.list);
+    
+            const safePages = Math.max(Math.ceil(data.totalPages), 1);
+            setTotalPages(safePages);
         })
         .catch(err => {
-            console.error("페이지 데이터 로딩 실패:", err);
+            console.error("❌ 게시글 목록 API 호출 실패:", err);
+            setBoardList([]);
+            setTotalPages(1);
         });
     };
 
@@ -79,14 +94,20 @@ const Board_business = () => {
             }
             return 0;
         });
-
-        return sorted.filter(item =>
-            item.post_title.toLowerCase().includes(query)
+    
+        const filtered = sorted.filter(item =>
+            item.post_title?.toLowerCase().includes(query)
         );
+    
+        // ✅ 여기에 추가!
+        console.log("📦 필터링 후 게시글 수:", filtered.length);
+        console.log("📝 현재 검색어:", query);
+    
+        return filtered;
     };
 
     const increaseViewCount = (post_id) => {
-        axios.get(`http://10.5.5.12/board/increaseViewCount/${post_id}`)
+        daxios.get(`http://10.5.5.12/board/increaseViewCount/${post_id}`)
         .then(() => {
             navigate(`/mainpage/maincontent/titlelink/${post_id}`);
         })
@@ -103,7 +124,7 @@ const Board_business = () => {
     return (
         <div className={bstyle.SBoardContainer}>
             <div className={bstyle.subcontainer}>
-                <h2>📄 게시판</h2>
+                <h2>게시판</h2>
                 <div className={bstyle.approval}>
                     <table className={bstyle.container}>
                         <thead>
@@ -115,7 +136,7 @@ const Board_business = () => {
                                     <div className={bstyle.boardgasyfound}>
                                         <input
                                             type="text"
-                                            placeholder="🔍게시글 입력"
+                                            placeholder="게시글 입력"
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                         />
@@ -132,7 +153,7 @@ const Board_business = () => {
                                 </td>
                             </tr>
                             <tr className={bstyle.list}>
-                                <th>번호</th>
+                                
                                 <th>제목</th>
                                 <th>작성자</th>
                                 <th>작성일</th>
@@ -187,7 +208,6 @@ const Board_business = () => {
             </div>
         </div>
     );
-    
 };
 
 export default Board_business;

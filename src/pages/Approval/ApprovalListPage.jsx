@@ -3,10 +3,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import daxios from "../../axios/axiosConfig";
 
 const endpointMap = {
-  "pending": "waiting",
-  "requested": "mydrafts",
-  "complete": "completed",
-  "rejected": "rejected",
+  pending: "waiting",
+  requested: "mydrafts",
+  complete: "completed",
+  rejected: "rejected",
   "department/referenced": "department/ref",
   "department/created": "department/created",
 };
@@ -22,37 +22,43 @@ const ApprovalListPage = () => {
     const path = fullPath.replace("/mainpage/maincontent/approval/", "");
     const apiSuffix = endpointMap[path];
 
-    console.log("🔥 현재 경로:", fullPath);
-    console.log("🌲 파싱된 path:", path);
-    console.log("🧭 매핑된 API suffix:", apiSuffix);
+    console.log("🧭 현재 경로 pathname:", fullPath);
+    console.log("🔍 파싱된 key:", path);
+    console.log("📦 endpointMap으로부터 얻은 API suffix:", apiSuffix);
 
     if (!apiSuffix) {
-      console.warn("❌ 알 수 없는 경로로 요청됨:", path);
+      console.warn("❌ 알 수 없는 경로입니다:", path);
       setError("잘못된 경로입니다.");
       return;
     }
 
     try {
-      console.log(`📡 API 요청 시작 → /api/edms/${apiSuffix}`);
-      const res = await daxios.get(`http://221.150.27.169:8888/api/edms/${apiSuffix}`);
-      console.log("✅ API 응답 수신:", res.data);
-      const res = await daxios.get(`http://10.5.5.6/api/edms/${apiSuffix}`);
-      setDocs(res.data);
-      setError(null);
+      const url = `http://10.5.5.6/api/edms/${apiSuffix}`;
+      console.log(`🚀 API 호출: ${url}`);
+      const res = await daxios.get(url);
+
+      if (res.status === 200) {
+        console.log("✅ 문서 목록 수신 성공:", res.data);
+        setDocs(res.data);
+        setError(null);
+      } else {
+        console.error("⚠️ 예상치 못한 응답 상태:", res.status);
+        setError("서버로부터 문서를 받지 못했습니다.");
+      }
     } catch (err) {
-      console.error(`❌ API 요청 실패 (${apiSuffix})`, err);
+      console.error("🔥 API 요청 중 오류 발생:", err);
       setError("문서 목록을 불러오지 못했습니다.");
     }
   };
 
   useEffect(() => {
+    console.log("📡 useEffect triggered → fetchList()");
     fetchList();
   }, [location.pathname]);
 
   return (
     <div style={{ padding: "2rem" }}>
       <h2>📄 문서 목록</h2>
-      <p style={{ color: "orange" }}>🔥 컴포넌트 렌더링 정상 작동 중</p>
 
       {error && <p style={{ color: "red" }}>⚠️ {error}</p>}
 
@@ -73,7 +79,10 @@ const ApprovalListPage = () => {
             {docs.map((doc) => (
               <tr
                 key={doc.edmsId}
-                onClick={() => navigate(`/mainpage/maincontent/approval/detail/${doc.edmsId}`)}
+                onClick={() => {
+                  console.log("🖱️ 문서 클릭:", doc.edmsId);
+                  navigate(`/mainpage/maincontent/approval/detail/${doc.edmsId}`);
+                }}
                 style={{ cursor: "pointer" }}
               >
                 <td>{doc.edmsTitle}</td>

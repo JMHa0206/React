@@ -1,214 +1,166 @@
-.SBoardContainer{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;  
-    align-items: center;
-    flex-wrap: wrap;      
-  
-  }
-
-  .subcontainer{
-    width:1000px;
-  }
-
-  
- 
- /* 스탠다드 글쓰기 입력창 */
- .container2 {
-    width: 80%; 
-    margin: 0 auto; 
-    padding: 20px;
+.SBoardContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-.standardwrite10{
-  font-weight:bold;
+.subcontainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.subcontainer > div:first-child {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.approval {
+  width: 100%;
+}
+
+.container2 {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.standardwrite10 {
   font-size: 20px;
-  margin-bottom:50px;
+  font-weight: 500;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eaeaea;
+  margin-bottom: 10px;
 }
 
 .signcancel {
-    display: flex;
-    justify-content: flex-end; 
-    gap: 10px; 
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 15px;
 }
 
-
-.signcancel >button{
-  padding: 10px 20px;
-  background-color: lightcoral; 
-  color: white; 
+.signcancel button {
+  padding: 8px 20px;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
-  border-radius: 5px;
+  font-weight: 500;
+  transition: background-color 0.2s;
 }
 
+.signcancel button:first-child {
+  background-color: #4a6fdc;
+  color: white;
+}
 
+.signcancel button:last-child {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.signcancel button:hover {
+  opacity: 0.9;
+}
 
 .gasyselect {
-    display: flex;
-    justify-content: space-between; 
-    align-items: center;
-    margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .gasywrite {
-    font-weight: bold; 
-    flex:1;
+  min-width: 80px;
+  font-weight: 500;
+  color: #555;
 }
 
-.selects{
-  flex:6;
+.titlewrtie, .titlewrite {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eaeaea;
 }
 
-.selects select {
-    width: 40%; 
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
- 
-
-.titlewrite {
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    margin-bottom: 20px;
+.title2, .title4 {
+  min-width: 80px;
+  font-weight: 500;
+  color: #555;
 }
 
-.title2 {
-    font-weight: bold; 
-    flex:1;
+.text2, .text4 {
+  flex-grow: 1;
 }
 
-.text2 {
-  flex:5;
-}
 .text2 input {
-    width: 95%; 
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc; 
-}
-
-.titlewrtie {
-  display: flex;  
-  align-items: center;  
-  padding-bottom:20px;
-  font-size:bold;
-}
-
-.title4, .text4 {
-  margin-right: 60px; 
-  font-size:bold;
-}
-
-
-.checkbox2 label {
-    display: flex; 
-    align-items: center; 
-    gap: 10px; 
-    font-size:15px;
-}
-
-
-
-.file {
-    margin-bottom: 20px;
-}
-
-input[type="file"] {
-    padding: 10px;
-}
-
-
-.contentwrite {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-
-
-.list2{
-  position: relative;
-  /* border: 1px solid black; */
   width: 100%;
-  height: 40px;
-}
-
-.list2>button{
-  position: absolute;
-  bottom: 0;
-  right: 0;
-}
-
-
-
-
-
-
-/* 에디터 내부 영역 */
-.demo-editor {
-  min-height: 300px;
-  padding: 16px;
-  border: 1px solid #F1F1F1;
-  background-color: #fff;
-  border-radius: 8px;
-  font-family: 'Arial', sans-serif;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
   font-size: 14px;
 }
 
-/* 툴바 설정 (선택 사항, 기본 툴바도 예쁨) */
-.rdw-editor-toolbar {
-  border: 1px solid #ccc;
-  border-radius: 6px 6px 0 0;
-  background-color: #f5f5f5;
+.text2 input:focus {
+  border-color: #4a6fdc;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 111, 220, 0.2);
 }
 
-/* 툴바 버튼들 */
-.rdw-option-wrapper {
-  border: none;
-  min-width: 30px;
-  height: 30px;
-  margin: 4px 2px;
-  background: #fff;
+.file {
+  margin: 15px 0;
+}
+
+.file input {
+  padding: 8px 0;
+}
+
+.editorWrapper {
+  border: 1px solid #ddd;
   border-radius: 4px;
-  cursor: pointer;
+  overflow: hidden;
+  margin-top: 15px;
 }
 
-/* 툴바 아이콘 hover 시 */
-.rdw-option-wrapper:hover {
-  background-color: #e0e0e0;
+/* Draft.js 에디터 스타일 수정 */
+.editorWrapper :global(.demo-wrapper) {
+  min-height: 400px;
+  background-color: white;
 }
 
-.demo-wrapper {
-  position: relative;
-  z-index: 10;
+.editorWrapper :global(.demo-editor) {
+  min-height: 350px;
+  padding: 10px;
+  border-top: 1px solid #f1f1f1;
 }
 
-.public-DraftStyleDefault-block {
-  margin: 0 !important;
+.editorWrapper :global(.rdw-editor-toolbar) {
+  border: none;
+  border-bottom: 1px solid #f1f1f1;
+  padding: 10px;
+  background: #fafafa;
 }
 
-.rdw-editor-toolbar {
-  z-index: 1000 !important; /* 드롭다운들이 잘 보이게 */
-}
-.rdw-dropdown-wrapper {
-  z-index: 1100 !important;
-  position: relative; /* 꼭 넣어야 z-index가 작동합니다 */
-}
-
-/* 드롭다운 래퍼 (드롭다운 버튼 자체) */
-.rdw-dropdown-wrapper {
-  position: relative;
-  z-index: 1001 !important;
-}
-
-/* 드롭다운 메뉴 자체 */
-.rdw-dropdown-optionwrapper {
-  position: absolute !important;
-  z-index: 9999 !important;
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .titlewrtie, .titlewrite {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .title2, .title4 {
+    margin-bottom: 5px;
+  }
+  
+  .signcancel button {
+    padding: 6px 14px;
+    font-size: 14px;
+  }
 }

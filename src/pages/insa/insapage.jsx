@@ -52,28 +52,40 @@ const InsaPage = () => {
   // ✅ 오늘 근무 시간 실시간 계산
   useEffect(() => {
     let interval;
-
+  
     if (checkInTime && !isCheckedOut) {
+      // ⏱ 퇴근 전, 실시간 타이머
       interval = setInterval(() => {
         const now = new Date();
-        const diff = Math.floor((now - new Date(checkInTime)) / 1000);
-
+        const inTime = new Date(checkInTime);
+  
+        const diff = Math.floor((now - inTime) / 1000);
         const hours = String(Math.floor(diff / 3600)).padStart(2, "0");
         const minutes = String(Math.floor((diff % 3600) / 60)).padStart(2, "0");
         const seconds = String(diff % 60).padStart(2, "0");
+  
         setTodayWorkedTime(`${hours}:${minutes}:${seconds}`);
       }, 1000);
     } else if (checkInTime && checkOutTime) {
-      const diff = Math.floor((new Date(checkOutTime) - new Date(checkInTime)) / 1000);
-
-      const hours = String(Math.floor(diff / 3600)).padStart(2, "0");
-      const minutes = String(Math.floor((diff % 3600) / 60)).padStart(2, "0");
-      const seconds = String(diff % 60).padStart(2, "0");
-      setTodayWorkedTime(`${hours}:${minutes}:${seconds}`);
+      // ⌛ 퇴근 후, 고정된 근무 시간 계산
+      const inTime = new Date(checkInTime);
+      const outTime = new Date(checkOutTime);
+  
+      if (outTime > inTime) {
+        const diff = Math.floor((outTime - inTime) / 1000);
+        const hours = String(Math.floor(diff / 3600)).padStart(2, "0");
+        const minutes = String(Math.floor((diff % 3600) / 60)).padStart(2, "0");
+        const seconds = String(diff % 60).padStart(2, "0");
+  
+        setTodayWorkedTime(`${hours}:${minutes}:${seconds}`);
+      } else {
+        setTodayWorkedTime("- -"); // ⛔ 시간 역전 방지
+      }
     }
-
+  
     return () => clearInterval(interval);
   }, [checkInTime, checkOutTime, isCheckedOut]);
+  
 
   const progressPercent = (summary.weeklyWorkHours / 52) * 100;
 

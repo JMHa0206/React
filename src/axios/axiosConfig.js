@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const daxios = axios.create();
+const daxios = axios.create({});
 
 // 요청 인터셉터: JWT 토큰 자동 첨부
 daxios.interceptors.request.use(

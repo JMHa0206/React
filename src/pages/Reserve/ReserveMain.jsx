@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import caxios from '../../Utils/caxios';
 
 
-const ReserveMain = () => {
+const ReserveMain = ({ onRefresh, reloadKey}) => {
   const location = useLocation();
 
   const [userInfo,setUserInfo] = useState(null);

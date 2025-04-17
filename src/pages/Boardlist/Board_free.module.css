@@ -1,132 +1,232 @@
-.SBoardContainer{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;  
-    align-items: center;
-    flex-wrap: wrap;      
-  
-  }
 
-  .subcontainer{
-    width:1000px;
-  }
-
-  /* 자유/동아리 게시판 */
-
-*{box-sizing: border-box;}
-
-
-.navi {
-   
-  color: #333;               
-  text-align: left;           
-  font-size: 1.2rem;          
-  font-weight: normal;        
-  border: 1px solid #ccc;    
-  padding: 10px;              
-}
-
-
-.navi div {
-  padding-top:30px;
-  padding-left: 10px;  
- font-weight: bold;
-}
-
-.navibelow{
+/* 전체 게시판 컨테이너 */
+.SBoardContainer {
   display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 90vh;
+  background-color: #f8f9fa;
+  padding: 2rem;
+  box-sizing: border-box;
 }
 
-.navibelowleft{
-  flex:9;
+.subcontainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
 }
 
-.navibelowright{
-  flex:1;
+.subcontainer h2 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #5c6bc0;
+  padding-bottom: 0.5rem;
 }
 
+/* 승인 컨테이너 */
+.approval {
+  width: 100%;
+}
+
+/* 네비게이션 헤더 */
+.navi {
+  background-color: #5c6bc0;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 1rem;
+  border-radius: 8px 8px 0 0;
+  text-align: center;
+}
+
+/* 네비게이션 아래 영역 (검색 및 정렬) */
+.navibelow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f2f6fc;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+}
+
+.navibelowleft {
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.navibelowleft input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.navibelowleft input:focus {
+  border-color: #5c6bc0;
+  box-shadow: 0 0 0 2px rgba(92, 107, 192, 0.2);
+}
+
+.navibelowright select {
+  padding: 0.8rem;
+  min-width: 120px;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 1rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.navibelowright select:focus {
+  border-color: #5c6bc0;
+  box-shadow: 0 0 0 2px rgba(92, 107, 192, 0.2);
+}
+
+/* 게시글 목록 */
+.freelist {
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.postItem {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e6e6e6;
+  transition: background-color 0.3s;
+}
+
+.postItem:last-child {
+  border-bottom: none;
+}
+
+.postItem:hover {
+  background-color: #f8f9fa;
+}
+
+/* 게시글 내용 */
+.write {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #2c3e50;
+  gap: 0.5rem;
+}
+
+.title div {
+  color: #5c6bc0;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.title div:hover {
+  text-decoration: underline;
+  color: #3f51b5;
+}
+
+.content {
+  color: #34495e;
+  line-height: 1.5;
+  margin: 0.5rem 0;
+  max-height: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.writeElse {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin-top: 0.5rem;
+}
+
+.writer, .good, .look {
+  display: flex;
+  align-items: center;
+}
+
+.writeTime {
+  margin-left: auto;
+}
+
+/* 페이지네이션 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.pagination button {
+  min-width: 40px;
+  height: 40px;
+  margin: 0 0.3rem;
+  border: 1px solid #e6e6e6;
+  background-color: white;
+  color: #34495e;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.pagination button:hover {
+  background-color: #ecf0f1;
+}
+
+.pagination button.active {
+  background-color: #5c6bc0;
+  color: white;
+  border-color: #5c6bc0;
+}
+
+/* 작성하기 버튼 컨테이너 */
+.writeButton {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.writeButton button {
+  padding: 0.8rem 1.5rem;
+  background-color: #5c6bc0;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.writeButton button:hover {
+  background-color: #3f51b5;
+}
+
+/* 구분선 */
 hr {
-    border: 0;
-    height: 1px;
-    background-color: #ccc;
-   
-  }
-
-  .freelist {
-    display: flex;
-    width: 100%;  
-    padding: 20px;
-    border:1px solid black;
-    flex-direction: column;
-  }
-  
-  .photo {
-    flex: 1.5;  
-    background-color: #f0f0f0;  
-    margin-right: 20px;  
-    border:1px solid black;
-  }
-  
-  .write {
-    flex: 4.5;  
-    display: flex;
-    flex-direction: column;
-    border:1px solid black;
-  }
-  
-  .title {
-    flex: 1;  
-    padding: 10px;
-    border:1px solid black;
-  }
-  
-  .content {
-    flex: 3;  
-    padding: 10px;
-    border:1px solid black;
-  }
-  
-  .writeElse {
-    flex: 2;  
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border:1px solid black;
-  }
-  
-  .writer,
-  .good,
-  .look,
-  .writeTime {
-    flex: 1;  
-    background-color: #dcdcdc;  
-    padding: 5px;
-    text-align: center;
-    border-radius: 5px;
-    border:1px solid black;
-  }
-  
-  .writer {
-    background-color: #ffcccb;
-  }
-  
-  .good {
-    background-color: #c6e7d0;
-  }
-  
-  .look {
-    background-color: #cce7f7;
-  }
-  
-  .writeTime {
-    background-color: #e7e7e7;
-  }
-
-  .postItem {
-    display: flex;           /* 게시물은 flex로 배치 */
-    flex-direction: row;     /* photo와 write는 가로로 정렬 */
-    width: 100%;             /* 전체 넓이는 100% */
-    padding: 20px;
-    margin-bottom: 20px;     /* 게시물 간 간격 */
-    border: 1px solid #ccc; /* 각 게시물의 구분선 */
+  border: 0;
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 0;
 }

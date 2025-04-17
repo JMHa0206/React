@@ -226,7 +226,7 @@ const AddCategory = ({ closeModal,  onRefresh }) => {
                     <option value="">개인</option>
                     {employees.map((emp) => (
                       <option key={emp.emp_code_id} value={emp.emp_code_id}>
-                        {emp.emp_name} : {emp.job_name}
+                        {emp.emp_name}
                       </option>
                     ))}
                   </select>

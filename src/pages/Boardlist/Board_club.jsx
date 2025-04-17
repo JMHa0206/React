@@ -32,7 +32,7 @@ const Board_club =()=>{
         axios.get(`http://10.5.5.12/board/navigator`, {
             params: {
                 page: currentPage,
-                size: 10,
+                size: 5,
                 parent_board: numericBoardId
             }
         })
@@ -89,7 +89,7 @@ const Board_club =()=>{
     return (
         <div className={bstyle.SBoardContainer}>
             <div className={bstyle.subcontainer}>
-                <h2>📄 게시판</h2>
+                <h2>게시판</h2>
                 <div className={bstyle.approval}>
                     <div className={bstyle.navi}>
                         <div>동아리 게시판</div>
@@ -98,7 +98,7 @@ const Board_club =()=>{
                         <div className={bstyle.navibelowleft}>
                             <input
                                 type="text"
-                                placeholder="🔍게시글 입력"
+                                placeholder="게시글 입력"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
@@ -116,7 +116,7 @@ const Board_club =()=>{
                         {/* 게시글 목록 시작 */}
                         {getFilteredAndSortedList().map((message, index) => (
                             <div key={index} className={bstyle.postItem}>
-                                <div className={bstyle.photo}>사진</div>
+                     
                                 <div className={bstyle.write}>
                                     <div className={bstyle.title}>제목 :
                                         <div
@@ -128,7 +128,7 @@ const Board_club =()=>{
                                     </div>
                                     <div className={bstyle.content} dangerouslySetInnerHTML={{ __html: message.post_content }}></div>
                                     <div className={bstyle.writeElse}>
-                                        <div className={bstyle.writer}>작성자 : {message.post_writer}</div>
+                                        <div className={bstyle.writer}>작성자 : {message.emp_name}</div>
                                         <div className={bstyle.good}>추천수 : {message.post_like}</div>
                                         <div className={bstyle.look}>조회수 : {message.post_view}</div>
                                         <div className={bstyle.writeTime}>{formatDate(message.post_date)}</div>

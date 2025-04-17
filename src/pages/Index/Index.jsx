@@ -18,7 +18,9 @@ const Index = () => {
     const handleLogin = (e) => {
         e.preventDefault();
 
+
         daxios.post('http://10.5.5.6/auth/login', login)
+
             .then((resp) => {
                 const token = resp.data;
                 sessionStorage.setItem("jwtToken", token);
@@ -26,8 +28,7 @@ const Index = () => {
                 const per_function = decodedToken.per_function;
                 const per_secure = decodedToken.per_secure;
 
-                // ✅ 토큰을 localStorage에도 저장
-                localStorage.setItem('jwtToken', token);
+           
 
                 // ✅ 상태관리 저장
                 setAuth(token, login.id, per_function, per_secure);

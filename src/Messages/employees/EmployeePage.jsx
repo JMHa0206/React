@@ -9,7 +9,9 @@ function EmployeePage({openChat}) {
     const [employees,setEmployees] = useState([]);
     const [groupedEmployees, setGroupedEmployees] = useState({});
     const [myInfo,setMyInfo] = useState(null);
- 
+    const [profileImg, setProfileImg] = useState(null);
+    const [profileMap, setProfileMap] = useState({});
+
 
     //사원목록 가져오기
     useEffect(() => {
@@ -24,8 +26,15 @@ function EmployeePage({openChat}) {
             }
           }).then((userIdResp)=>{
              mine = userIdResp.data;
-          
               setMyInfo(mine);
+
+              return axios.get("http://10.5.5.2/Employee/ProfileImg", {
+                params: { empId: mine.emp_code_id }
+              });
+            }).then((imgResp) => {
+                console.log(imgResp.data)
+              setProfileImg(imgResp.data);
+              
 
              return axios.get("http://10.5.5.2/Employee/SelectEmp");
         }).then((resp) => {
@@ -43,9 +52,22 @@ function EmployeePage({openChat}) {
             }, {});
     
             setGroupedEmployees(grouped);
-        });
+
+              return axios.get("http://10.5.5.2/Employee/AllProfileImg");
+        }).then((imgList)=>{
+            console.log(imgList);
+            const map ={};
+            imgList.data.forEach(img =>{
+                map[img.PROFILE_EMP_ID] = img.PROFILE_PATH;
+            })
+            setProfileMap(map)
+        })
        
       }, []);
+
+
+
+      
 
   
 
@@ -58,7 +80,7 @@ function EmployeePage({openChat}) {
                 <div className={style.myprofile}>
                 <div className={style.imgbox}>
                     <div className={style.img}>
-                        {/* <img src=""></img> 프로필 이미지 넣는곳*/}
+                        <img src={`http://10.10.55.69${profileImg}`} style={{width:'100%',height:'100%', borderRadius:'50%',objectFit:'cover'}}></img> 
                     </div>
                 </div>
                 <div className={style.namebox}>
@@ -74,11 +96,11 @@ function EmployeePage({openChat}) {
                         <div key={index} className={style.another}>
                             <div className={style.imgbox}>
                                 <div className={style.anotherimg}>
-                                    {/* <img src=""></img> 프로필 이미지 넣는곳 */}
+                                     <img src={profileMap[emp.emp_code_id] ? `http://10.10.55.69${profileMap[emp.emp_code_id]}` : `http://10.10.55.69/files/upload/profile/Default2.png`} style={{width:'100%',height:'100%', borderRadius:'50%',objectFit:'cover'}}></img> 
                                 </div>
                             </div>
                             <div className={style.namebox} onDoubleClick={()=>openChat(emp.emp_code_id,myInfo?.emp_code_id,emp.emp_name)}>
-                                <div className={style.anothername}>{emp.emp_name}</div> {/* 사원명 출력 */}
+                                <div className={style.anothername} translate="no">{emp.emp_name}</div> {/* 사원명 출력 */}
                             </div>
                         </div>
                     ))}

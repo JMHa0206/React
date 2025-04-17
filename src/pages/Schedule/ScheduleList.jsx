@@ -14,6 +14,7 @@ const ScheduleList = ({ closeModal, onRefresh }) => {
     const [getPublicCalendar, setPublicCalendar] = useState([]);
     const [getComCalendar, setGetComCalendar] = useState([]);
     const [userInfo, setUserInfo ] = useState(null);
+    const [refreshKey, setRefreshKey] = useState(0);
     
     const handleModalOpen = (selectInfo) => {
         setSelectedInfo(selectInfo);
@@ -27,7 +28,13 @@ const ScheduleList = ({ closeModal, onRefresh }) => {
             console.error("실패", error);
         });
         
-    }, [])
+    }, [refreshKey]);
+
+    useEffect(() => {
+        handleMyCal();
+        handlePublicCal();
+        handleComCal();
+      }, [userInfo]);
     
 
     const handleMyCal = () => {
@@ -42,12 +49,14 @@ const ScheduleList = ({ closeModal, onRefresh }) => {
 
     
     const handlePublicCal = () => {
+        if (!userInfo) return;
         caxios.get(`/calendar/sharedList/${userInfo.emp_code_id}`).then((resp)=>{
                 setPublicCalendar(resp.data);
     })};
 
         
     const handleComCal = () => {
+        if (!userInfo) return;
         caxios.get(`/calendar/comCal/${userInfo.emp_code_id}`).then((resp) => {
             setGetComCalendar(resp.data);
     })};
@@ -83,9 +92,7 @@ const ScheduleList = ({ closeModal, onRefresh }) => {
     };
 
     const handleRefreshAll = () => {
-        handleMyCal();
-        handlePublicCal();
-        handleComCal();
+        setRefreshKey(prev => prev + 1);
         if (onRefresh) onRefresh();
       };
 

@@ -4,25 +4,48 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom'; 
+import { useLocation } from 'react-router-dom';
 
-const Board_support =()=>{
+const Board_support = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     // boardId가 state로 전달되지 않으면 기본값을 0으로 설정
     const boardId = location.state?.boardId || 111;
-    
+
     const numericBoardId = parseInt(boardId, 10);  // 숫자형으로 변환
-    
+
+    const [userInfo, setUserInfo] = useState(null);
     const [sortOption, setSortOption] = useState("option1");
     const [searchQuery, setSearchQuery] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [boardList, setBoardList] = useState([]);
 
-    // 📌 게시판 목록 불러오기
+
+
+    useEffect(() => {
+        const token = localStorage.getItem('jwtToken');
+        axios.get("http://10.5.5.12/mypage/info", {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then((resp) => {
+                setUserInfo(resp.data);
+            })
+            .catch((error) => {
+                console.error("실패", error);
+            });
+    }, []);
+
     const getBoardList = () => {
+        console.log("📦 API 호출 시작", {
+            userId: userInfo?.emp_name,
+            boardId: numericBoardId,
+            currentPage
+        });
+
         axios.get(`http://10.5.5.12/board/navigator`, {
             params: {
                 page: currentPage,
@@ -30,22 +53,37 @@ const Board_support =()=>{
                 parent_board: numericBoardId
             }
         })
-        .then(res => {
-            setBoardList(res.data.list);
-            setTotalPages(res.data.totalPages);
-        })
-        .catch(err => {
-            console.error("페이지 데이터 로딩 실패:", err);
-        });
+            .then(res => {
+                console.log("🟡 응답 데이터 전체:", res.data);
+                const data = res.data;
+
+                if (!data.list || !Array.isArray(data.list)) {
+                    console.warn("📛 게시글 목록이 없습니다.");
+                    setBoardList([]);
+                    setTotalPages(1);
+                    return;
+                }
+
+                console.log("📦 게시글 데이터:", data);
+                setBoardList(data.list);
+
+                const safePages = Math.max(Math.ceil(data.totalPages), 1);
+                setTotalPages(safePages);
+            })
+            .catch(err => {
+                console.error("❌ 게시글 목록 API 호출 실패:", err);
+                setBoardList([]);
+                setTotalPages(1);
+            });
     };
 
     useEffect(() => {
-        if (!isNaN(numericBoardId)) {
-          getBoardList();
+        if (!isNaN(numericBoardId) && userInfo) {
+            console.log("✅ 게시판 목록 불러오기 시작:", userInfo.emp_code_id);
+            getBoardList();
         }
-      }, [currentPage, numericBoardId]);
+    }, [currentPage, numericBoardId, userInfo]);
 
-    // 📌 게시글 정렬 및 검색 필터링
     const getFilteredAndSortedList = () => {
         const query = searchQuery.toLowerCase();
         const sorted = [...boardList].sort((a, b) => {
@@ -57,12 +95,17 @@ const Board_support =()=>{
             return 0;
         });
 
-        return sorted.filter(item =>
-            item.post_title.toLowerCase().includes(query)
+        const filtered = sorted.filter(item =>
+            item.post_title?.toLowerCase().includes(query)
         );
+
+        // ✅ 여기에 추가!
+        console.log("📦 필터링 후 게시글 수:", filtered.length);
+        console.log("📝 현재 검색어:", query);
+
+        return filtered;
     };
 
-    // 📌 조회수 증가 후 상세 페이지로 이동
     const increaseViewCount = (post_id) => {
         axios.get(`http://10.5.5.12/board/increaseViewCount/${post_id}`)
             .then(() => {
@@ -73,7 +116,6 @@ const Board_support =()=>{
             });
     };
 
-    // 📌 날짜 포맷
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleString('ko-KR');
@@ -82,19 +124,19 @@ const Board_support =()=>{
     return (
         <div className={bstyle.SBoardContainer}>
             <div className={bstyle.subcontainer}>
-                <h2>📄 게시판</h2>
+                <h2>게시판</h2>
                 <div className={bstyle.approval}>
                     <table className={bstyle.container}>
                         <thead>
                             <tr className={bstyle.navi}>
-                                <th colSpan="6">업체교육/업무지원보고서</th>
+                                <th colSpan="6">업체교육/업무지원 보고서</th>
                             </tr>
                             <tr>
                                 <td colSpan="2">
                                     <div className={bstyle.boardgasyfound}>
                                         <input
                                             type="text"
-                                            placeholder="🔍게시글 입력"
+                                            placeholder="게시글 입력"
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                         />
@@ -116,35 +158,28 @@ const Board_support =()=>{
                                 <th>작성자</th>
                                 <th>작성일</th>
                                 <th>조회수</th>
-     
                             </tr>
                         </thead>
                         <tbody>
                             {getFilteredAndSortedList().map((message, index) => (
-                                <tr key={index}>
+                                <tr
+                                    key={index}
+                                    className={bstyle.rowHover}
+                                    onClick={() => increaseViewCount(message.post_id)}
+                                >
                                     <td>{message.post_id}</td>
                                     <td>
-                                        <div
-                                            onClick={() => increaseViewCount(message.post_id)}
-                                            style={{
-                                                cursor: "pointer",
-                                                color: "blue",
-                                                textDecoration: "underline"
-                                            }}
-                                        >
-                                            {message.post_title}
-                                        </div>
+                                        {message.post_title}
                                     </td>
-                                    <td>{message.post_writer}</td>
+                                    <td>{message.emp_name}</td>
                                     <td>{formatDate(message.post_date)}</td>
                                     <td>{message.post_view}</td>
-                             
                                 </tr>
                             ))}
+
                         </tbody>
                     </table>
 
-                    {/* 페이지네이션 */}
                     <div className={bstyle.pagination}>
                         {[...Array(totalPages)].map((_, idx) => (
                             <button
@@ -157,11 +192,10 @@ const Board_support =()=>{
                         ))}
                     </div>
 
-                    {/* 작성하기 버튼 - boardId 전달 */}
                     <div className={bstyle.writeButton}>
                         <Link
                             to="/mainpage/maincontent/write_button"
-                            state={{ boardId: numericBoardId }} // 📌 여기서 boardId 넘김
+                            state={{ boardId: numericBoardId }}
                         >
                             <button>작성하기</button>
                         </Link>

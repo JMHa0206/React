@@ -9,9 +9,12 @@ import { convertToRaw } from 'draft-js';
 import { useLocation } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
+
 const Board_write_button = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const boardId = location.state?.boardId || 0;
+    const numericBoardId = parseInt(boardId, 10);
 
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
     const [message, setMessage] = useState({
@@ -24,7 +27,7 @@ const Board_write_button = () => {
     const [defaultBoardData, setDefaultBoardData] = useState({
         post_writer: 0,  // 등록 시, 이 필드에 emp_name을 넣을 예정입니다.
         emp_name: '',     // 로그인한 사용자 이름
-        parent_board: 0,
+        parent_board: numericBoardId,
         post_view: 0,
         post_like: 0,
         post_per: 'a',
@@ -40,6 +43,7 @@ const Board_write_button = () => {
     // 로그인 토큰을 디코딩하고, 사용자 이름(emp_name)을 가져와 defaultBoardData 업데이트
     useEffect(() => {
         const token = localStorage.getItem('jwtToken');
+    
         let userId = 'anonymous';
         if (token) {
             try {
@@ -143,19 +147,7 @@ const Board_write_button = () => {
                             <button onClick={handleBoardwrite}>등록</button>
                             <button onClick={() => navigate(-1)}>취소</button>
                         </div>
-                        <div className={bstyle.gasyselect}>
-                            <div className={bstyle.gasywrite}>게시판</div>
-                            <div className={bstyle.selects}>
-                                <select>
-                                    <option value="option1">자유 게시판</option>
-                                    <option value="option2">동아리 게시판</option>
-                                    <option value="option3">부서 게시판</option>
-                                    <option value="option4">거래처별 변경사항</option>
-                                    <option value="option5">업체교육/업무지원 보고서</option>
-                                    <option value="option6">신규 아이디어 상품건의</option>
-                                </select>
-                            </div>
-                        </div>
+                        
                         <div className={bstyle.titlewrtie}>
                             <div className={bstyle.title4}>작성자</div>
                             <div className={bstyle.text4}>

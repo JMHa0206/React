@@ -18,9 +18,12 @@ const ApprovalWrite = () => {
     const fetchInitialData = async () => {
       try {
         const [formRes, categoryRes, empRes] = await Promise.all([
-          daxios.get("http://10.5.5.6/api/forms"),
-          daxios.get("http://10.5.5.6/api/category"),
-          daxios.get("http://10.5.5.6/api/employee/code"),
+
+          daxios.get("http://221.150.27.169:8888/api/forms"),
+          daxios.get("http://221.150.27.169:8888/api/category"),
+          daxios.get("http://221.150.27.169:8888/api/employee/code"),
+
+
         ]);
         setForms(formRes.data);
         setCategories(categoryRes.data);

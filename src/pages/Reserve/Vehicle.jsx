@@ -24,7 +24,7 @@ const Vehicle = ({ userInfo })=> {
             (resource) => resource.resc_id == targetResc
           );
         
-          if (selectedResource?.resc_status !== 'active') {
+          if (selectedResource?.resc_status !== '예약가능') {
             alert("해당 자원은 현재 사용 불가 상태입니다.");
             return;
           }
@@ -36,7 +36,12 @@ const Vehicle = ({ userInfo })=> {
     useEffect(() => {
         
         caxios.get(`/reserve/resources`).then((resp)=>{
-            setResourceList(resp.data);
+          const resources = resp.data;
+          setResourceList(resources);
+          const firstEquipment = resources.find(r => r.resc_type_id === 120);
+          if (firstEquipment) {
+              setTargetResc(firstEquipment.resc_id); // 자동으로 첫 번째 비품 자원 선택
+          }
         }).catch((error) => {
             console.error("자원 정보 불러오기 실패", error);
         })
@@ -66,7 +71,7 @@ const Vehicle = ({ userInfo })=> {
                 }
               };
             });
-            setTargetResc(1005);
+            
             setReservations(formatResev);
           }).catch((error) => {
             console.error("예약목록 불러오기 실패", error);
@@ -81,7 +86,7 @@ const Vehicle = ({ userInfo })=> {
             const selectedResource = resouceList.find(
                 (resource) => resource.resc_id == targetResc
               );
-              if (selectedResource?.resc_status !== 'active') {
+              if (selectedResource?.resc_status !== '예약가능') {
                 alert("해당 자원은 현재 사용 불가 상태입니다.");
                 return; 
               }
@@ -143,10 +148,11 @@ const Vehicle = ({ userInfo })=> {
             key={targetResc} 
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             allDaySlot={false} 
-            initialView='timeGridWeek'
+            initialView='timeGridDay'
             slotMinTime="08:00:00"
-            slotMaxTime="24:00:00"
+            slotMaxTime="21:00:00"
             slotDuration="00:30:00"
+            snapDuration="00:30:00"
             locales={[koLocale]}
             locale="ko"
             titleFormat={{

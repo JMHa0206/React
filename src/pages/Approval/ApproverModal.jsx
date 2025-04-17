@@ -1,4 +1,4 @@
-// ✅ ApproverModal.jsx (부서 트리 + 직급 표시 + 본문 연동용 치환 로직 포함)
+// ✅ ApproverModal.jsx (최종 수정본)
 
 import React, { useEffect, useState } from "react";
 import daxios from "../../axios/axiosConfig";
@@ -15,7 +15,6 @@ const ApproverModal = ({ isOpen, onClose, onSelect }) => {
     finalLevel: null,
   });
 
-  // 🧠 트리 구조 구성
   const buildTree = (list, parentId = null) => {
     return list
       .filter((dept) => dept.upper_dept === parentId)
@@ -55,8 +54,7 @@ const ApproverModal = ({ isOpen, onClose, onSelect }) => {
   useEffect(() => {
     if (!selectedDeptId) return;
     daxios
-      .get("http://221.150.27.169:8888/emp/selectAllEmps")
-
+      .get("http://10.10.55.22/emp/selectAllEmps")
       .then((res) => {
         const filtered = res.data.filter(
           (emp) => emp.emp_dept_id === selectedDeptId
@@ -69,10 +67,7 @@ const ApproverModal = ({ isOpen, onClose, onSelect }) => {
   const handleSelect = (e, levelKey) => {
     const empCodeId = Number(e.target.value);
     const selected = employees.find((emp) => emp.emp_code_id === empCodeId);
-    setLevels((prev) => ({
-      ...prev,
-      [levelKey]: selected || null,
-    }));
+    setLevels((prev) => ({ ...prev, [levelKey]: selected || null }));
   };
 
   const handleConfirm = () => {
@@ -88,6 +83,7 @@ const ApproverModal = ({ isOpen, onClose, onSelect }) => {
           : null,
       ])
     );
+    console.log("📤 모달에서 전달할 결재자:", enrichedLevels);
     onSelect(enrichedLevels);
     onClose();
   };
@@ -119,13 +115,11 @@ const ApproverModal = ({ isOpen, onClose, onSelect }) => {
           gap: "2rem",
         }}
       >
-        {/* 왼쪽: 부서 트리 */}
         <div style={{ width: "40%" }}>
           <h3>📁 부서 선택</h3>
           <ul>{renderTree(buildTree(departments))}</ul>
         </div>
 
-        {/* 오른쪽: 결재자 지정 */}
         <div style={{ width: "60%" }}>
           <h3>👤 결재자 지정</h3>
           {Object.keys(levels).map((key) => (

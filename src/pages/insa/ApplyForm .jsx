@@ -35,7 +35,7 @@ const ApplyForm = () => {
     }
 
     try {
-      const res = await daxios.post('http://10.10.55.69/apply', formData, {
+      const res = await daxios.post('http://10.10.55.66/insa/apply', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
