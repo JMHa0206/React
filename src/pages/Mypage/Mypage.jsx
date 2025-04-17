@@ -3,22 +3,24 @@ import style from './Mypage.module.css';
 import { useEffect, useState } from "react";
 import axios from "../../axios/axiosConfig";
 import authAxios from '../../axios/axiosConfig';
+import useProfileStore from "../../store/useProfileStore";
 
 const Mypage = () => {
     const [edit, setEdit] = useState(false);
     const [formData, setFormData] = useState({});   
     const [userInfo, setUserInfo] = useState(null);
     const { userId, isInitialized } = useAuthStore();
-    const [profileImage, setProfileImage] = useState("/files/upload/profile/Default2.png"); // 기본 이미지로 초기화w
+    const [profileImage, setProfileImage] = useState("/Default2.png"); // 기본 이미지 경로
     const [profileFile, setProfileFile] = useState(null);
     const [imageLoaded, setImageLoaded] = useState(false);
+    const {setProfileImagePath } = useProfileStore();
 
     useEffect(() => {
         if (!isInitialized || !userId) return;
+
         authAxios.get("http://10.5.5.6/mypage/info")
             .then(res => {
                 setUserInfo(res.data);
-                console.log(res);
                 setFormData({
                     emp_code_id: res.data.emp_code_id,
                     emp_email: res.data.emp_email,
@@ -27,17 +29,16 @@ const Mypage = () => {
                     address1: res.data.address1,
                     address2: res.data.address2,
                 });
-                
-                const path = res.data.profsileDTO?.profile_path;
-                console.log(path)
-                if (path) {
-                    setProfileImage(`http://10.5.5.6${path}`);
 
+                const path = res.data.profileDTO?.profile_path;
+                if (path) {
+                    const fullPath = `http://10.5.5.6${path}`;
+                    setProfileImage(fullPath);
+                    setProfileImagePath(fullPath); 
                 }
             })
             .catch(err => {
                 console.error("유저 정보 로딩 실패", err);
-                // 에러가 발생해도 기본 이미지는 유지
             });
     }, [isInitialized, userId]);
 
@@ -58,14 +59,14 @@ const Mypage = () => {
             }
         }).open();
     };
-    
+
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        if(file) {
-            setProfileImage(URL.createObjectURL(file));
+        if (file) {
+            setProfileImage(URL.createObjectURL(file)); // 미리보기
             setProfileFile(file);
         }
-    }
+    };
 
     const handleSave = () => {
         const formDataToSend = new FormData();
@@ -85,7 +86,17 @@ const Mypage = () => {
             }
         })
         .then(() => {
-            setUserInfo(prev => ({ ...prev, ...formData }));
+            // 저장 후 최신 데이터 재요청
+            return authAxios.get("http://10.5.5.6/mypage/info");
+        })
+        .then(res => {
+            const path = res.data.profileDTO?.profile_path;
+            if (path) {
+                const fullPath = `http://10.5.5.6${path}`;
+                setProfileImage(fullPath);            // ✅ 로컬 이미지 업데이트
+                setProfileImagePath(fullPath);        // 🔥 핵심 수정: 전역 상태도 함께 업데이트 (Header 반영됨!)
+            }
+            setUserInfo(res.data);
             setEdit(false);
             alert("수정이 완료되었습니다.");
         })
@@ -94,7 +105,7 @@ const Mypage = () => {
             alert("수정 중 오류가 발생했습니다.");
         });
     };
-    
+
     const handleImageError = () => {
         setProfileImage("/Default2.png");
     };
@@ -114,16 +125,15 @@ const Mypage = () => {
         <div className={style.container}>
             <h2 className={style.pageTitle}>마이페이지</h2>
             <div className={style.profileCard}>
-                {/* 프로필 섹션 - 고정된 높이와 너비로 설정 */}
                 <div className={style.profileSection}>
                     <div className={style.imageContainer}>
                         <img 
-                            src={`http://10.10.55.69${profileImage}`} 
+                            src={profileImage}
                             alt="프로필" 
                             className={style.profileImage}
                             onError={handleImageError}
                             onLoad={() => setImageLoaded(true)}
-                            style={{width:'100%',height:'100%'}}
+                            style={{ width: '100%', height: '100%' }}
                         />
                     </div>
                     

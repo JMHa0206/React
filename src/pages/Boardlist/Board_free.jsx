@@ -72,7 +72,7 @@ const Board_club =()=>{
     const increaseViewCount = (post_id) => {
         axios.get(`http://10.5.5.12/board/increaseViewCount/${post_id}`)
             .then(() => {
-                navigate(`/mainpage/maincontent/titlelink/${post_id}`);
+                navigate(`/mainpage/maincontent/board/titlelink/${post_id}`);
             })
             .catch(error => {
                 console.error('조회수 증가 실패:', error);
@@ -154,7 +154,7 @@ const Board_club =()=>{
                     {/* 게시글 작성 버튼 */}
                     <div className={bstyle.writeButton}>
                         <Link
-                                                   to="/mainpage/maincontent/write_button"
+                                                   to="/mainpage/maincontent/board/write_button"
                                                    state={{ boardId: numericBoardId }} // 📌 여기서 boardId 넘김
                                                >
                             <button>작성하기</button>

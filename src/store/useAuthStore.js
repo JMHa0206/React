@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import useProfileStore from "./useProfileStore";
+
 
 const useAuthStore = create((set) => ({
     token: null,
@@ -27,6 +29,7 @@ const useAuthStore = create((set) => ({
         sessionStorage.removeItem("per_function");
         sessionStorage.removeItem("per_secure");
 
+        useProfileStore.getState().setProfileImagePath("/Default2.png"); // ✅ 상태 초기화
     },
 
     initialize: () => {

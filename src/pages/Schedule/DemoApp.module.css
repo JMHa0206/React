@@ -54,9 +54,8 @@
 }
 
 input[type="text"],
-input[type="date"],
-select
-/* textarea  */
+input[type="date"]
+
 {
   width: 100%;
   margin-top: 6px;
@@ -65,7 +64,7 @@ select
   font-size: 14px;
   border: 1px solid #ccd8e3;
   border-radius: 6px;
-  background-color: #f5faff;  /* 매우 연한 파랑 */
+  background-color: #f5faff;  
   box-sizing: border-box;
   color: #1a3c6c;
 }
@@ -234,7 +233,6 @@ select
 
 input[type="text"],
 input[type="date"],
-select,
 .schetextarea {
   width: 100%;
   margin-top: 6px;
@@ -266,4 +264,20 @@ select,
   font-size: 14px;
   color: #1a3c6c;
   font-weight: 500;
+}
+
+
+.dropdownScroll {
+  max-height: 150px; 
+  overflow-y: auto;
+  width: 100%;
+  margin-top: 6px;
+  margin-bottom: 14px;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccd8e3;
+  border-radius: 6px;
+  background-color: #f5faff;  
+  box-sizing: border-box;
+  color: #1a3c6c;
 }

@@ -45,15 +45,16 @@ const Board_department = () => {
         console.log("📦 API 호출 시작", {
             userId: userInfo?.emp_name,
             boardId: numericBoardId,
-            currentPage
+            currentPage,
+            userInfo
         });
 
         axios.post(`http://10.5.5.12/board/navigator`, {
-            params: {
+       
                 page: currentPage,
                 size: 10,
                 parent_board: numericBoardId
-            }
+            
         })
             .then(res => {
                 console.log("🟡 응답 데이터 전체:", res.data);
@@ -111,7 +112,7 @@ const Board_department = () => {
     const increaseViewCount = (post_id) => {
         axios.get(`http://10.5.5.12/board/increaseViewCount/${post_id}`)
             .then(() => {
-                navigate(`/mainpage/maincontent/titlelink/${post_id}`);
+                navigate(`/mainpage/maincontent/board/titlelink/${post_id}`);
             })
             .catch(error => {
                 console.error('조회수 증가 실패:', error);
@@ -195,7 +196,7 @@ const Board_department = () => {
 
                     <div className={bstyle.writeButton}>
                         <Link
-                            to="/mainpage/maincontent/write_button"
+                            to="/mainpage/maincontent/board/write_button"
                             state={{ boardId: numericBoardId }}
                         >
                             <button>작성하기</button>

@@ -35,3 +35,63 @@
     display: flex;
     justify-content: right;
   }
+
+  .dropDown {
+    max-height: 150px; 
+    overflow-y: auto;
+    width: 100%;
+    margin-top: 6px;
+    margin-bottom: 14px;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccd8e3;
+    border-radius: 6px;
+    background-color: #f5faff;  
+    box-sizing: border-box;
+    color: #1a3c6c;
+  }
+
+  .saveBtn{
+    background-color: #a8cfff;
+    color: #1a3c6c;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: background-color 0.2s ease;
+  }
+
+  .inputText{
+    width: 100%;
+    margin-top: 6px;
+    margin-bottom: 14px;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccd8e3;
+    border-radius: 6px;
+    background-color: #f5faff;
+    box-sizing: border-box;
+    color: #1a3c6c;
+  }
+
+  .timeRow {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  
+  .timeItem {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .timeItem label {
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: #1a3c6c;
+    font-weight: 500;
+  }

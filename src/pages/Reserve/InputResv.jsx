@@ -50,6 +50,14 @@ const InputResev = ({ closeModal, selectedInfo, resourceId, userInfo, onSuccess 
 
 
   const AddReservation = () => {
+    const start = new Date(`2000-01-01T${resvInput.resv_stime}`);
+    const end = new Date(`2000-01-01T${resvInput.resv_etime}`);
+
+    if (start >= end) {
+      alert("시작 시간은 종료 시간보다 이전이어야 합니다.");
+      return;
+    }
+
     const reservation = {
       resv_id: 0,
       resource_id: Number(resourceId),
@@ -90,38 +98,43 @@ const InputResev = ({ closeModal, selectedInfo, resourceId, userInfo, onSuccess 
               날짜
               <input className="resv_date" type="date" value={resvInput.resv_date} onChange={handleInput} />
             </div>
-            <div>
-              예약 시간<br></br>
-              시작
-              <select name="resv_stime" value={resvInput.resv_stime} onChange={handleInput}>
-                {Array.from({ length: 32 }, (_,i) => i +16).map((index) => {
-                  const h = String(Math.floor(index / 2)).padStart(2, '0');
-                  const m = index % 2 === 0 ? '00' : '30';
-                  const time = `${h}:${m}`;
-                  return <option key={time} value={time}>{time}</option>;
-                })}
-              </select>
-              <br></br>
-              종료
-              <select name="resv_etime" value={resvInput.resv_etime} onChange={handleInput}>
-                {Array.from({ length: 32 }, (_,i) => i +16).map((index) => {
-                  const h = String(Math.floor(index / 2)).padStart(2, '0');
-                  const m = index % 2 === 0 ? '00' : '30';
-                  const time = `${h}:${m}`;
-                  return <option key={time} value={time}>{time}</option>;
-                })}
-              </select>
+            예약 시간
+            <div className={resvStyle.timeRow}>
+              
+            <div className={resvStyle.timeItem}>
+                <label>시작</label>
+                <select name="resv_stime" value={resvInput.resv_stime} onChange={handleInput} className={resvStyle.dropDown}>
+                  {Array.from({ length: 32 }, (_,i) => i +16).map((index) => {
+                    const h = String(Math.floor(index / 2)).padStart(2, '0');
+                    const m = index % 2 === 0 ? '00' : '30';
+                    const time = `${h}:${m}`;
+                    return <option key={time} value={time}>{time}</option>;
+                  })}
+                </select>
+                </div>
+                <div className={resvStyle.timeItem}>
+                <label>종료</label>
+                <select name="resv_etime" value={resvInput.resv_etime} onChange={handleInput} className={resvStyle.dropDown}>
+                  {Array.from({ length: 32 }, (_,i) => i +16).map((index) => {
+                    const h = String(Math.floor(index / 2)).padStart(2, '0');
+                    const m = index % 2 === 0 ? '00' : '30';
+                    const time = `${h}:${m}`;
+                    return <option key={time} value={time}>{time}</option>;
+                  })}
+                </select>
             </div>
+          </div>
             <div>
-              사용 목적
-              <textarea
+            <label>사용목적</label>
+              <textarea 
                 name="resv_title"
+                className={resvStyle.inputText}
                 value={resvInput.resv_title}
                 onChange={handleInput}
               />
             </div>
             <div className={resvStyle['modal-buttons']}>
-              <button onClick={AddReservation}>저장</button>
+              <button onClick={AddReservation} className={resvStyle.saveBtn}>저장</button>
             </div>
           </div>
         </div>

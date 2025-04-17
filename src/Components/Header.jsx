@@ -5,16 +5,18 @@ import { Link, Route, useNavigate } from 'react-router-dom';
 import useScheduleStore from '../store/useScheduleStore';
 import axios from 'axios';
 import MessengerPopupContainer from "../Messages/MessengerPopupContainer";
+import useProfileStore from '../store/useProfileStore';
 
 const Header = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const userMenuRef = useRef(null);
-  const {userId} = useAuthStore.getState();
+  // const {userId} = useAuthStore.getState();
   const { setEvents } = useScheduleStore();
-  const [profileImg, setProfileImg] = useState(null);
+  // const [profileImg, setProfileImg] = useState(null);
   const [chatWindow, setChatWindow] = useState(null);
   const [isPopup, setIsPopup] = useState(false);
-
+  const profileImagePath = useProfileStore(state => state.profileImagePath);
+  const setProfileImagePath = useProfileStore(state => state.setProfileImagePath); 
 
   const logout = useAuthStore((state) => state.logout);
   const navi = useNavigate();
@@ -34,17 +36,19 @@ const Header = () => {
 
          return axios.get(`http://10.5.5.6/Employee/ProfileImg`,{
           params: { empId: id }
+         });
           }).then((imgResp)=>{
-            
-            setProfileImg(imgResp.data)
+            const fullPath = `http://10.5.5.6${imgResp.data}?t=${Date.now()}`;
+            // setProfileImg(fullPath)
+            setProfileImagePath(fullPath);  
           })
-
-     })
     
   },[])
 
 
   // Close dropdown when clicking outside
+
+  console.log("🔥 Header에서 보는 프로필 이미지 경로:", profileImagePath);
   useEffect(() => {
 
 
@@ -96,7 +100,7 @@ const Header = () => {
         <button><i className="fa-regular fa-comment" onClick={openMessenger}></i></button>
         <div className="user-menu-container" ref={userMenuRef}>
           <button className="user-icon-button" onClick={toggleUserMenu}>
-            <img src={`http://10.5.5.6${profileImg}`} style={{width:'22px',height:'22px', borderRadius:'50%',objectFit:'cover'}}></img>
+            <img src={profileImagePath || "/Default2.png"}  style={{width:'22px',height:'22px', borderRadius:'50%',objectFit:'cover'}} alt="프로필" />
           </button>
           {showUserMenu && (
             <div className="user-dropdown">

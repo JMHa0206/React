@@ -137,6 +137,14 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
 
   const handleDateSelect = (selectInfo) => {
     setSelectedInfo(selectInfo);
+    const selectedDate = selectInfo.startStr.split('T')[0];
+
+    setEventInput((prev) => ({
+      ...prev,
+      start_date: selectedDate,
+      end_date: selectedDate
+    }));
+
     setIsModalOpen(true);
     
   };
@@ -149,14 +157,37 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
     const calendarApi = selectedInfo.view.calendar;
     calendarApi.unselect();
 
+    const startDate = new Date(eventInput.start_date);
+    const endDate = new Date(eventInput.end_date || eventInput.start_date);
+    const startTime = eventInput.startTime || "09:00";
+    const endTime = eventInput.endTime || "18:00";
+
+    if (startDate > endDate) {
+      alert("시작일은 종료일보다 앞서야 합니다.");
+      return;
+    }
+
+    const isSameDay = startDate.toDateString() === endDate.toDateString();
+
+    if (isSameDay) {
+      const startDateTime = new Date(`2000-01-01T${startTime}`);
+      const endDateTime = new Date(`2000-01-01T${endTime}`);
+  
+      if (startDateTime >= endDateTime) {
+        alert("시작 시간은 종료 시간보다 이전이어야 합니다.");
+        return;
+      }
+    }
+
     if (!eventInput.c_id) {
       alert("캘린더를 선택해주세요.");
       return;
     }
 
-    const startTime = eventInput.startTime || "09:00";
-    const endTime = eventInput.endTime || "18:00";
-    const endDate = eventInput.end_date || eventInput.start_date;
+    if(!eventInput.title){
+      alert("일정명을 입력해주세요.");
+      return;
+    }
 
     const newEvent = {
       id: Date.now().toString(),
@@ -201,7 +232,7 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
 
     setIsModalOpen(false);
     setEventInput({
-      id: '', title: '', start_date: '', end_date: '', startTime: '', endTime: '', content: '', c_id: 1
+      id: '', title: '', start_date: '', end_date: '', startTime: '09:00', endTime: '18:00', content: '', c_id: 1
     });
 
     
@@ -325,6 +356,10 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView='dayGridMonth'
+        slotMinTime="08:00:00"
+        slotMaxTime="21:00:00"
+        slotDuration="00:30:00"
+        snapDuration="00:30:00"
         locales={[koLocale]}
         locale="ko"
         customButtons={{
@@ -340,7 +375,7 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
         }}
         editable={true}
         selectable={true}
-        selectMirror={true}
+        selectMirror={false}
         dayMaxEvents={true}
         weekends={showWeekends}
         select={handleDateSelect}
@@ -360,7 +395,7 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
           <div className={calenderStyle.timeRow}>
             <div className={calenderStyle.timeItem}>
               <label>일정 종류</label>
-              <select name="c_id" value={eventInput.c_id} onChange={handleInput}>
+              <select name="c_id" value={eventInput.c_id} onChange={handleInput} className={calenderStyle.dropdownScroll}>
                 <option value="">캘린더 선택</option>
                 {calList
                   .filter((calendar) => {
@@ -409,24 +444,26 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
           <div className={calenderStyle.timeRow}>
             <div className={calenderStyle.timeItem}>
               <label>시작시간</label>
-              <select name="startTime" value={eventInput.startTime} onChange={handleInput}>
-                {Array.from({ length: 48 }).map((_, index) => {
+              <select name="startTime" value={eventInput.startTime} onChange={handleInput} className={calenderStyle.dropdownScroll}>
+                <option value="">09:00</option>
+                {Array.from({ length: 32 }, (_,i) => i +16).map((index) => {
                   const h = String(Math.floor(index / 2)).padStart(2, '0');
                   const m = index % 2 === 0 ? '00' : '30';
                   const time = `${h}:${m}`;
                   return <option key={time} value={time}>{time}</option>;
-              })}
+                })}
               </select>
             </div>
             <div className={calenderStyle.timeItem}>
               <label>종료시간</label>
-              <select name="endTime" value={eventInput.endTime} onChange={handleInput}>
-              {Array.from({ length: 48 }).map((_, index) => {
-                 const h = String(Math.floor(index / 2)).padStart(2, '0');
-                 const m = index % 2 === 0 ? '00' : '30';
-                 const time = `${h}:${m}`;
-                 return <option key={time} value={time}>{time}</option>;
-             })}
+              <select name="endTime" value={eventInput.endTime} onChange={handleInput} className={calenderStyle.dropdownScroll}>
+              <option value="">18:00</option>
+              {Array.from({ length: 32 }, (_,i) => i +16).map((index) => {
+                  const h = String(Math.floor(index / 2)).padStart(2, '0');
+                  const m = index % 2 === 0 ? '00' : '30';
+                  const time = `${h}:${m}`;
+                  return <option key={time} value={time}>{time}</option>;
+                })}
               </select>
             </div>
           </div>
@@ -483,7 +520,7 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
         <div className={calenderStyle.timeRow}>
           <div className={calenderStyle.timeItem}>
             <label>시작시간</label>
-            <select name="startTime" value={eventInput.startTime} onChange={handleInput}>
+            <select name="startTime" value={eventInput.startTime} onChange={handleInput} className={calenderStyle.dropdownScroll}>
               {Array.from({ length: 48 }).map((_, i) => {
                 const h = String(Math.floor(i / 2)).padStart(2, '0');
                 const m = i % 2 === 0 ? '00' : '30';
@@ -493,7 +530,7 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
           </div>
           <div className={calenderStyle.timeItem}>
             <label>종료시간</label>
-            <select name="endTime" value={eventInput.endTime} onChange={handleInput}>
+            <select name="endTime" value={eventInput.endTime} onChange={handleInput} className={calenderStyle.dropdownScroll}>
               {Array.from({ length: 48 }).map((_, i) => {
                 const h = String(Math.floor(i / 2)).padStart(2, '0');
                 const m = i % 2 === 0 ? '00' : '30';
@@ -519,10 +556,10 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
       </>
     ) : (
       <>
-        <div><strong>제목:</strong> {selectedEvent.title}</div>
-        <div><strong>기간:</strong> {selectedEvent.start_date} ~ {selectedEvent.end_date}</div>
-        <div><strong>시간:</strong> {selectedEvent.startTime} ~ {selectedEvent.endTime}</div>
-        <div><strong>내용:</strong> {selectedEvent.content}</div>
+        <div><strong>일정명:</strong> {selectedEvent.title}</div>
+        <div><strong>기간:</strong> {selectedEvent.start_date.split('T')[0]} ~ {selectedEvent.end_date.split('T')[0]}</div>
+        <div><strong>시간:</strong> {selectedEvent.startTime.slice(0,5)} ~ {selectedEvent.endTime.slice(0,5)}</div>
+        <div><strong>일정 내용:</strong> {selectedEvent.content}</div>
       </>
     )}
 
@@ -552,7 +589,7 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
 
 
 const renderEventContent = (eventInfo) => {
-  const bgColor = eventInfo.event.extendedProps.color || 'dodgeblue';
+  const bgColor = eventInfo.event.extendedProps?.color || 'dodgeblue';
  return (
     <div style={{backgroundColor:bgColor, borderRadius:'0px'}}>
       <b>{eventInfo.event.title}</b>
