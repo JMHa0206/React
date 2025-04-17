@@ -10,7 +10,7 @@ function ChattingRoom({ openChat }) {
     const [subscribedGroups, setSubscribedGroups] = useState([]);
     
     const ChatRooms = (myId) => {
-        axios.get("http://10.5.5.2/Employee/selectRoom", {
+        axios.get("http://10.5.5.6/Employee/selectRoom", {
             params: {
                 myId: myId
             }
@@ -24,7 +24,7 @@ function ChattingRoom({ openChat }) {
 
             Promise.all(
                 sortedRooms.map((room) =>
-                    axios.get("http://10.5.5.2/Employee/ProfileImg", {
+                    axios.get("http://10.5.5.6/Employee/ProfileImg", {
                         params: { empId: room.EMP_CODE_ID }
                     }).then((imgResp) => {
                         room.profileImg = imgResp.data;
@@ -40,7 +40,7 @@ function ChattingRoom({ openChat }) {
 
     useEffect(() => {
         const userId = sessionStorage.getItem("userId");
-        axios.get("http://10.5.5.2/Employee/selectMyId", {
+        axios.get("http://10.5.5.6/Employee/selectMyId", {
             params: {
                 userId: userId
             }
@@ -95,7 +95,7 @@ function ChattingRoom({ openChat }) {
                     <div className={style.imgbox}>
                         <div className={style.anotherimg}>
                             <img
-                                src={`http://10.10.55.69${room.profileImg}`}
+                                src={`http://10.5.5.6${room.profileImg}`}
                                 style={{
                                     width: '100%',
                                     height: '100%',

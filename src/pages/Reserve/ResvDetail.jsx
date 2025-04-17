@@ -6,9 +6,24 @@ import { useEffect, useState } from 'react';
 
 
 const ResvDetail = ({selectedResv, closeDetail, userInfo, onDeleteSuccess }) => {
-
+    
     const { removeEvent } = useScheduleStore();
     const [ empName, setEmpName ] = useState('');
+    console.log("selected정보 : " , selectedResv)
+    useEffect(() => {
+      caxios.get(`/reserve/getEmpName/${selectedResv.extendedProps.emp_id}`)
+      .then(resp =>{
+        setEmpName(resp.data);
+      })
+
+      // caxios.get(`/reserve/getDetail/${}`)
+    }, [selectedResv])
+
+    if (!selectedResv) return null;
+    const startDateStr = selectedResv?.start ? new Date(selectedResv.start).toISOString().substring(0, 10) : '';
+    const startTimeStr = selectedResv?.start ? new Date(selectedResv.start).toISOString().substring(11, 16) : '';
+    const endTimeStr = selectedResv?.end ? new Date(selectedResv.end).toISOString().substring(11, 16) : '';
+
     const handleDelete = () => {
         console.log(selectedResv.id);
         removeEvent(selectedResv.id);
@@ -25,12 +40,7 @@ const ResvDetail = ({selectedResv, closeDetail, userInfo, onDeleteSuccess }) => 
         closeDetail();
     };
 
-    useEffect(() => {
-      caxios.get(`/reserve/getEmpName/${selectedResv.extendedProps.emp_id}`)
-      .then(resp =>{
-        setEmpName(resp.data);
-      })
-    })
+    
 
 
     return (
@@ -41,8 +51,8 @@ const ResvDetail = ({selectedResv, closeDetail, userInfo, onDeleteSuccess }) => 
                     <>
                     <div>예약 내용</div>
                     <div><strong>예약자:</strong>{empName}</div>
-                    <div><strong>날짜:</strong> {selectedResv.start.toISOString().substring(0, 10)}</div>
-                    <div><strong>시간:</strong> {selectedResv.start.toISOString().substring(11, 16)} ~ {selectedResv.end.toISOString().substring(11, 16)}</div>
+                    <div><strong>날짜:</strong> {startDateStr}</div>
+                    <div><strong>시간:</strong> {startTimeStr} ~ {endTimeStr}</div>
                     <div><strong>사용 목적:</strong> {selectedResv.title}</div>
                     </>
                 }

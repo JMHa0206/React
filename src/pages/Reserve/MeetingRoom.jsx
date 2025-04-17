@@ -204,7 +204,7 @@ const MeetingRoom = ({ userInfo })=> {
         </div>
         {isModalOpen && (<InputResev closeModal={() => setIsModalOpen(false)} selectedInfo={selectedInfo} resourceId={targetResc}  userInfo={userInfo} onSuccess={() => setReloadKey(prev => prev + 1)} onDeleteSuccess={() => setReloadKey(prev => prev + 1)}/>)}
 
-        {isDetailOpen && (<ResvDetail selectedResv={selectedResv} closeDetail={() => setIsDetailOpen(false)} userInfo={userInfo} onSuccess={() => setReloadKey(prev => prev + 1)} onDeleteSuccess={() => setReloadKey(prev => prev + 1)} /> )}
+        {isDetailOpen && selectedResv && (<ResvDetail selectedResv={selectedResv} closeDetail={() => setIsDetailOpen(false)} userInfo={userInfo} onSuccess={() => setReloadKey(prev => prev + 1)} onDeleteSuccess={() => setReloadKey(prev => prev + 1)} /> )}
         </div>
     )
 };

@@ -31,7 +31,7 @@ function Chatting() {
 
 
     useEffect(() => {
-        axios.get("http://10.5.5.2/Employee/SelectEmp")
+        axios.get("http://10.5.5.6/Employee/SelectEmp")
             .then(resp => {
                 const empObj = {};
                 const empIdArray = [];
@@ -57,7 +57,7 @@ function Chatting() {
         const userId = sessionStorage.getItem("userId");
         let mine = null;
 
-        axios.get("http://10.5.5.2/Employee/SelectMine", {
+        axios.get("http://10.5.5.6/Employee/SelectMine", {
             params: {
                 userId: userId
             }
@@ -70,7 +70,7 @@ function Chatting() {
 
 
     const showMessages = () => {
-        axios.get("http://10.5.5.2/Employee/showMessages", {
+        axios.get("http://10.5.5.6/Employee/showMessages", {
             params: {
                 seq: seq
             }
@@ -147,7 +147,7 @@ function Chatting() {
 
     useEffect(() => {
         if (showPopup) {
-            axios.get("http://10.5.5.2/Employee/SelectEmp")
+            axios.get("http://10.5.5.6/Employee/SelectEmp")
                 .then((resp) => {
 
                     const nameList = targetName ? targetName.split(',').map(name => name.trim()) : [];
@@ -186,7 +186,7 @@ function Chatting() {
         }
 
         //그룹네임에 셋다 넣고 생성자에 내아이디 넣고 그룹멤버에 셋다
-        axios.post("http://10.5.5.2/Employee/inviteToChat", combinedData)
+        axios.post("http://10.5.5.6/Employee/inviteToChat", combinedData)
             .then((resp) => {
                 const seq = resp.data;
 
