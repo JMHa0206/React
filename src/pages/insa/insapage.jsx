@@ -34,7 +34,7 @@ const InsaPage = () => {
         const token = sessionStorage.getItem('jwtToken');
         console.log("📦 토큰 확인 (insaPage):", token);
 
-        const res = await daxios.get("http://10.10.55.69/insa/summary", {
+        const res = await daxios.get("http://10.5.5.6/insa/summary", {
           headers: {
             Authorization: `Bearer ${token}`
           }
