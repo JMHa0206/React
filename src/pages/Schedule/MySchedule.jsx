@@ -22,7 +22,8 @@ const MySchedule = () => {
     });
     
     useEffect(()=>{
-        caxios.get("/mypage/info").then((resp)=>{
+        caxios.get("/mypage/info")
+        .then((resp)=>{
           const info = resp.data;
           console.log(info);
           setUserInfo(info);

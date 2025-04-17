@@ -79,7 +79,7 @@ const Mypage = () => {
             formDataToSend.append("profile", profileFile);
         }
 
-        axios.put("http://10.10.55.69/mypage/update", formDataToSend, {
+        axios.put("http://10.5.5.6/mypage/update", formDataToSend, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }

@@ -38,10 +38,8 @@ const ScheduleList = ({ closeModal, onRefresh }) => {
     
 
     const handleMyCal = () => {
-        if (!userInfo) {
-            alert("사용자 정보가 로딩되지 않았습니다."); // 또는 그냥 return
-            return;
-          }
+        if (!userInfo) return;
+          
         caxios.get(`/calendar/myCal/${userInfo.emp_code_id}`).then((resp) => {
             setMyCalendar(resp.data);
     })};

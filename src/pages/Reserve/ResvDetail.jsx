@@ -4,27 +4,19 @@ import useScheduleStore from '../../store/useScheduleStore';
 
 
 
-const ResvDetail = ({selectedResv, closeDetail, userInfo }) => {
-
-    // const [userInfo,setUserInfo] = useState(null);
-    // useEffect(()=>{
-    //       caxios.get("/mypage/info")
-    //       .then((resp) => {
-    //         const info = resp.data;
-    //         console.log("userInfo 확인:", info);
-    //         setUserInfo(info);
-    //       })
-    //       .catch((error) => {
-    //         console.error("유저 정보 로딩 실패", error);
-    //       });
-    // }, [])
+const ResvDetail = ({selectedResv, closeDetail, userInfo, onDeleteSuccess }) => {
 
     const { removeEvent } = useScheduleStore();
     const handleDelete = () => {
         console.log(selectedResv.id);
-        removeEvent(selectedResv.id)
+        removeEvent(selectedResv.id);
+
         caxios.delete(`/reserve/${selectedResv.id}`)
-        .then(resp => {})
+        .then(resp => {
+          alert("예약이 삭제되었습니다.");
+          onDeleteSuccess?.();
+           
+        })
         .catch((error) => {
           console.error("일정 삭제 실패", error);
         })

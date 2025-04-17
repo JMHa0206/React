@@ -4,30 +4,11 @@ import sideliststyle from './Sidelist.module.css';
 import ScheduleList from '../pages/Schedule/ScheduleList';
 import ResvSideList from '../pages/Reserve/ResvSideList';
 
-const Sidelist = ({ onRefresh}) => {
+const Sidelist = ({ onRefresh }) => {
   const location = useLocation();
   const pathname = location.pathname;
 
-  const boardPaths = [
-    '/board',
-    '/write_button',
-    '/standard',
-    '/reference',
-    '/free',
-    '/club',
-    '/department',
-    '/business',
-    '/support'
-  ];
-
-  const hrPaths =[
-    '/attend',
-    '/record',
-    '/insa',
-    '/admin_insa',
-    '/deptment',
-    '/ApplyForm'
-  ];
+ 
 
 
   console.log("🧠 Sidelist 렌더 중 - 현재 경로:", pathname);
@@ -40,16 +21,16 @@ const Sidelist = ({ onRefresh}) => {
       <aside className={sideliststyle.sidebar}>
         <div className={sideliststyle.boardsidebar}>
           <div className={sideliststyle.wholegasy}>게시판 전체보기</div>
-          <div><Link to="/mainpage/maincontent/standard">공지사항</Link></div>
-          <div><Link to="/mainpage/maincontent/reference">자료실</Link></div>
+          <div><Link to="/mainpage/maincontent/board/standard">공지사항</Link></div>
+          <div><Link to="/mainpage/maincontent/board/reference">자료실</Link></div>
           <div>전사 게시판
-            <li><Link to="/mainpage/maincontent/free">자유게시판</Link></li>
-            <li><Link to="/mainpage/maincontent/club">동아리게시판</Link></li>
+            <li><Link to="/mainpage/maincontent/board/free">자유게시판</Link></li>
+            <li><Link to="/mainpage/maincontent/board/club">동아리게시판</Link></li>
           </div>
           <div>그룹 게시판
-            <li><Link to="/mainpage/maincontent/department">부서 게시판</Link></li>
-            <li><Link to="/mainpage/maincontent/business">거래처별 변경사항</Link></li>
-            <li><Link to="/mainpage/maincontent/support">업체교육/업무지원보고서</Link></li>
+            <li><Link to="/mainpage/maincontent/board/department">부서 게시판</Link></li>
+            <li><Link to="/mainpage/maincontent/board/business">거래처별 변경사항</Link></li>
+            <li><Link to="/mainpage/maincontent/board/support">업체교육/업무지원보고서</Link></li>
           </div>
         </div>
       </aside>
@@ -101,10 +82,9 @@ const Sidelist = ({ onRefresh}) => {
           <div className={sideliststyle.wholegasy}>인사관리</div>
           <ul>
             <li><Link to="/mainpage/maincontent/insa/attend">개인 근태관리</Link></li>
-            <li><Link to="/mainpage/maincontent/insa/record">휴가 / 출장 기록관리</Link></li>
-            <li><Link to="/mainpage/maincontent/admin_insa/admin">휴가/</Link></li>
-            <li><Link to="/mainpage/maincontent/insa/deptment">부서별 출 / 퇴근 및 근무기록 조회/</Link></li>
             <li><Link to="/mainpage/maincontent/insa/ApplyForm">휴가 / 출장 / 초과근무 등 신청/</Link></li>
+            <li><Link to="/mainpage/maincontent/insa/record">휴가 / 출장 기록관리</Link></li>
+            <li><Link to="/mainpage/maincontent/insa/deptment">부서별 출 / 퇴근 및 근무기록 조회/</Link></li>
 
           </ul>
         </div>
@@ -117,7 +97,7 @@ const Sidelist = ({ onRefresh}) => {
   if (isPath("board")) return <BoardSidelist />;
   if (isPath("schedule")) return <ScheduleSidelist />;
   if (isPath("reserve")) return <ReserveSidelist />;
-  if (isPath("insa") || isPath("admin_insa")) return <HrSidelist />;
+  if (isPath("insa") || isPath("hrPaths")) return <HrSidelist />;
 
   return <div className={sideliststyle.sideList}></div>;
 };

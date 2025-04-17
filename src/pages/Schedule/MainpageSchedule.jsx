@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import useScheduleStore from '../../store/useScheduleStore';
 import caxios from '../../Utils/caxios';
-import { replace } from 'react-router-dom';
 
 
 

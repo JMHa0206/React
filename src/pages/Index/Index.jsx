@@ -30,7 +30,7 @@ const Index = () => {
 
            
 
-                // ✅ 상태관리 저장
+                // ✅ 상태관리 저장e
                 setAuth(token, login.id, per_function, per_secure);
 
                 navi('/mainpage');

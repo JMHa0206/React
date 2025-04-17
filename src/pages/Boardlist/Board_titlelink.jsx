@@ -58,7 +58,7 @@ const [defaultBoardData, setDefaultBoardData] = useState({
 
  // 사용자 정보 업데이트 (로그인 토큰 이용)
  useEffect(() => {
-    const token = localStorage.getItem('jwtToken');
+    const token = sessionStorage.getItem('jwtToken');
     if (token) {
         try {
             const decoded = jwtDecode(token);

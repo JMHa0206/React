@@ -27,7 +27,7 @@ const Board_department = () => {
 
 
     useEffect(() => {
-        const token = localStorage.getItem('jwtToken');
+        const token = sessionStorage.getItem('jwtToken');
         axios.get("http://10.5.5.12/mypage/info", {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -48,7 +48,7 @@ const Board_department = () => {
             currentPage
         });
 
-        axios.get(`http://10.5.5.12/board/navigator`, {
+        axios.post(`http://10.5.5.12/board/navigator`, {
             params: {
                 page: currentPage,
                 size: 10,

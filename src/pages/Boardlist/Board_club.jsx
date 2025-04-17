@@ -29,7 +29,7 @@ const Board_club =()=>{
 
      // 📌 게시판 목록 불러오기
      const getBoardList = () => {
-        axios.get(`http://10.5.5.12/board/navigator`, {
+        axios.post(`http://10.5.5.12/board/navigator`, {
             params: {
                 page: currentPage,
                 size: 5,

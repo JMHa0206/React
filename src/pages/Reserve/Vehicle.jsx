@@ -18,6 +18,7 @@ const Vehicle = ({ userInfo })=> {
     const [ resouceList, setResourceList ] = useState([]);
     const [ targetResc, setTargetResc ] = useState(0);
     const [ reservations, setReservations ] = useState([]);
+    const [reloadKey, setReloadKey] = useState(0);
 
     const handleDateSelect = (selectInfo) => {
         const selectedResource = resouceList.find(
@@ -77,7 +78,7 @@ const Vehicle = ({ userInfo })=> {
             console.error("예약목록 불러오기 실패", error);
           });
       
-    }, [])
+    }, [reloadKey])
     
     const [showWeekends, setShowWeekends] = useState(true);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -93,6 +94,18 @@ const Vehicle = ({ userInfo })=> {
               setSeletedResv(clickInfo.event);
             console.log(clickInfo);
             setIsDetailOpen(true);
+        };
+
+        const renderEventContent = (eventInfo) => {
+          const isMine = eventInfo.event.extendedProps.emp_id === userInfo.emp_code_id;
+          const bgColor = isMine ? '#4f7fd8' : '#d5e8fa'; 
+        
+          return (
+            <div style={{ backgroundColor: bgColor, borderRadius: '4px', padding: '2px', color: '1a3c6c' }}>
+              <b>{eventInfo.timeText}</b> <br />
+              <span>{eventInfo.event.title}</span>
+            </div>
+          );
         };
 
     return (
@@ -181,8 +194,8 @@ const Vehicle = ({ userInfo })=> {
             />
             </div>
         </div>
-        {isModalOpen && (<InputResev closeModal={() => setIsModalOpen(false)} selectedInfo={selectedInfo} resourceId={targetResc}  userInfo={userInfo}/>)}
-        {isDetailOpen && (<ResvDetail selectedResv={selectedResv} closeDetail={() => setIsDetailOpen(false)}   userInfo={userInfo}/>)}
+        {isModalOpen && (<InputResev closeModal={() => setIsModalOpen(false)} selectedInfo={selectedInfo} resourceId={targetResc}  userInfo={userInfo} onSuccess={() => setReloadKey(prev => prev + 1)} onDeleteSuccess={() => setReloadKey(prev => prev + 1)}/>)}
+        {isDetailOpen && (<ResvDetail selectedResv={selectedResv} closeDetail={() => setIsDetailOpen(false)}   userInfo={userInfo} onSuccess={() => setReloadKey(prev => prev + 1)} onDeleteSuccess={() => setReloadKey(prev => prev + 1)}/>)}
         </div>
     )
 };

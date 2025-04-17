@@ -1,9 +1,8 @@
 import bstyle from './Board_business.module.css';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import daxios from '../../axios/axiosConfig';
+import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
-import caxios from '../../Utils/caxios';
 
 
 const Board_business = () => {
@@ -23,11 +22,19 @@ const Board_business = () => {
     const [boardList, setBoardList] = useState([]);
 
 
+    useEffect(() => {
+        const token = sessionStorage.getItem('jwtToken');
     
-
-        useEffect(()=>{
-            
-        caxios.get("/mypage/info")
+        if (!token) {
+            console.warn("❌ JWT 토큰이 없습니다. 로그인 필요.");
+            return;
+        }
+    
+        axios.get("http://10.5.5.12/mypage/info", {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
         .then((resp) => {
             console.log("🧾 로그인 사용자 정보 로딩 완료:", resp.data); 
             setUserInfo(resp.data);
@@ -42,16 +49,15 @@ const Board_business = () => {
         console.log("📦 API 호출 시작", {
             userId: userInfo?.emp_name,
             boardId: numericBoardId,
-            currentPage
+            currentPage,
+            userInfo
         });
 
-        caxios.get(`/board/navigator`, {
-            params: {
+        axios.post(`http://10.5.5.12/board/navigator`, {
                 page: currentPage,
                 size: 10,
-                parent_board: numericBoardId, 
-                emp_info: userInfo
-            }
+                parent_board: numericBoardId
+            
         })
         .then(res => {
             console.log("🟡 응답 데이터 전체:", res.data);
@@ -107,7 +113,7 @@ const Board_business = () => {
     };
 
     const increaseViewCount = (post_id) => {
-        daxios.get(`http://10.5.5.12/board/increaseViewCount/${post_id}`)
+        axios.get(`http://10.5.5.12/board/increaseViewCount/${post_id}`)
         .then(() => {
             navigate(`/mainpage/maincontent/titlelink/${post_id}`);
         })
@@ -153,7 +159,7 @@ const Board_business = () => {
                                 </td>
                             </tr>
                             <tr className={bstyle.list}>
-                                
+                            <th>번호</th>
                                 <th>제목</th>
                                 <th>작성자</th>
                                 <th>작성일</th>
@@ -208,6 +214,7 @@ const Board_business = () => {
             </div>
         </div>
     );
+    
 };
 
 export default Board_business;

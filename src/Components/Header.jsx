@@ -32,7 +32,7 @@ const Header = () => {
      .then((resp) => {
         const id = resp.data.emp_code_id;
 
-         return axios.get(`http://10.5.5.2/Employee/ProfileImg`,{
+         return axios.get(`http://10.5.5.6/Employee/ProfileImg`,{
           params: { empId: id }
           }).then((imgResp)=>{
             
@@ -96,7 +96,7 @@ const Header = () => {
         <button><i className="fa-regular fa-comment" onClick={openMessenger}></i></button>
         <div className="user-menu-container" ref={userMenuRef}>
           <button className="user-icon-button" onClick={toggleUserMenu}>
-            <img src={`http://10.10.55.69${profileImg}`} style={{width:'22px',height:'22px', borderRadius:'50%',objectFit:'cover'}}></img>
+            <img src={`http://10.5.5.6${profileImg}`} style={{width:'22px',height:'22px', borderRadius:'50%',objectFit:'cover'}}></img>
           </button>
           {showUserMenu && (
             <div className="user-dropdown">
