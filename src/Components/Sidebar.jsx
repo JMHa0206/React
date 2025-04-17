@@ -7,7 +7,6 @@ import MainpageSchedule from '../pages/Schedule/MainpageSchedule';
 
 const Sidebar = () => {
   const { token } = useAuthStore();
-  // const [activeActivity, setActiveActivity] = useState(null); 이거구나!!! 왜 상태변화가 저장안되나했네
   const [loading, setLoading] = useState(true);
 
   const {
@@ -16,8 +15,8 @@ const Sidebar = () => {
     isCheckedIn,
     isCheckedOut,
     currentActivity,
-    activeActivity, // 업무나 외근도 상태변화 유지
-    setActiveActivity,  //
+    activeActivity,
+    setActiveActivity,
     setCheckInTime,
     setCheckOutTime,
     setIsCheckedIn,
@@ -27,9 +26,6 @@ const Sidebar = () => {
 
   const [todayAttendanceId, setTodayAttendanceId] = useState(null);
   const [todayWorkedTime, setTodayWorkedTime] = useState("00:00:00");
-
-
-  // ✅ checkInTime 이거 App.js로 빼기ㄷ
 
   useEffect(() => {
     const fetchCheckInData = async () => {
@@ -41,13 +37,17 @@ const Sidebar = () => {
         const checkIn = res1.data?.checkInTime;
         const checkOut = res1.data?.checkOutTime;
 
-
         if (checkIn) {
           setCheckInTime(new Date(checkIn));
-          setIsCheckedIn(!checkOut); // 퇴근 안 했으면 출근 상태 유지
+          setIsCheckedIn(!checkOut);
           setIsCheckedOut(!!checkOut);
+
+          if (checkOut) {
+            setCheckOutTime(new Date(checkOut));
+          }
         } else {
           setCheckInTime(null);
+          setCheckOutTime(null);
           setIsCheckedIn(false);
           setIsCheckedOut(false);
         }
@@ -65,7 +65,6 @@ const Sidebar = () => {
     fetchCheckInData();
   }, [token]);
 
-  // ✅ 근무 시간 타이머
   useEffect(() => {
     let interval;
 
@@ -96,10 +95,8 @@ const Sidebar = () => {
     return () => clearInterval(interval);
   }, [checkInTime, checkOutTime, isCheckedOut]);
 
-  // ✅ 출근 처리
   const handleCheckIn = async () => {
     const currentTime = new Date().toISOString();
-    console.log(token+"(토큰오냐?)");
     try {
       const res = await daxios.post("http://10.5.5.6/work/checkIn", {}, {
         headers: {
@@ -118,7 +115,6 @@ const Sidebar = () => {
     }
   };
 
-  // ✅ 퇴근 처리
   const handleCheckOut = async () => {
     const currentTime = new Date().toISOString();
 
@@ -142,7 +138,6 @@ const Sidebar = () => {
     }
   };
 
-  // ✅ 외근 / 업무 시작
   const handleActivityStart = async (type) => {
     const now = new Date().toISOString();
     setCurrentActivity(type);
@@ -188,10 +183,29 @@ const Sidebar = () => {
         <div className="current-activity">
           {currentActivity && <p>현재 활동: {currentActivity}</p>}
         </div>
+
         <div className="time-logs">
           <p>총 근무 시간: {todayWorkedTime}</p>
-          {checkInTime && <p>출근 시간: {checkInTime.toLocaleString()}</p>}
-          {checkOutTime && <p>퇴근 시간: {checkOutTime.toLocaleString()}</p>}
+
+          {checkInTime && (
+            <p>출근 시간: {new Date(checkInTime).toLocaleString("ko-KR", {
+              hour12: true
+            })}</p>
+          )}
+
+          {/* ✅ 퇴근 시간 조건 */}
+          {checkOutTime &&
+            isCheckedOut &&
+            new Date(checkOutTime).toDateString() === new Date().toDateString() ? (
+            <p>퇴근 시간: {new Date(checkOutTime).toLocaleString("ko-KR", {
+              hour12: true
+            })}</p>
+          ) : (
+            // ✅ 퇴근하지 않은 경우 보여줄 메시지
+            isCheckedIn && !isCheckedOut && (
+              <p>퇴근하지 않았습니다.</p>
+            )
+          )}
         </div>
       </div>
 

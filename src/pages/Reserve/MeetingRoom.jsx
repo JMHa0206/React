@@ -59,8 +59,14 @@ const MeetingRoom = ({ userInfo })=> {
             const fixDate = (dateStr) => dateStr.replace(/[./]/g, '-');
           
             const formatResev = resp.data.map((resv) => {
-              const startStr = `${fixDate(resv.resv_date)}T${resv.resv_stime}`;
-              const endStr = `${fixDate(resv.resv_date)}T${resv.resv_etime}`;
+                const formatTime = (time) => {
+                    const [h, m] = time.split(':');
+                    return `${h.padStart(2, '0')}:${m.padStart(2, '0')}:00`;
+                  };
+                  
+                  const startStr = `${fixDate(resv.resv_date)}T${formatTime(resv.resv_stime)}`;
+                  const endStr = `${fixDate(resv.resv_date)}T${formatTime(resv.resv_etime)}`;
+                  
           
                return {
                 id: resv.resv_id,
@@ -87,7 +93,9 @@ const MeetingRoom = ({ userInfo })=> {
     
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [ selectedResv , setSelectedResv] = useState(null); 
+
     const selectResv = (clickInfo) => {
+        console.log(clickInfo);
         const selectedResource = resouceList.find(
             (resource) => resource.resc_id == targetResc
           );
@@ -100,17 +108,6 @@ const MeetingRoom = ({ userInfo })=> {
         setIsDetailOpen(true);
     };
 
-    const renderEventContent = (eventInfo) => {
-        const isMine = eventInfo.event.extendedProps.emp_id === userInfo.emp_code_id;
-        const bgColor = isMine ? '#4f7fd8' : '#d5e8fa'; 
-      
-        return (
-          <div style={{ backgroundColor: bgColor, borderRadius: '4px', padding: '2px', color: '1a3c6c' }}>
-            <b>{eventInfo.timeText}</b> <br />
-            <span>{eventInfo.event.title}</span>
-          </div>
-        );
-      };
 
     return (
         <div>
@@ -198,7 +195,12 @@ const MeetingRoom = ({ userInfo })=> {
             select={handleDateSelect}
             events={reservations.filter(resv => resv.extendedProps.resource_id == Number(targetResc))}
             eventClick={selectResv}
-            eventContent={renderEventContent}
+            eventDidMount={(info) => {
+                info.el.style.backgroundColor = info.event.extendedProps.emp_id === userInfo.emp_code_id ? '#4f7fd8' : '#d5e8fa';
+                info.el.style.borderRadius = '4px';
+                info.el.style.color = '#1a3c6c';
+                info.el.style.border = 'none';
+              }}
             />
             </div>
         </div>

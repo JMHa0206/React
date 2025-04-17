@@ -349,20 +349,20 @@ const Board_titellink = () => {
                             <div className={bstyle.name3}>{reply.reply_writer}</div>
                             <div className={bstyle.writetime3}>{reply.reply_date}</div>
                             <div className={bstyle.actionButtons}>
-                            {
-        reply.reply_writer === defaultBoardData.emp_name 
-        ? (
-          <>
-            <button onClick={() => handleEdit(reply)} className={bstyle.editBtn}>
-              수정
-            </button>
-            <button onClick={() => handleReplyDelete(reply.reply_id)} className={bstyle.deleteBtn}>
-              삭제
-            </button>
-          </>
-        )
-        : null
-      }
+                                {
+                                    reply.reply_writer === defaultBoardData.emp_name
+                                        ? (
+                                            <>
+                                                <button onClick={() => handleEdit(reply)} className={bstyle.editBtn}>
+                                                    수정
+                                                </button>
+                                                <button onClick={() => handleReplyDelete(reply.reply_id)} className={bstyle.deleteBtn}>
+                                                    삭제
+                                                </button>
+                                            </>
+                                        )
+                                        : null
+                                }
                             </div>
                         </div>
 
@@ -406,8 +406,8 @@ const Board_titellink = () => {
             <div className={bstyle.titlewrite}>
                 <div className={bstyle.title2}>작성자</div>
                 <div className={bstyle.text2}>
-                {boardData.emp_name /* 실제 작성자 이름 */ 
-    ?? boardData.post_writer /* emp_name이 없으면 ID라도 표시 */}
+                    {boardData.emp_name /* 실제 작성자 이름 */
+                        ?? boardData.post_writer /* emp_name이 없으면 ID라도 표시 */}
                 </div>
             </div>
 
@@ -502,24 +502,24 @@ const Board_titellink = () => {
                 <div className={bstyle.list3}><button onClick={() => navigate(-1)}>목록으로</button></div>
 
                 <div className={bstyle.rightbuttons}>
-                
+
                     {
                         /* 작성자가 본인인지 비교 (boardData.post_writer는 작성자 ID) */
                         defaultBoardData.post_writer === boardData.post_writer
                             ? (
                                 <>
-                                 <div className={bstyle.list4}>
-                                    {!editMode
-                                        ? <button onClick={() => setEditMode(true)}>수정</button>
-                                        : <button onClick={handleFileUpdate}>저장</button>
-                                    }
+                                    <div className={bstyle.list4}>
+                                        {!editMode
+                                            ? <button onClick={() => setEditMode(true)}>수정</button>
+                                            : <button onClick={handleFileUpdate}>저장</button>
+                                        }
                                     </div>
                                     <div className={bstyle.list5}>
-                                    {!editMode
-                                        ? <button onClick={handleDelete}>삭제</button>
-                                        : <button onClick={() => setEditMode(false)}>취소</button>
-                                    }
-                                     </div>
+                                        {!editMode
+                                            ? <button onClick={handleDelete}>삭제</button>
+                                            : <button onClick={() => setEditMode(false)}>취소</button>
+                                        }
+                                    </div>
                                 </>
                             )
                             : null  /* 본인이 아니면 아무것도 렌더링하지 않음 */

@@ -53,7 +53,8 @@ const Board_department = () => {
        
                 page: currentPage,
                 size: 10,
-                parent_board: numericBoardId
+                parent_board: numericBoardId,
+                userDeptId: userInfo.emp_dept_id
             
         })
             .then(res => {

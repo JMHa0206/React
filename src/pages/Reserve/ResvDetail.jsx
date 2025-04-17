@@ -9,23 +9,26 @@ const ResvDetail = ({selectedResv, closeDetail, userInfo, onDeleteSuccess }) => 
     
     const { removeEvent } = useScheduleStore();
     const [ empName, setEmpName ] = useState('');
-    console.log("selected정보 : " , selectedResv)
+    const [ resvId, setResvId ] = useState(0);
+    const [ resvDetail, setResvDetail ] = useState({});
+    console.log("selected정보 : " , selectedResv.id);
     useEffect(() => {
       caxios.get(`/reserve/getEmpName/${selectedResv.extendedProps.emp_id}`)
       .then(resp =>{
         setEmpName(resp.data);
       })
 
-      // caxios.get(`/reserve/getDetail/${}`)
+      setResvId(selectedResv.id);
+      caxios.get(`/reserve/getDetail/${selectedResv.id}`)
+      .then(resp => {
+        setResvDetail(resp.data);
+      })
+
     }, [selectedResv])
 
     if (!selectedResv) return null;
-    const startDateStr = selectedResv?.start ? new Date(selectedResv.start).toISOString().substring(0, 10) : '';
-    const startTimeStr = selectedResv?.start ? new Date(selectedResv.start).toISOString().substring(11, 16) : '';
-    const endTimeStr = selectedResv?.end ? new Date(selectedResv.end).toISOString().substring(11, 16) : '';
 
     const handleDelete = () => {
-        console.log(selectedResv.id);
         removeEvent(selectedResv.id);
 
         caxios.delete(`/reserve/${selectedResv.id}`)
@@ -51,9 +54,9 @@ const ResvDetail = ({selectedResv, closeDetail, userInfo, onDeleteSuccess }) => 
                     <>
                     <div>예약 내용</div>
                     <div><strong>예약자:</strong>{empName}</div>
-                    <div><strong>날짜:</strong> {startDateStr}</div>
-                    <div><strong>시간:</strong> {startTimeStr} ~ {endTimeStr}</div>
-                    <div><strong>사용 목적:</strong> {selectedResv.title}</div>
+                    <div><strong>날짜:</strong> {resvDetail.resv_date}</div>
+                    <div><strong>시간:</strong> {resvDetail.resv_stime} ~ {resvDetail.resv_etime}</div>
+                    <div><strong>사용 목적:</strong> {resvDetail.resv_title}</div>
                     </>
                 }
               

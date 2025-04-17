@@ -1,19 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import sideliststyle from './Sidelist.module.css';
 import ScheduleList from '../pages/Schedule/ScheduleList';
 import ResvSideList from '../pages/Reserve/ResvSideList';
+import daxios from '../axios/axiosConfig';
 
 const Sidelist = ({ onRefresh }) => {
   const location = useLocation();
   const pathname = location.pathname;
 
- 
+  const [isAllowedDept, setIsAllowedDept] = useState(false);
 
+  useEffect(() => {
+    // ✅ 로그인한 유저 정보 가져오기 (부서 포함)
+    daxios.get("http://10.5.5.6/mypage/info")
+      .then(res => {
+        const dept = res.data.departDTO;
+        if (!dept) return;
 
-  console.log("🧠 Sidelist 렌더 중 - 현재 경로:", pathname);
+        const deptId = dept.dept_id;
+        const deptName = dept.dept_name;
 
-  // Helper: 정확한 경로 파악
+        // ✅ 총무부(806) 또는 인사부(807)인지 확인
+        const allowed = deptId === 806 || deptId === 807 || deptName === '총무부' || deptName === '인사부';
+        setIsAllowedDept(allowed);
+      })
+      .catch(err => {
+        console.error("부서 정보 조회 실패:", err);
+      });
+  }, []);
+
   const isPath = (segment) => pathname.startsWith(`/mainpage/maincontent/${segment}`);
 
   const BoardSidelist = () => (
@@ -65,7 +81,7 @@ const Sidelist = ({ onRefresh }) => {
 
   const ScheduleSidelist = () => (
     <div className={sideliststyle.sideList}>
-      <ScheduleList  onRefresh={onRefresh} />
+      <ScheduleList onRefresh={onRefresh} />
     </div>
   );
 
@@ -82,22 +98,27 @@ const Sidelist = ({ onRefresh }) => {
           <div className={sideliststyle.wholegasy}>인사관리</div>
           <ul>
             <li><Link to="/mainpage/maincontent/insa/attend">개인 근태관리</Link></li>
-            <li><Link to="/mainpage/maincontent/insa/ApplyForm">휴가 / 출장 / 초과근무 등 신청/</Link></li>
-            <li><Link to="/mainpage/maincontent/insa/record">휴가 / 출장 기록관리</Link></li>
-            <li><Link to="/mainpage/maincontent/insa/deptment">부서별 출 / 퇴근 및 근무기록 조회/</Link></li>
+            <li><Link to="/mainpage/maincontent/insa/ApplyForm">휴가 / 출장 / 초과근무 등 신청</Link></li>
 
+            {/* 👇 조건부 노출: 총무부 또는 인사부만 */}
+            {isAllowedDept && (
+              <>
+                <li><Link to="/mainpage/maincontent/insa/record">휴가 / 출장 기록관리</Link></li>
+                <li><Link to="/mainpage/maincontent/insa/deptment">부서별 출 / 퇴근 및 근무기록 조회</Link></li>
+              </>
+            )}
           </ul>
         </div>
       </aside>
     </div>
   );
 
-  // 🔍 렌더링 조건
+  // 🔍 경로별 사이드바 렌더링
   if (isPath("approval")) return <ApprovalSidelist />;
   if (isPath("board")) return <BoardSidelist />;
   if (isPath("schedule")) return <ScheduleSidelist />;
   if (isPath("reserve")) return <ReserveSidelist />;
-  if (isPath("insa") || isPath("hrPaths")) return <HrSidelist />;
+  if (isPath("insa") || isPath("admin_insa")) return <HrSidelist />;
 
   return <div className={sideliststyle.sideList}></div>;
 };

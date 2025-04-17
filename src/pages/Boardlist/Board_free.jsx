@@ -89,7 +89,7 @@ const Board_club =()=>{
     return (
         <div className={bstyle.SBoardContainer}>
             <div className={bstyle.subcontainer}>
-                <h2>📄 게시판</h2>
+                <h2>게시판</h2>
                 <div className={bstyle.approval}>
                     <div className={bstyle.navi}>
                         <div>자유 게시판</div>
@@ -98,7 +98,7 @@ const Board_club =()=>{
                         <div className={bstyle.navibelowleft}>
                             <input
                                 type="text"
-                                placeholder="🔍게시글 입력"
+                                placeholder="게시글 입력"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />

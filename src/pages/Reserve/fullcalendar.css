@@ -63,5 +63,10 @@ a:visited {
         margin:0px !important;
     }
   
+    .fc-event {
+      line-height: 1.2;
+      padding: 2px 4px;
+      box-sizing: border-box;
+    }
     
   }
