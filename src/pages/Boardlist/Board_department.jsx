@@ -28,7 +28,7 @@ const Board_department = () => {
 
     useEffect(() => {
         const token = sessionStorage.getItem('jwtToken');
-        axios.get("http://10.5.5.12/mypage/info", {
+        axios.get("http://10.5.5.6/mypage/info", {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -49,7 +49,7 @@ const Board_department = () => {
             userInfo
         });
 
-        axios.post(`http://10.5.5.12/board/navigator`, {
+        axios.post(`http://10.5.5.6/board/navigator`, {
        
                 page: currentPage,
                 size: 10,
@@ -111,7 +111,7 @@ const Board_department = () => {
     };
 
     const increaseViewCount = (post_id) => {
-        axios.get(`http://10.5.5.12/board/increaseViewCount/${post_id}`)
+        axios.get(`http://10.5.5.6/board/increaseViewCount/${post_id}`)
             .then(() => {
                 navigate(`/mainpage/maincontent/board/titlelink/${post_id}`);
             })

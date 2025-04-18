@@ -54,7 +54,7 @@ const Board_write_button = () => {
             }
         }
         if (userId !== 'anonymous') {
-            axios.get("http://10.5.5.12/mypage/info", {
+            axios.get("http://10.5.5.6/mypage/info", {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -123,7 +123,7 @@ const Board_write_button = () => {
         }
 
         try {
-            const response = await axios.post('http://10.5.5.12/board/filedownload', formData, {
+            const response = await axios.post('http://10.5.5.6/board/filedownload', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             if (response.status === 200) {

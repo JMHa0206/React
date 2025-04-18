@@ -10,6 +10,7 @@ import useProfileStore from '../store/useProfileStore';
 const Header = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [notice, setNotice] = useState(false);
+  const noticeRef = useRef(null);
   const userMenuRef = useRef(null);
   const { setEvents } = useScheduleStore();
   const [chatWindow, setChatWindow] = useState(null);
@@ -43,6 +44,19 @@ const Header = () => {
           })
     
   },[])
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (noticeRef.current && !noticeRef.current.contains(e.target)) {
+        setNotice(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const closeNotice = () => setNotice(false);
 
 
   // Close dropdown when clicking outside
@@ -95,7 +109,8 @@ const Header = () => {
 
   return (
     <header className="header">
-      <div className="logo">🌐 GroupWare</div>
+      <div className="header-content">
+      <div className="logo">CODEBREAKER</div>
       <div className="header-buttons">
         <button><i className="fa-regular fa-bell" onMouseEnter={openNotice}></i></button>
         <button><i className="fa-regular fa-comment" onClick={openMessenger}></i></button>
@@ -115,13 +130,14 @@ const Header = () => {
           )}
 
           {notice && (
-            <div className="user-dropdown">
+            <div className="user-dropdown" ref={noticeRef} onMouseLeave={closeNotice}>
               <ul>
                <p>기능을 준비 중입니다.</p>
               </ul>
             </div>
           )}
         </div>
+      </div>
       </div>
     </header>
   );

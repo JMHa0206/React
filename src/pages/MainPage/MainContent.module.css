@@ -1,77 +1,138 @@
-/* .maincontainer{
-  width:100%;
-  min-height:900px;
-  border:1px solid black;
+/* 메인 컨테이너 레이아웃 */
+.maincontainer {
   display: flex;
-  flex-direction: row;
+  height: 100%;
+  min-height: calc(100vh - 60px); /* 헤더 높이를 고려하여 조정 */
+  background-color: #f9fcff;
 }
 
-.mainSidebar{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width:100px;
-  min-height:100%;
-  background-color:rgb(72, 78, 102);
-}
-
-.mainContents{
-  width:100%;
-}
-
-.icons{
-  width:100px;
-  display:flex;
-  justify-content: center;
-  align-items: center;
-}
-
- */
-
- .maincontainer {
-  display: flex;
-  min-height: 100vh;
-  font-family: 'Noto Sans KR', sans-serif;
-}
-
-/* 사이드바 (고정 아님, 자연스럽게 좌측 정렬) */
+/* 아이콘 사이드바 */
 .mainSidebar {
+  width: 60px;
   background-color: #1a3c6c;
-  width: 64px;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-top: 20px;
-  gap: 24px;
-  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 }
 
+/* 아이콘 컨테이너 */
+.icons {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 25px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
 
-/* 콘텐츠 영역은 flex로 옆에 배치되며 나머지 영역 차지 */
+.icons:hover {
+  background-color: rgba(168, 207, 255, 0.3);
+}
+
+.icons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* 메인 콘텐츠 영역 */
 .mainContents {
   flex: 1;
-  padding-top: 10px;
-  background-color: #f8fbfe;
-  min-height: 100vh;
-  box-sizing: border-box;
-  overflow-x: hidden;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #f5faff;
+  border-radius: 12px 0 0 0;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05);
 }
 
-/* 아이콘 스타일 */
-.mainSidebar i {
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .mainSidebar {
+    width: 50px;
+  }
+  
+  .icons {
+    width: 35px;
+    height: 35px;
+    margin-bottom: 20px;
+  }
+  
+  .mainContents {
+    padding: 15px;
+  }
+}
+
+/* 콘텐츠 카드 공통 스타일 */
+.contentCard {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.contentCard:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* 섹션 제목 스타일 */
+.sectionTitle {
   color: #1a3c6c;
-  transition: color 0.2s ease, transform 0.2s ease;
-  cursor: pointer;
-}
-
-.mainSidebar i:hover {
-  color: #3a78c2;
-  transform: scale(1.1);
-}
-
-
-.icons {
+  font-size: 18px;
+  font-weight: 600;
   margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e5f1ff;
 }
 
+/* 버튼 스타일 */
+.actionButton {
+  background-color: #a8cfff;
+  color: #1a3c6c;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  background-color: #91bff2;
+}
+
+/* 테이블 스타일 */
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dataTable th {
+  background-color: #e5f1ff;
+  color: #1a3c6c;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.dataTable td {
+  padding: 12px;
+  border-bottom: 1px solid #e5f1ff;
+}
+
+.dataTable tr:hover {
+  background-color: #f5faff;
+}

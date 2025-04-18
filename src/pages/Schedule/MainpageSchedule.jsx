@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import caxios from '../../Utils/caxios';
-
+import './MainpageSchedule.css';
 
 
 const MainpageSchedule = () => {
@@ -35,9 +35,9 @@ const MainpageSchedule = () => {
     return (
       <div className="custom-view">
         <h3>오늘의 일정</h3>
-        <ul>
+        <ul className="event-list">
           {todayEvents.map((event, index) => (
-            <li style={{color: "black"}} key={index}>
+            <li className="event-item" key={index}>
               <strong style={{color: "black"}}>{event.title}</strong><br/>
             </li>
           ))}

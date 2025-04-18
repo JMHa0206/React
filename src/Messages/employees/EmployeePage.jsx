@@ -20,7 +20,7 @@ function EmployeePage({openChat}) {
       
         let mine = null;
 
-          axios.get("http://10.5.5.2/Employee/SelectMine",{
+          axios.get("http://10.5.5.6/Employee/SelectMine",{
             params: {
                 userId: userId
             }
@@ -28,7 +28,7 @@ function EmployeePage({openChat}) {
              mine = userIdResp.data;
               setMyInfo(mine);
 
-              return axios.get("http://10.5.5.2/Employee/ProfileImg", {
+              return axios.get("http://10.5.5.6/Employee/ProfileImg", {
                 params: { empId: mine.emp_code_id }
               });
             }).then((imgResp) => {
@@ -36,7 +36,7 @@ function EmployeePage({openChat}) {
               setProfileImg(imgResp.data);
               
 
-             return axios.get("http://10.5.5.2/Employee/SelectEmp");
+             return axios.get("http://10.5.5.6/Employee/SelectEmp");
         }).then((resp) => {
            
              const filtered = resp.data.filter(emp => emp.emp_code_id !== mine.emp_code_id); // 나 자신 제외
@@ -53,7 +53,7 @@ function EmployeePage({openChat}) {
     
             setGroupedEmployees(grouped);
 
-              return axios.get("http://10.5.5.2/Employee/AllProfileImg");
+              return axios.get("http://10.5.5.6/Employee/AllProfileImg");
         }).then((imgList)=>{
             console.log(imgList);
             const map ={};

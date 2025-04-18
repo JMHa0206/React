@@ -167,16 +167,19 @@ const Sidebar = () => {
         <h3>근무체크</h3>
         <div className="sidebar-item">🕒 출근시간: 09:00</div>
         <div className="sidebar-item">🏠 퇴근시간: 18:00</div>
-        <div className="sidebar-item">📅 일정 없음</div>
 
         {loading ? (
           <p>로딩 중...</p>
         ) : (
           <>
-            <button onClick={handleCheckIn} disabled={isCheckedIn || isCheckedOut}>출근</button>
-            <button onClick={handleCheckOut} disabled={!isCheckedIn || isCheckedOut}>퇴근</button>
-            <button onClick={() => handleActivityStart("외근")} disabled={!isCheckedIn || isCheckedOut || activeActivity === "외근"}>외근</button>
-            <button onClick={() => handleActivityStart("업무")} disabled={!isCheckedIn || isCheckedOut || activeActivity === "업무"}>업무</button>
+            <div style={{ display: 'flex', gap: '8px'}}>
+              <button style={{width:'50%'}} onClick={handleCheckIn} disabled={isCheckedIn || isCheckedOut}>출근</button>
+              <button style={{width:'50%'}}  onClick={handleCheckOut} disabled={!isCheckedIn || isCheckedOut}>퇴근</button>
+            </div>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button style={{width:'50%'}}  onClick={() => handleActivityStart("외근")} disabled={!isCheckedIn || isCheckedOut || activeActivity === "외근"}>외근</button>
+              <button  style={{width:'50%'}} onClick={() => handleActivityStart("업무")} disabled={!isCheckedIn || isCheckedOut || activeActivity === "업무"}>업무</button>
+            </div>
           </>
         )}
 

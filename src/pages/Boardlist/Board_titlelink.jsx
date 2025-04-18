@@ -68,7 +68,7 @@ const Board_titellink = () => {
         if (token) {
             try {
                 const { emp_code_id, emp_name } = jwtDecode(token);
-                axios.get('http://10.5.5.12/mypage/info', {
+                axios.get('http://10.5.5.6/mypage/info', {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                     .then(resp => setDefaultBoardData(prev => ({ ...prev, post_writer: resp.data.emp_code_id, emp_name: resp.data.emp_name })))
@@ -83,7 +83,7 @@ const Board_titellink = () => {
 
     // 게시글 조회
     useEffect(() => {
-        axios.get(`http://10.5.5.12/board/${numericBoardId}`)
+        axios.get(`http://10.5.5.6/board/${numericBoardId}`)
             .then(res => {
                 setBoardData(res.data);
                 setMessage({ post_title: res.data.post_title });
@@ -98,7 +98,7 @@ const Board_titellink = () => {
 
     // 댓글 조회
     useEffect(() => {
-        axios.get(`http://10.5.5.12/reply`, {
+        axios.get(`http://10.5.5.6/reply`, {
             params: { board_id: numericBoardId }
         })
             .then(res => {
@@ -121,7 +121,7 @@ const Board_titellink = () => {
 
     const handletitlelinkUpdate = () => {
         const htmlContent = draftToHtml(convertToRaw(editorState.getCurrentContent()));
-        axios.put(`http://10.5.5.12/board/update`, {
+        axios.put(`http://10.5.5.6/board/update`, {
             post_id: parseInt(numericBoardId),
             post_title: message.post_title,
             post_content: htmlContent,
@@ -140,7 +140,7 @@ const Board_titellink = () => {
     };
 
     const handleDelete = () => {
-        axios.delete(`http://10.5.5.12/board/${numericBoardId}`)
+        axios.delete(`http://10.5.5.6/board/${numericBoardId}`)
             .then(() => {
                 alert("삭제 완료!");
                 navigate(-1);
@@ -162,12 +162,12 @@ const Board_titellink = () => {
             return;
         }
 
-        axios.post(`http://10.5.5.12/reply/insert`, {
+        axios.post(`http://10.5.5.6/reply/insert`, {
             board_id: parseInt(numericBoardId),
             reply_coontent: newReply,
             reply_writer: defaultBoardData.emp_name
         }).then(() => {
-            axios.get(`http://10.5.5.12/reply`, {
+            axios.get(`http://10.5.5.6/reply`, {
                 params: { board_id: numericBoardId }
             })
                 .then(res => {
@@ -186,7 +186,7 @@ const Board_titellink = () => {
     };
 
     const handleUpdate = () => {
-        axios.put(`http://10.5.5.12/reply/update`, {
+        axios.put(`http://10.5.5.6/reply/update`, {
             reply_id: editingReplyId,
             reply_coontent: editedContent,
             reply_writer: defaultBoardData.emp_name
@@ -207,7 +207,7 @@ const Board_titellink = () => {
     // 댓글 삭제
     const handleReplyDelete = (replyId) => {
         if (window.confirm("댓글을 삭제할까요?")) {
-            axios.delete(`http://10.5.5.12/reply/${replyId}`)
+            axios.delete(`http://10.5.5.6/reply/${replyId}`)
                 .then(() => {
                     setReplies(prev => prev.filter(reply => reply.reply_id !== replyId));
                 })
@@ -220,7 +220,7 @@ const Board_titellink = () => {
 
     // 추천수 증가 함수
     const increaseLikeCount = () => {
-        axios.post(`http://10.5.5.12/board/increaseLikeCount/${numericBoardId}`)
+        axios.post(`http://10.5.5.6/board/increaseLikeCount/${numericBoardId}`)
             .then(response => {
                 setPostLike(prev => prev + 1);
 
@@ -231,7 +231,7 @@ const Board_titellink = () => {
     };
     //파일 다운로드
     useEffect(() => {
-        axios.get(`http://10.5.5.12/board/${numericBoardId}`).then((res) => {
+        axios.get(`http://10.5.5.6/board/${numericBoardId}`).then((res) => {
             setBoardData(res.data);
             setMessage({ post_title: res.data.post_title });
             setPostLike(res.data.post_like);
@@ -242,14 +242,14 @@ const Board_titellink = () => {
             setEditorState(state);
         });
 
-        axios.get(`http://10.5.5.12/files`, { params: { post_id: numericBoardId } }).then((res) => {
+        axios.get(`http://10.5.5.6/files`, { params: { post_id: numericBoardId } }).then((res) => {
             setFileList(res.data);
         });
     }, [numericBoardId]);
 
     const handleFileDownload = (sysname, oriname) => {
         const link = document.createElement('a');
-        link.href = `http://10.5.5.12/download/${sysname}?oriname=${encodeURIComponent(oriname)}`;
+        link.href = `http://10.5.5.6/download/${sysname}?oriname=${encodeURIComponent(oriname)}`;
         link.setAttribute("download", oriname);
         document.body.appendChild(link);
         link.click();
@@ -266,7 +266,7 @@ const Board_titellink = () => {
             handleFileDownload(file.b_sysname, file.b_oriname);
         } else if (fileList.length > 1) {
             const link = document.createElement("a");
-            link.href = `http://10.5.5.12/download/all/${numericBoardId}`;
+            link.href = `http://10.5.5.6/download/all/${numericBoardId}`;
             link.setAttribute("download", "files.zip");
             document.body.appendChild(link);
             link.click();
@@ -296,20 +296,20 @@ const Board_titellink = () => {
         deletedFiles.forEach(id => formData.append("deleted_files", id));
         newFiles.forEach(file => formData.append("files", file));
 
-        axios.put("http://10.5.5.12/board/updateWithFiles", formData, {
+        axios.put("http://10.5.5.6/board/updateWithFiles", formData, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
         })
             .then(() => {
                 alert("수정 완료!");
-                axios.get(`http://10.5.5.12/files`, { params: { post_id: numericBoardId } })
+                axios.get(`http://10.5.5.6/files`, { params: { post_id: numericBoardId } })
                     .then((res) => {
                         setFileList(res.data);
                     });
 
 
-                axios.get(`http://10.5.5.12/files`, { params: { post_id: numericBoardId } })
+                axios.get(`http://10.5.5.6/files`, { params: { post_id: numericBoardId } })
                     .then((res) => {
                         setFileList(res.data);
                     });

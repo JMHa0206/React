@@ -1,0 +1,36 @@
+.custom-view {
+    padding: 16px;
+    border-radius: 12px;
+    background-color: #f9fbfd;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .custom-view h3 {
+    margin-bottom: 12px;
+    color: #1a3c6c;
+    font-size: 18px;
+    border-bottom: 1px solid #dce3ec;
+    padding-bottom: 8px;
+  }
+  
+  .event-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .event-item {
+    padding: 8px 8px;
+    margin-bottom: 6px;
+    border-left: 4px solid #4f7fd8;
+    background-color: transparent;
+    color: #1a3c6c;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .event-item:hover {
+    background-color: #f4f8fc;
+  }
+  

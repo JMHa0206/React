@@ -1,30 +1,72 @@
+/* 메인 페이지 컨테이너 */
 .container {
-  width: 100%;
-  min-height: 100vh;
-  background-color: #f8fbfe;  /* ✨ 전체 페이지 배경색 */
-  font-family: 'Noto Sans KR', sans-serif;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  background-color: #f9fcff;
+  font-family: 'Noto Sans KR', sans-serif;
+  position: relative; /* 포지셔닝 컨텍스트 설정 */
 }
 
+/* 헤더가 들어갈 공간 확보 (Header 컴포넌트의 실제 높이와 일치시켜야 함) */
+.headerSpace {
+  height: 60px; /* 헤더의 높이와 일치시켜야 함 */
+}
+
+/* 메인 콘텐츠 영역 */
 .mainpageContents {
   flex: 1;
-  box-sizing: border-box;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background-color: #f5faff;
+  margin-top: 60px; /* 헤더 높이만큼 상단 마진 추가 */
 }
 
-/* 기본 카드형 섹션 */
-.section-card {
+/* 미디어 쿼리 - 반응형 디자인 */
+@media (max-width: 768px) {
+  .mainpageContents {
+    padding: 15px;
+  }
+}
+
+/* 섹션 스타일 - 필요한 경우 사용 */
+.section {
   background-color: #ffffff;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* 제목 스타일 */
-.section-title {
+/* 섹션 제목 스타일 - 필요한 경우 사용 */
+.sectionTitle {
+  color: #1a3c6c;
   font-size: 18px;
   font-weight: 600;
-  color: #1a3c6c;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e5f1ff;
+}
+
+/* 리스트 래퍼 - 필요한 경우 사용 */
+.listWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 카드 항목 - 필요한 경우 사용 */
+.card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }

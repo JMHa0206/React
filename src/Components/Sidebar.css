@@ -1,41 +1,4 @@
-/* 
 
-.sidebar {
-    width: 100%;
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0px 4px 15px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
-  }
-  
-  .sidebar-item {
-    margin-top: 10px;
-    font-size: 14px;
-    color: #333;
-  }
-  
-
-  -------------------
- 
-  
-  button {
-    margin-right: 10px;
-    padding: 10px 15px;
-    cursor: pointer;
-  }
-  
-  button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-  
-  .current-activity {
-    margin-top: 20px;
-    font-size: 18px;
-    color: #333;
-  }
-   */
 
    .container {
     display: flex;

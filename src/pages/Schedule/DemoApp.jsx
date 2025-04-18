@@ -586,12 +586,19 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
   );
 }
 
-
+const hexToRgba = (hex, alpha = 0.4) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
 
 const renderEventContent = (eventInfo) => {
-  const bgColor = eventInfo.event.extendedProps?.color || 'dodgeblue';
+  const hexColor = eventInfo.event.extendedProps?.color || 'dodgeblue';
+  const bgColor = hexToRgba(hexColor, 0.8); 
+
  return (
-    <div style={{backgroundColor:bgColor, borderRadius:'0px'}}>
+    <div className={calenderStyle.eventDiv} style={{backgroundColor:bgColor, borderRadius:'3px'}}>
       <b>{eventInfo.event.title}</b>
     </div>
   );

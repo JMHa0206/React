@@ -115,7 +115,7 @@ const Board_business = () => {
     };
 
     const increaseViewCount = (post_id) => {
-        axios.get(`http://10.5.5.12/board/increaseViewCount/${post_id}`)
+        axios.get(`http://10.5.5.6/board/increaseViewCount/${post_id}`)
         .then(() => {
             navigate(`/mainpage/maincontent/board/titlelink/${post_id}`);
         })
