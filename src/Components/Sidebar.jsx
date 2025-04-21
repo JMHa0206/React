@@ -209,10 +209,7 @@ const Sidebar = () => {
         </div>
       </div>
 
-      <div className="sidebar">
-        <h3>전자결제</h3>
-        <div>내용 알아서 추가해주세요!</div>
-      </div>
+      
 
       <div className="sidebar">
         <MainpageSchedule />
