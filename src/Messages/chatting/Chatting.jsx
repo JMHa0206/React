@@ -105,7 +105,7 @@ function Chatting() {
                 const emp_name = empMap[receivedMessage.msg_emp_id];
                 setMessages((prev) => [...prev, { ...receivedMessage, isMine, emp_name }]);
 
-                showMessages();
+               
             });
         };
 
