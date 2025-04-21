@@ -1,5 +1,3 @@
-// ✅ ApproverModal.jsx (최종 수정본)
-
 import React, { useEffect, useState } from "react";
 import daxios from "../../axios/axiosConfig";
 
@@ -24,8 +22,8 @@ const ApproverModal = ({ isOpen, onClose, onSelect }) => {
       }));
   };
 
-  const renderTree = (nodes) => {
-    return nodes.map((node) => (
+  const renderTree = (nodes) =>
+    nodes.map((node) => (
       <li key={node.dept_id}>
         <span
           onClick={() => setSelectedDeptId(node.dept_id)}
@@ -41,7 +39,6 @@ const ApproverModal = ({ isOpen, onClose, onSelect }) => {
         )}
       </li>
     ));
-  };
 
   useEffect(() => {
     if (!isOpen) return;
@@ -71,6 +68,16 @@ const ApproverModal = ({ isOpen, onClose, onSelect }) => {
   };
 
   const handleConfirm = () => {
+    const selectedIds = Object.values(levels)
+      .filter(Boolean)
+      .map((emp) => emp.emp_code_id);
+
+    const hasDuplicates = new Set(selectedIds).size !== selectedIds.length;
+    if (hasDuplicates) {
+      alert("❌ 동일한 결재자를 여러 단계에 지정할 수 없습니다.");
+      return;
+    }
+
     const enrichedLevels = Object.fromEntries(
       Object.entries(levels).map(([key, emp]) => [
         key,
@@ -83,7 +90,7 @@ const ApproverModal = ({ isOpen, onClose, onSelect }) => {
           : null,
       ])
     );
-    console.log("📤 모달에서 전달할 결재자:", enrichedLevels);
+
     onSelect(enrichedLevels);
     onClose();
   };
@@ -115,11 +122,13 @@ const ApproverModal = ({ isOpen, onClose, onSelect }) => {
           gap: "2rem",
         }}
       >
+        {/* 부서 트리 */}
         <div style={{ width: "40%" }}>
           <h3>📁 부서 선택</h3>
           <ul>{renderTree(buildTree(departments))}</ul>
         </div>
 
+        {/* 결재자 선택 */}
         <div style={{ width: "60%" }}>
           <h3>👤 결재자 지정</h3>
           {Object.keys(levels).map((key) => (

@@ -37,7 +37,7 @@ function MessengerPopup({ onClose }) {
 
 
       if (!mine || !mine.emp_code_id) {
-        console.error("내 정보가 잘못되었습니다:", mine);
+     
         return; // 데이터가 잘못되면 여기서 중단
       }
 

@@ -1,8 +1,26 @@
-// ✅ ApprovalDetail.jsx 수정 버전
-
+// ApprovalDetail.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import daxios from '../../axios/axiosConfig';
+import DOMPurify from 'dompurify'; // ✅ 이 줄 추가
+
+const applyApprovalStatus = (html, historyList) => {
+  let updatedHtml = html;
+  historyList.forEach(h => {
+    const levelKey = `level${h.stepLevel}.status`;
+    const nameKey = `level${h.stepLevel}.name`;
+    const regex = new RegExp(`{{\s*${levelKey}\s*}}`, 'g');
+    const resultText = h.action === 'APPROVED' ? '✅ 승인' : '❌ 반려';
+    updatedHtml = updatedHtml.replace(regex, resultText);
+
+    if (h.action === 'REJECTED' || h.action === '반려') {
+      const nameRegex = new RegExp(`{{\s*${nameKey}\s*}}`, 'g');
+      const nameText = `<s>${h.approverName || h.approverId}</s>`;
+      updatedHtml = updatedHtml.replace(nameRegex, nameText);
+    }
+  });
+  return updatedHtml;
+};
 
 const ApprovalDetail = () => {
   const { id } = useParams();
@@ -73,7 +91,6 @@ const ApprovalDetail = () => {
   const handleReject = async () => {
     try {
       await daxios.post(`http://221.150.27.169:8888/api/edms/${id}/reject`, rejectReason, {
-
         headers: { "Content-Type": "text/plain" },
       });
       alert("반려 완료");
@@ -91,7 +108,13 @@ const ApprovalDetail = () => {
       <p><strong>작성자:</strong> {edms.drafterName}</p>
       <p><strong>상태:</strong> {edms.stateCode === 1 ? "대기" : edms.stateCode === 2 ? "진행" : edms.stateCode === 3 ? "반려" : "완료"}</p>
       <p><strong>작성일:</strong> {new Date(edms.submitDate).toLocaleString()}</p>
-      <div dangerouslySetInnerHTML={{ __html: edms.edmsContent }} />
+      <div
+        dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(
+            applyApprovalStatus(edms.edmsContent, historyList)
+          ),
+        }}
+      />
 
       {canApprove && (
         <div style={{ marginTop: "2rem" }}>

@@ -33,7 +33,7 @@ const ApprovalListPage = () => {
     }
 
     try {
-      const url = `http://10.5.5.6/api/edms/${apiSuffix}`;
+      const url = `http://10.10.55.22/api/edms/${apiSuffix}`;
       console.log(`🚀 API 호출: ${url}`);
       const res = await daxios.get(url);
 

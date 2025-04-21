@@ -18,7 +18,7 @@ const Mypage = () => {
     useEffect(() => {
         if (!isInitialized || !userId) return;
 
-        authAxios.get("http://10.5.5.6/mypage/info")
+        authAxios.get("http://221.150.27.169:8888/mypage/info")
             .then(res => {
                 setUserInfo(res.data);
                 setFormData({
@@ -32,7 +32,7 @@ const Mypage = () => {
 
                 const path = res.data.profileDTO?.profile_path;
                 if (path) {
-                    const fullPath = `http://10.5.5.6${path}`;
+                    const fullPath = `http://221.150.27.169:8888${path}`;
                     setProfileImage(fullPath);
                     setOriginalProfileImage(fullPath); // ✅ 원래 이미지 저장
                     setProfileImagePath(fullPath);
@@ -81,18 +81,18 @@ const Mypage = () => {
             formDataToSend.append("profile", profileFile);
         }
 
-        axios.put("http://10.5.5.6/mypage/update", formDataToSend, {
+        axios.put("http://221.150.27.169:8888/mypage/update", formDataToSend, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         })
         .then(() => {
-            return authAxios.get("http://10.5.5.6/mypage/info");
+            return authAxios.get("http://221.150.27.169:8888/mypage/info");
         })
         .then(res => {
             const path = res.data.profileDTO?.profile_path;
             if (path) {
-                const fullPath = `http://10.5.5.6${path}`;
+                const fullPath = `http://221.150.27.169:8888${path}`;
                 setProfileImage(fullPath);
                 setOriginalProfileImage(fullPath); // ✅ 저장 후 원본 이미지 갱신
                 setProfileImagePath(fullPath);

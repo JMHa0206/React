@@ -13,7 +13,7 @@ const Sidelist = ({ onRefresh }) => {
 
   useEffect(() => {
     // ✅ 로그인한 유저 정보 가져오기 (부서 포함)
-    daxios.get("http://10.5.5.6/mypage/info")
+    daxios.get("http://221.150.27.169:8888/mypage/info")
       .then(res => {
         const dept = res.data.departDTO;
         if (!dept) return;

@@ -49,13 +49,12 @@
   
   /* 반응형 처리 (선택) */
   @media (max-width: 768px) {
-    .reservTable table, .reservTable th, .reservTable td {
-      font-size: 12px;
-      padding: 8px;
-    }
+
   
     .reservTable select {
       width: 100%;
     }
   }
+
+
   

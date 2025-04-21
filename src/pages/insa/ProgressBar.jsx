@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './ProgressBar.module.css'; // ✅ CSS 모듈로 import
+import styles from './ProgressBar.module.css';
 
 const ProgressBar = ({ percent }) => {
   return (

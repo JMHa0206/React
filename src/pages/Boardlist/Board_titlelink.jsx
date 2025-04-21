@@ -30,10 +30,7 @@ const Board_titellink = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [editingReplyId, setEditingReplyId] = useState(null);
     const [editedContent, setEditedContent] = useState("");
-    const [liked, setLiked] = useState(false);
 
-    //추천수
-    const [postlike, setPostLike] = useState(0);
 
     //파일 다운로드
     const [fileList, setFileList] = useState([]);
@@ -87,7 +84,6 @@ const Board_titellink = () => {
             .then(res => {
                 setBoardData(res.data);
                 setMessage({ post_title: res.data.post_title });
-                setPostLike(res.data.post_like);
 
                 const blocksFromHtml = htmlToDraft(res.data.post_content || "");
                 const contentState = ContentState.createFromBlockArray(blocksFromHtml.contentBlocks);
@@ -218,23 +214,12 @@ const Board_titellink = () => {
         }
     };
 
-    // 추천수 증가 함수
-    const increaseLikeCount = () => {
-        axios.post(`http://10.5.5.6/board/increaseLikeCount/${numericBoardId}`)
-            .then(response => {
-                setPostLike(prev => prev + 1);
-
-            })
-            .catch(error => {
-                console.error("추천수 증가 실패:", error);
-            });
-    };
     //파일 다운로드
     useEffect(() => {
         axios.get(`http://10.5.5.6/board/${numericBoardId}`).then((res) => {
             setBoardData(res.data);
             setMessage({ post_title: res.data.post_title });
-            setPostLike(res.data.post_like);
+            // setPostLike(res.data.post_like);
 
             const blocksFromHtml = htmlToDraft(res.data.post_content || '');
             const contentState = ContentState.createFromBlockArray(blocksFromHtml.contentBlocks);
@@ -309,10 +294,12 @@ const Board_titellink = () => {
                     });
 
 
+
                 axios.get(`http://10.5.5.6/files`, { params: { post_id: numericBoardId } })
                     .then((res) => {
                         setFileList(res.data);
                     });
+
 
                 setBoardData(prev => ({
                     ...prev,
@@ -489,14 +476,6 @@ const Board_titellink = () => {
                 )}
             </div>
 
-            {(boardData.parent_board === 107 || boardData.parent_board === 108) && !editMode && (
-                <div className={bstyle.good2}>
-                    <button className={bstyle.thumbsbutton} onClick={increaseLikeCount}>
-                        <div className={bstyle.finger}>👍</div>
-                        {postlike > 0 && <div className={bstyle.plus}>+{postlike}</div>}
-                    </button>
-                </div>
-            )}
             <div className={bstyle.buttoncontainer}>
 
                 <div className={bstyle.list3}><button onClick={() => navigate(-1)}>목록으로</button></div>

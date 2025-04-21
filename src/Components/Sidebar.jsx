@@ -30,7 +30,7 @@ const Sidebar = () => {
   useEffect(() => {
     const fetchCheckInData = async () => {
       try {
-        const res1 = await daxios.get("http://10.5.5.6/work/checkInTime", {
+        const res1 = await daxios.get("http://221.150.27.169:8888/work/checkInTime", {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -98,7 +98,7 @@ const Sidebar = () => {
   const handleCheckIn = async () => {
     const currentTime = new Date().toISOString();
     try {
-      const res = await daxios.post("http://10.5.5.6/work/checkIn", {}, {
+      const res = await daxios.post("http://221.150.27.169:8888/work/checkIn", {}, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -119,7 +119,7 @@ const Sidebar = () => {
     const currentTime = new Date().toISOString();
 
     try {
-      const res = await daxios.post("http://10.5.5.6/work/checkOut", {
+      const res = await daxios.post("http://221.150.27.169:8888/work/checkOut", {
         checkOutTime: currentTime
       }, {
         headers: {
@@ -144,7 +144,7 @@ const Sidebar = () => {
     setActiveActivity(type);
 
     try {
-      const res = await daxios.post("http://10.5.5.6/work/start", {
+      const res = await daxios.post("http://221.150.27.169:8888/work/start", {
         attendance_id: todayAttendanceId,
         activity_type: type,
         start_time: now
