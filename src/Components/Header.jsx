@@ -61,7 +61,7 @@ const Header = () => {
 
   // Close dropdown when clicking outside
 
-  console.log("🔥 Header에서 보는 프로필 이미지 경로:", profileImagePath);
+  
   useEffect(() => {
 
 
@@ -105,12 +105,14 @@ const Header = () => {
     setNotice(!notice);
   }
 
- 
+  const logo = () =>{
+    navi("/");
+  }
 
   return (
     <header className="header">
       <div className="header-content">
-      <div className="logo">CODEBREAKER</div>
+      <div className="logo" onClick={logo} >CODEBREAKER</div>
       <div className="header-buttons">
         <button><i className="fa-regular fa-bell" onMouseEnter={openNotice}></i></button>
         <button><i className="fa-regular fa-comment" onClick={openMessenger}></i></button>
