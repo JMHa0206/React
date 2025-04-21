@@ -36,8 +36,6 @@ const Board_write_button = () => {
 
     // 디버깅: 상태 확인용
     useEffect(() => {
-        console.log('최종 parent_board 값:', defaultBoardData.parent_board);
-        console.log('최종 emp_name 값:', defaultBoardData.emp_name);
     }, [defaultBoardData]);
 
     // 로그인 토큰을 디코딩하고, 사용자 이름(emp_name)을 가져와 defaultBoardData 업데이트

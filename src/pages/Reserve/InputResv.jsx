@@ -14,7 +14,6 @@ const InputResev = ({ closeModal, selectedInfo, resourceId, userInfo, onSuccess 
   }, [resourceId, closeModal]);
 
     useEffect(() => {
-      console.log("전달된 자원 ID:", resourceId);
     }, [resourceId]);
   
     useEffect(() => {
@@ -67,7 +66,6 @@ const InputResev = ({ closeModal, selectedInfo, resourceId, userInfo, onSuccess 
       resv_etime: `${resvInput.resv_etime}`,
       resv_title: resvInput.resv_title
     };
-    console.log("저장 전 예약 내용:", reservation);
     caxios.post("/reserve/addReserve", reservation)
     .then(() => {
       alert("예약이 완료되었습니다.");

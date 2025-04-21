@@ -22,13 +22,11 @@ const Home = () => {
   const [birthdayList, setBirthdayList] = useState([]);
 
   useEffect(() => {
-    daxios.get('http://10.10.55.69/insa/birtdaylist')
+    daxios.get('http://10.5.5.6/insa/birtdaylist')
       .then((res) => {
-        console.log("🎂 생일자 리스트 도착:", res.data);
         setBirthdayList(res.data);
       })
       .catch((err) => {
-        console.log("생일자를 못찾았습니다.", err);
       });
   }, []);
 

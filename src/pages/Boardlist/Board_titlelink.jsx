@@ -55,8 +55,6 @@ const Board_titellink = () => {
 
     // 디버깅: 상태 확인
     useEffect(() => {
-        console.log('최종 parent_board 값:', defaultBoardData.parent_board);
-        console.log('최종 emp_name 값:', defaultBoardData.emp_name);
     }, [defaultBoardData]);
 
     // 사용자 정보 업데이트 (로그인 토큰 이용)
@@ -241,7 +239,6 @@ const Board_titellink = () => {
         document.body.removeChild(link);
     };
     useEffect(() => {
-        console.log("📁 fileList", fileList);
     }, [fileList]);
 
 

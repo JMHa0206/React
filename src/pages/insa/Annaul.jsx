@@ -52,7 +52,6 @@ const Annal = () => {
 
     daxios.get("http://10.5.5.6/insa/overtime")
       .then(res => {
-        console.log("오버 타임 데이터확인", res);
         setSummaryData(prev => ({ ...prev, overtimeList: res.data }));
       })
       .catch(err => {

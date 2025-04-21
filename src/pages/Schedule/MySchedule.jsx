@@ -25,7 +25,6 @@ const MySchedule = () => {
         caxios.get("/mypage/info")
         .then((resp)=>{
           const info = resp.data;
-          console.log(info);
           setUserInfo(info);
     
           
@@ -69,7 +68,6 @@ const MySchedule = () => {
     
     useEffect(() => {
           if (!userInfo.emp_code_id) return;
-          console.log("유저인포 값 확인 : " + userInfo.emp_code_id);
           
         caxios.get(`/schedule/myEvents/${userInfo.emp_code_id}`).then((resp)=>{
           
@@ -95,10 +93,8 @@ const MySchedule = () => {
     
     useEffect(() => {
         if (!userInfo.emp_code_id) return;
-        console.log("유저인포 값 확인 : " + userInfo.emp_code_id);
         
         caxios.get(`/schedule/shareEvents/${userInfo.emp_code_id}`).then((resp)=>{
-        console.log("공유 일정 목록 : " + resp.data);
         
         const shareEvents = resp.data.map((event) => ({
           id:event.id,

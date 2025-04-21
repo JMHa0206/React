@@ -19,7 +19,6 @@ const ReserveMain = ({ onRefresh, reloadKey}) => {
         caxios.get("/mypage/info")
         .then((resp) => {
           const info = resp.data;
-          console.log("userInfo 확인:", info);
           setUserInfo(info);
         })
         .catch((error) => {

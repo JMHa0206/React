@@ -11,7 +11,6 @@ const ResvDetail = ({selectedResv, closeDetail, userInfo, onDeleteSuccess }) => 
     const [ empName, setEmpName ] = useState('');
     const [ resvId, setResvId ] = useState(0);
     const [ resvDetail, setResvDetail ] = useState({});
-    console.log("selected정보 : " , selectedResv.id);
     useEffect(() => {
       caxios.get(`/reserve/getEmpName/${selectedResv.extendedProps.emp_id}`)
       .then(resp =>{

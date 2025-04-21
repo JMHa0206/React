@@ -63,7 +63,6 @@ const App = () => {
     );
   }
 
-  console.log("🖼 Header 이미지 상태:", useProfileStore.getState().profileImagePath);
 
   return (
     <div className="app-container">

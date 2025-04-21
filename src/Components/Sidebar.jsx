@@ -30,7 +30,7 @@ const Sidebar = () => {
   useEffect(() => {
     const fetchCheckInData = async () => {
       try {
-        const res1 = await daxios.get("http://221.150.27.169:8888/work/checkInTime", {
+        const res1 = await daxios.get("http://10.5.5.6/work/checkInTime", {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -98,14 +98,13 @@ const Sidebar = () => {
   const handleCheckIn = async () => {
     const currentTime = new Date().toISOString();
     try {
-      const res = await daxios.post("http://221.150.27.169:8888/work/checkIn", {}, {
+      const res = await daxios.post("http://10.5.5.6/work/checkIn", {}, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
 
-      console.log('✅ 출근 완료:', res.data);
       setIsCheckedIn(true);
       setCheckInTime(new Date(currentTime));
       setCurrentActivity("출근");
@@ -119,7 +118,7 @@ const Sidebar = () => {
     const currentTime = new Date().toISOString();
 
     try {
-      const res = await daxios.post("http://221.150.27.169:8888/work/checkOut", {
+      const res = await daxios.post("http://10.5.5.6/work/checkOut", {
         checkOutTime: currentTime
       }, {
         headers: {
@@ -128,13 +127,12 @@ const Sidebar = () => {
         }
       });
 
-      console.log('✅ 퇴근 완료:', res.data);
       setIsCheckedOut(true);
       setIsCheckedIn(false);
       setCheckOutTime(new Date(currentTime));
       setCurrentActivity("퇴근");
     } catch (error) {
-      console.log('❌ 퇴근 실패', error);
+
     }
   };
 
@@ -144,7 +142,7 @@ const Sidebar = () => {
     setActiveActivity(type);
 
     try {
-      const res = await daxios.post("http://221.150.27.169:8888/work/start", {
+      const res = await daxios.post("http://10.5.5.6/work/start", {
         attendance_id: todayAttendanceId,
         activity_type: type,
         start_time: now
@@ -155,7 +153,6 @@ const Sidebar = () => {
         }
       });
 
-      console.log(`${type} 시작`, res.data);
     } catch (error) {
       console.error(`${type} 요청 실패`, error);
     }
