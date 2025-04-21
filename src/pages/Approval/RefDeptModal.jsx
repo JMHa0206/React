@@ -1,29 +1,35 @@
+// ✅ RefDeptModal.jsx (onSelect도 객체 통으로 넘기도록)
 import React, { useEffect, useState } from "react";
 import daxios from "../../axios/axiosConfig";
 
 const RefDeptModal = ({ isOpen, selected = [], onClose, onSelect }) => {
   const [departments, setDepartments] = useState([]);
-  const [selectedIds, setSelectedIds] = useState(new Set(selected));
+  const [selectedIds, setSelectedIds] = useState(new Set(selected.map((d) => d.dept_id)));
 
   useEffect(() => {
     if (!isOpen) return;
+    console.log("📬 참조부서 모달 OPEN됨");
     daxios
       .get("http://10.5.5.6/emp/selectAllDepts")
-      .then((res) => setDepartments(res.data))
-      .catch((err) => console.error("❌ 부서 목록 불러오기 실패", err));
+      .then((res) => {
+        console.log("📥 부서 목록 받아옴:", res.data);
+        setDepartments(res.data);
+      })
+      .catch((err) => {
+        console.error("❌ 부서 목록 로딩 실패:", err);
+        alert("부서 목록을 불러오는 데 실패했습니다.");
+      });
   }, [isOpen]);
 
   useEffect(() => {
-    setSelectedIds(new Set(selected));
+    setSelectedIds(new Set(selected.map((d) => d.dept_id)));
   }, [selected]);
 
   const buildTree = (list, parentId = null) =>
-    list
-      .filter((d) => d.upper_dept === parentId)
-      .map((d) => ({
-        ...d,
-        children: buildTree(list, d.dept_id),
-      }));
+    list.filter((d) => d.upper_dept === parentId).map((d) => ({
+      ...d,
+      children: buildTree(list, d.dept_id),
+    }));
 
   const toggleDept = (deptId) => {
     const next = new Set(selectedIds);
@@ -49,44 +55,22 @@ const RefDeptModal = ({ isOpen, selected = [], onClose, onSelect }) => {
     ));
 
   const handleConfirm = () => {
-    onSelect([...selectedIds]);
+    const selectedArray = [...selectedIds];
+    const selectedDeptObjects = departments.filter((d) => selectedArray.includes(d.dept_id));
+    console.log("✅ 선택된 참조부서:", selectedDeptObjects);
+    onSelect(selectedDeptObjects);
     onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0,0,0,0.5)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 9999,
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          padding: "2rem",
-          borderRadius: "10px",
-          minWidth: "600px",
-          maxHeight: "80vh",
-          overflowY: "auto",
-        }}
-      >
-        <h3 style={{ marginBottom: "1rem" }}>📂 부서 선택</h3>
+    <div className="modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.3)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 999 }}>
+      <div className="modal" style={{ background: '#fff', padding: '1.5rem', borderRadius: '8px', width: '500px', maxHeight: '80vh', overflowY: 'auto' }}>
+        <h3>📂 참조 부서 선택</h3>
         <ul>{renderTree(buildTree(departments))}</ul>
-
-        <div style={{ marginTop: "1.5rem", display: "flex", justifyContent: "flex-end" }}>
-          <button onClick={handleConfirm} style={{ marginRight: "1rem" }}>
-            확인
-          </button>
+        <div className="modal-buttons" style={{ marginTop: '1rem', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+          <button onClick={handleConfirm}>확인</button>
           <button onClick={onClose}>취소</button>
         </div>
       </div>
