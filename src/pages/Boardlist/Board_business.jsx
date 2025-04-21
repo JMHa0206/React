@@ -36,9 +36,7 @@ const Board_business = () => {
             }
         })
         .then((resp) => {
-            console.log("🧾 로그인 사용자 정보 로딩 완료:", resp.data); 
             setUserInfo(resp.data);
-            console.log("👤 현재 로그인 사용자 이름:", resp.data.emp_name);
         })
         .catch((error) => {
             console.error("❌ 사용자 정보 불러오기 실패:", error);
@@ -46,12 +44,6 @@ const Board_business = () => {
     }, []);
 
     const getBoardList = () => {
-        console.log("📦 API 호출 시작", {
-            userId: userInfo?.emp_name,
-            boardId: numericBoardId,
-            currentPage,
-            userInfo
-        });
 
         axios.post(`http://10.5.5.12/board/navigator`, {
          
@@ -62,7 +54,6 @@ const Board_business = () => {
             
         })
         .then(res => {
-            console.log("🟡 응답 데이터 전체:", res.data);
             const data = res.data;
     
             if (!data.list || !Array.isArray(data.list)) {
@@ -71,8 +62,6 @@ const Board_business = () => {
                 setTotalPages(1);
                 return;
             }
-    
-            console.log("📦 게시글 데이터:", data);
             setBoardList(data.list);
     
             const safePages = Math.max(Math.ceil(data.totalPages), 1);
@@ -87,7 +76,6 @@ const Board_business = () => {
 
     useEffect(() => {
         if (!isNaN(numericBoardId) && userInfo) {
-            console.log("✅ 게시판 목록 불러오기 시작:", userInfo.emp_code_id);
             getBoardList();
         }
     }, [currentPage, numericBoardId, userInfo]);
@@ -106,10 +94,6 @@ const Board_business = () => {
         const filtered = sorted.filter(item =>
             item.post_title?.toLowerCase().includes(query)
         );
-    
-        // ✅ 여기에 추가!
-        console.log("📦 필터링 후 게시글 수:", filtered.length);
-        console.log("📝 현재 검색어:", query);
     
         return filtered;
     };
@@ -169,18 +153,15 @@ const Board_business = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {getFilteredAndSortedList().map((message,index) => (
+                            {getFilteredAndSortedList().map((message, index) => (
                                 <tr key={index}>
                                     <td>{message.post_id}</td>
                                     <td>
-                                        <div
-                                            onClick={() => increaseViewCount(message.post_id)}
-                                            
-                                        >
-                                            {message.post_title}
-                                        </div>
+                                        <span onClick={() => increaseViewCount(message.post_id)} style={{ cursor: 'pointer' }}>
+                                        {message.post_title}
+                                        </span>
                                     </td>
-                                    <td>{message.emp_name}</td> {/* 작성자 이름 표시 */}
+                                    <td>{message.emp_name}</td>
                                     <td>{formatDate(message.post_date)}</td>
                                     <td>{message.post_view}</td>
                                 </tr>

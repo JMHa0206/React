@@ -1,5 +1,5 @@
 import style from './Index.module.css';
-import axios from 'axios';
+import daxios from '../../axios/axiosConfig';
 import useAuthStore from '../../store/useAuthStore';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +16,6 @@ const Index = () => {
 
   // ✅ 이미 로그인 상태라면 바로 메인페이지로 리디렉트
   useEffect(() => {
-    console.log("[Init check]", isInitialized, isAuth);
     if (isInitialized && isAuth) {
       navigate('/mainpage');
     }
@@ -28,12 +27,13 @@ const Index = () => {
     setError('');
   };
 
+
   const handleLogin = (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
-    axios.post('http://10.5.5.6/auth/login', login)
+    daxios.post('http://10.5.5.6/auth/login', login)
       .then((resp) => {
         const token = resp.data;
         sessionStorage.setItem("jwtToken", token);

@@ -21,7 +21,7 @@ function GroupChatting({ openChat }) {
         const userId = sessionStorage.getItem("userId");
 
         const firstData = () => {
-            axios.get("http://10.5.5.2/Employee/selectMyId", {
+            axios.get("http://10.5.5.6/Employee/selectMyId", {
                 params: {
                     userId: userId
                 }
@@ -30,7 +30,7 @@ function GroupChatting({ openChat }) {
 
                     myIdRef.current = resp.data;
                     // sql에서 내아이디가 그룹멤버에 포함되어있고 멤버수가 3이상일때
-                    axios.get("http://10.5.5.2/Employee/selectGroupChat", {
+                    axios.get("http://10.5.5.6/Employee/selectGroupChat", {
                         params: {
                             myId: myIdRef.current
                         }
@@ -40,10 +40,10 @@ function GroupChatting({ openChat }) {
                             const members = room.group_member.split(",");
                             const filteredMembers = members.filter(id => id !== String(myIdRef.current));
 
-                            return axios.post("http://10.5.5.2/Employee/getNamesIds", {
+                            return axios.post("http://10.5.5.6/Employee/getNamesIds", {
                                 ids: filteredMembers
                             }).then((namesResp) => {
-                                return axios.get("http://10.5.5.2/Employee/getGroupInfo", {
+                                return axios.get("http://10.5.5.6/Employee/getGroupInfo", {
                                     params: { groupId: room.msg_group_id }
                                 }).then((groupInfo) => {
                                     return {
@@ -127,7 +127,7 @@ function GroupChatting({ openChat }) {
     }, []);
 
     const handleDelete = () => {
-        axios.put(`http://10.5.5.2/Employee/quitRoom`, {
+        axios.put(`http://10.5.5.6/Employee/quitRoom`, {
             myId: myIdRef.current,
             msgGroupId: contextMenu.roomId
         })

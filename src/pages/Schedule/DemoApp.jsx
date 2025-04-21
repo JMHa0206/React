@@ -33,14 +33,12 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
   useEffect(()=>{
     caxios.get("/mypage/info").then((resp)=>{
       const info = resp.data;
-      console.log(info);
       setUserInfo(info);
       
       setEventInput((prev) => ({
         ...prev,
         emp_id: info.emp_code_id
       }));
-      console.log("인포 값 확인 : " + info.emp_code_id);
 
     }).catch((error) => {
         console.error("실패", error);
@@ -75,7 +73,6 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
 
     useEffect(() => {
       if (!userInfo.emp_code_id) return;
-      console.log("유저인포 값 확인 : " + userInfo.emp_code_id);
       
     caxios.get(`/schedule/myEvents/${userInfo.emp_code_id}`).then((resp)=>{
       
@@ -101,10 +98,8 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
 
   useEffect(() => {
     if (!userInfo.emp_code_id) return;
-    console.log("유저인포 값 확인 : " + userInfo.emp_code_id);
     
   caxios.get(`/schedule/shareEvents/${userInfo.emp_code_id}`).then((resp)=>{
-    console.log("공유 일정 목록 : " + resp.data);
     
     const shareEvents = resp.data.map((event) => ({
       id:event.id,
@@ -302,7 +297,6 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
 
 
   const handleSave = () => {
-    console.log(update);
     caxios.put(`/schedule/${update.id}`, update)
     .then(resp => {
       if (onRefresh) onRefresh();
@@ -321,7 +315,6 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
   const [ calList, setCalList ] = useState([]);
   useEffect(() => {
     caxios.get('/calendar').then((resp) => {
-      console.log(resp.data);
       setCalList(resp.data);
       
     }).catch((error) => {

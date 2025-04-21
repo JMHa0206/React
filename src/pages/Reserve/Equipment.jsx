@@ -51,7 +51,6 @@ const Equipment = ({ userInfo })=> {
 
         setReservations([]); 
         caxios.get(`/reserve/reservations`).then((resp) => {
-            console.log("🔥 서버에서 받아온 예약 목록 원본:", resp.data);
             const formatResev = resp.data.map((resv) => {
               const formatTime = (time) => {
                   const [h, m] = time.split(':');
@@ -111,7 +110,6 @@ const Equipment = ({ userInfo })=> {
             return; 
           }
           setSeletedResv(clickInfo.event);
-          console.log(clickInfo);
           setIsDetailOpen(true);
     };
 

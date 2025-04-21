@@ -39,11 +39,6 @@ const ApprovalForm = () => {
     const editorInstance = editorRef.current.getInstance();
     const content = editorInstance.getMarkdown();
 
-    console.log('제출데이터:', {
-      ...form,
-      content,
-    });
-
     // 이후 FormData로 서버 제출 가능
   };
 

@@ -13,7 +13,7 @@ const Sidelist = ({ onRefresh }) => {
 
   useEffect(() => {
     // ✅ 로그인한 유저 정보 가져오기 (부서 포함)
-    daxios.get("http://221.150.27.169:8888/mypage/info")
+    daxios.get("http://10.5.5.6/mypage/info")
       .then(res => {
         const dept = res.data.departDTO;
         if (!dept) return;
@@ -71,9 +71,9 @@ const Sidelist = ({ onRefresh }) => {
         </div>
 
         <div className={sideliststyle.boardsidebar}>
-          <div className={sideliststyle.wholegasy}>부서 문서함</div>
-          <div><Link to="/mainpage/maincontent/approval/department/referenced">부서 참조 문서</Link></div>
-          <div><Link to="/mainpage/maincontent/approval/department/created">부서 생산 문서</Link></div>
+          {/* <div className={sideliststyle.wholegasy}>부서 문서함</div>
+          <div><Link to="/mainpage/maincontent/approval/department/referenced">부서 참조 문서</Link></div> */}
+          {/* <div><Link to="/mainpage/maincontent/approval/department/created">부서 생산 문서</Link></div> */}
         </div>
       </aside>
     </div>

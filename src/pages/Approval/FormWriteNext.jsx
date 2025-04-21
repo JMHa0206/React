@@ -165,7 +165,7 @@ const FormWriteNext = () => {
         startDate: formData.시작일 || null,
         endDate: formData.종료일 || null,
       };
-      await daxios.post("http://10.10.55.22/api/edms/register", payload);
+      await daxios.post("http://10.5.5.6/api/edms/register", payload);
       sessionStorage.removeItem("temp_edmsContent");
       alert("✅ 제출 완료");
       navigate("/mainpage/maincontent/approval/requested", { state: { refresh: true } });
@@ -181,10 +181,10 @@ const FormWriteNext = () => {
     const loadData = async () => {
       if (!state?.formId) return;
       try {
-        const codeRes = await daxios.get("http://221.150.27.169:8888/api/employee/code");
+        const codeRes = await daxios.get("http://10.5.5.6/api/employee/code");
         const code = codeRes.data;
-        const userRes = await daxios.get(`http://221.150.27.169:8888/api/employee/${code}`);
-        const templateRes = await daxios.get(`http://221.150.27.169:8888/api/forms/${state.formId}`);
+        const userRes = await daxios.get(`http://10.5.5.6/api/employee/${code}`);
+        const templateRes = await daxios.get(`http://10.5.5.6/api/forms/${state.formId}`);
         setUserInfo(userRes.data);
         setTemplateHtml(templateRes.data.formContent);
         setFormData((prev) => ({

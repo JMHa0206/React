@@ -39,12 +39,6 @@ const Board_reference = () => {
     }, []);
 
     const getBoardList = () => {
-        console.log("📦 API 호출 시작", {
-            userId: userInfo?.emp_name,
-            boardId: numericBoardId,
-            currentPage,
-            userInfo
-        });
 
         axios.post(`http://10.5.5.6/board/navigator`, {
     
@@ -54,7 +48,6 @@ const Board_reference = () => {
             
         })
             .then(res => {
-                console.log("🟡 응답 데이터 전체:", res.data);
                 const data = res.data;
 
                 if (!data.list || !Array.isArray(data.list)) {
@@ -63,8 +56,6 @@ const Board_reference = () => {
                     setTotalPages(1);
                     return;
                 }
-
-                console.log("📦 게시글 데이터:", data);
                 setBoardList(data.list);
 
                 const safePages = Math.max(Math.ceil(data.totalPages), 1);
@@ -79,7 +70,6 @@ const Board_reference = () => {
 
     useEffect(() => {
         if (!isNaN(numericBoardId) && userInfo) {
-            console.log("✅ 게시판 목록 불러오기 시작:", userInfo.emp_code_id);
             getBoardList();
         }
     }, [currentPage, numericBoardId, userInfo]);
@@ -98,10 +88,6 @@ const Board_reference = () => {
         const filtered = sorted.filter(item =>
             item.post_title?.toLowerCase().includes(query)
         );
-
-        // ✅ 여기에 추가!
-        console.log("📦 필터링 후 게시글 수:", filtered.length);
-        console.log("📝 현재 검색어:", query);
 
         return filtered;
     };

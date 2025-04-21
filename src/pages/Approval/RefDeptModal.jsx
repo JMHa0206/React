@@ -8,11 +8,9 @@ const RefDeptModal = ({ isOpen, selected = [], onClose, onSelect }) => {
 
   useEffect(() => {
     if (!isOpen) return;
-    console.log("📬 참조부서 모달 OPEN됨");
     daxios
       .get("http://10.5.5.6/emp/selectAllDepts")
       .then((res) => {
-        console.log("📥 부서 목록 받아옴:", res.data);
         setDepartments(res.data);
       })
       .catch((err) => {
@@ -57,7 +55,6 @@ const RefDeptModal = ({ isOpen, selected = [], onClose, onSelect }) => {
   const handleConfirm = () => {
     const selectedArray = [...selectedIds];
     const selectedDeptObjects = departments.filter((d) => selectedArray.includes(d.dept_id));
-    console.log("✅ 선택된 참조부서:", selectedDeptObjects);
     onSelect(selectedDeptObjects);
     onClose();
   };

@@ -42,15 +42,15 @@ const ApprovalDetail = () => {
 
   const fetchData = async () => {
     try {
-      const userRes = await daxios.get("http://10.10.55.22/api/employee/code");
+      const userRes = await daxios.get("http://10.5.5.6/api/employee/code");
       setCurrentUserId(userRes.data);
 
-      const edmsRes = await daxios.get(`http://10.10.55.22/api/edms/${id}`);
-      const historyRes = await daxios.get(`http://10.10.55.22/api/edms/${id}/history`);
+      const edmsRes = await daxios.get(`http://10.5.5.6/api/edms/${id}`);
+      const historyRes = await daxios.get(`http://10.5.5.6/api/edms/${id}/history`);
 
       let filesData = [];
       try {
-        const filesRes = await daxios.get(`http://10.10.55.22/api/files/by-edms/${id}`);
+        const filesRes = await daxios.get(`http://10.5.5.6/api/files/by-edms/${id}`);
         filesData = Array.isArray(filesRes.data) ? filesRes.data : [];
       } catch (fileErr) {
         console.warn(`📭 파일 없음 또는 실패 - edmsId: ${id}`, fileErr);
@@ -103,7 +103,7 @@ const ApprovalDetail = () => {
 
   const handleApprove = async () => {
     try {
-      await daxios.post(`http://10.10.55.22/api/edms/${id}/approve`);
+      await daxios.post(`http://10.5.5.6/api/edms/${id}/approve`);
       alert("결재 완료");
       await fetchData();
     } catch (err) {
@@ -114,7 +114,7 @@ const ApprovalDetail = () => {
 
   const handleReject = async () => {
     try {
-      await daxios.post(`http://10.10.55.22/api/edms/${id}/reject`, rejectReason, {
+      await daxios.post(`http://10.5.5.6/api/edms/${id}/reject`, rejectReason, {
         headers: { "Content-Type": "text/plain" },
       });
       alert("반려 완료");
@@ -126,7 +126,7 @@ const ApprovalDetail = () => {
   };
 
   const handleDownload = (sysName) => {
-    window.location.href = `http://10.10.55.22/api/files/download/${sysName}`;
+    window.location.href = `http://10.5.5.6/api/files/download/${sysName}`;
   };
 
   return (

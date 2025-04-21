@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-// 조휘영
+
 const useWorkStore = create(persist(
   (set) => ({
     checkInTime: null,
