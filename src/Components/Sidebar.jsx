@@ -53,10 +53,10 @@ const Sidebar = () => {
         }
 
         // ✅ 결재 대기 문서 수 조회
-        const empRes = await daxios.get("http://10.10.55.22/api/employee/code");
+        const empRes = await daxios.get("http://10.5.5.6/api/employee/code");
         const empCodeId = empRes.data;
 
-        const countRes = await daxios.get(`http://10.10.55.22/api/edms/pending-count/${empCodeId}`);
+        const countRes = await daxios.get(`http://10.5.5.6/api/edms/pending-count/${empCodeId}`);
         setPendingCount(countRes.data || 0);
       } catch (error) {
         console.error("데이터 로딩 실패:", error);

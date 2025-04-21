@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-// 조휘영
+
 const useWorkStore = create(persist(
   (set) => ({
     checkInTime: null,
@@ -19,6 +19,29 @@ const useWorkStore = create(persist(
   {
     name: 'work-storage',
     getStorage: () => sessionStorage,
+
+    // ✅ 날짜가 바뀌면 자동 초기화
+    migrate: (persistedState, version) => {
+      const today = new Date().toDateString();
+      const storedCheckInTime = persistedState?.state?.checkInTime;
+
+      if (storedCheckInTime && new Date(storedCheckInTime).toDateString() !== today) {
+        // 날짜가 다르면 상태 초기화
+        return {
+          ...persistedState,
+          state: {
+            checkInTime: null,
+            checkOutTime: null,
+            isCheckedIn: false,
+            isCheckedOut: false,
+            currentActivity: "",
+            activeActivity: "",
+          }
+        };
+      }
+
+      return persistedState;
+    }
   }
 ));
 
