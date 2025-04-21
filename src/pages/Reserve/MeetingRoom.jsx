@@ -45,7 +45,7 @@ const MeetingRoom = ({ userInfo })=> {
             setResourceList(resources);
             const firstEquipment = resources.find(r => r.resc_type_id === 110);
             if (firstEquipment) {
-                setTargetResc(firstEquipment.resc_id); // 자동으로 첫 번째 비품 자원 선택
+                setTargetResc(firstEquipment.resc_id); 
             }
         }).catch((error) => {
             console.error("자원 정보 불러오기 실패", error);
@@ -56,19 +56,18 @@ const MeetingRoom = ({ userInfo })=> {
         caxios.get(`/reserve/reservations`).then((resp) => {
             console.log("🔥 서버에서 받아온 예약 목록 원본:", resp.data);
           
-            const fixDate = (dateStr) => dateStr.replace(/[./]/g, '-');
+            
           
             const formatResev = resp.data.map((resv) => {
                 const formatTime = (time) => {
                     const [h, m] = time.split(':');
-                    return `${h.padStart(2, '0')}:${m.padStart(2, '0')}:00`;
+                    return `${h.padStart(2, '0')}:${m.padStart(2, '0')}:00+09:00`;
                   };
-                  
+                  const fixDate = (dateStr) => dateStr.replace(/[./]/g, '-');
                   const startStr = `${fixDate(resv.resv_date)}T${formatTime(resv.resv_stime)}`;
                   const endStr = `${fixDate(resv.resv_date)}T${formatTime(resv.resv_etime)}`;
-                  
-          
-               return {
+               
+                  return {
                 id: resv.resv_id,
                 title: resv.resv_title,
                 start: startStr,
@@ -80,9 +79,13 @@ const MeetingRoom = ({ userInfo })=> {
                   resource_id: resv.resource_id
                 }
               };
+           
+
+
             });
-          
-            setTargetResc(1001);
+
+            
+            //setTargetResc(1001);
             setReservations(formatResev);
           }).catch((error) => {
             console.error("예약목록 불러오기 실패", error);
@@ -158,7 +161,14 @@ const MeetingRoom = ({ userInfo })=> {
                 </table>
             </div>
             
-        <div>
+        <div style={{
+            fontFamily: 'initial',
+            fontSize: '14px',
+            lineHeight: 'normal',
+            boxSizing: 'content-box',
+            position: 'relative',
+            overflow: 'visible',
+        }}> 
             <FullCalendar
             key={targetResc} 
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -168,6 +178,7 @@ const MeetingRoom = ({ userInfo })=> {
             slotMaxTime="21:00:00"
             slotDuration="00:30:00"
             snapDuration="00:30:00"
+            timeZone="local"
             locales={[koLocale]}
             locale="ko"
             titleFormat={{
@@ -198,7 +209,7 @@ const MeetingRoom = ({ userInfo })=> {
             eventDidMount={(info) => {
                 info.el.style.backgroundColor = info.event.extendedProps.emp_id === userInfo.emp_code_id ? '#4f7fd8' : '#d5e8fa';
                 info.el.style.borderRadius = '4px';
-                info.el.style.color = '#1a3c6c';
+                info.el.style.color = info.event.extendedProps.emp_id === userInfo.emp_code_id ? '#1a3c6c' :'#4f7fd8';
                 info.el.style.border = 'none';
               }}
             />

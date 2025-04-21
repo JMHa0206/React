@@ -17,8 +17,8 @@ const InsaPage = () => {
   const [summary, setSummary] = useState({
     weeklyWorkedDays: 0,
     weeklyWorkHours: 0,
-    averageCheckIn: "00:00",
-    averageCheckOut: "00:00",
+    averageCheckIn: "", // ✅ 수정: 기본값을 ""로 둠
+    averageCheckOut: "",
     consecutiveDays: 0,
     totalAnnual: 0,
     usedAnnual: 0,
@@ -27,19 +27,26 @@ const InsaPage = () => {
     totalOvertime: 0
   });
 
-  // ✅ 근무 요약 데이터 받아오기 (토큰 수동 포함)
+  // ✅ 수정: 시간 값 fallback 처리 함수e
+  const safeTime = (time) => {
+    if (typeof time !== "string") return "00:00";
+    const trimmed = time.trim();
+    return (trimmed === "" || trimmed === ":" || trimmed === "0") ? "00:00" : trimmed;
+  };
+  
+
   useEffect(() => {
     const fetchSummary = async () => {
       try {
         const token = sessionStorage.getItem('jwtToken');
         console.log("📦 토큰 확인 (insaPage):", token);
 
-        const res = await daxios.get("http://10.10.55.66/insa/summary", {
+        const res = await daxios.get("http://10.5.5.6/insa/summary", {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        console.log("1");
+        console.log("✅ 요약 데이터:", res.data);
         setSummary(res.data);
       } catch (err) {
         console.error("❌ 근무 요약 정보 로딩 실패", err);
@@ -49,43 +56,35 @@ const InsaPage = () => {
     fetchSummary();
   }, []);
 
-  // ✅ 오늘 근무 시간 실시간 계산
   useEffect(() => {
     let interval;
-  
+
     if (checkInTime && !isCheckedOut) {
-      // ⏱ 퇴근 전, 실시간 타이머
       interval = setInterval(() => {
         const now = new Date();
         const inTime = new Date(checkInTime);
-  
         const diff = Math.floor((now - inTime) / 1000);
         const hours = String(Math.floor(diff / 3600)).padStart(2, "0");
         const minutes = String(Math.floor((diff % 3600) / 60)).padStart(2, "0");
         const seconds = String(diff % 60).padStart(2, "0");
-  
         setTodayWorkedTime(`${hours}:${minutes}:${seconds}`);
       }, 1000);
     } else if (checkInTime && checkOutTime) {
-      // ⌛ 퇴근 후, 고정된 근무 시간 계산
       const inTime = new Date(checkInTime);
       const outTime = new Date(checkOutTime);
-  
       if (outTime > inTime) {
         const diff = Math.floor((outTime - inTime) / 1000);
         const hours = String(Math.floor(diff / 3600)).padStart(2, "0");
         const minutes = String(Math.floor((diff % 3600) / 60)).padStart(2, "0");
         const seconds = String(diff % 60).padStart(2, "0");
-  
         setTodayWorkedTime(`${hours}:${minutes}:${seconds}`);
       } else {
-        setTodayWorkedTime("- -"); // ⛔ 시간 역전 방지
+        setTodayWorkedTime("- -");
       }
     }
-  
+
     return () => clearInterval(interval);
   }, [checkInTime, checkOutTime, isCheckedOut]);
-  
 
   const progressPercent = (summary.weeklyWorkHours / 52) * 100;
 
@@ -159,12 +158,12 @@ const InsaPage = () => {
               <div className={styles.patternItem}>
                 <div className={styles.iconWrapper}>🕘</div>
                 <span className={styles.patternLabel}>평균 출근 시간</span>
-                <span className={styles.patternValue}>{summary.averageCheckIn}</span>
+                <span className={styles.patternValue}>{safeTime(summary.averageCheckIn)}</span> {/* ✅ 수정 */}
               </div>
               <div className={styles.patternItem}>
                 <div className={styles.iconWrapper}>🕕</div>
                 <span className={styles.patternLabel}>평균 퇴근 시간</span>
-                <span className={styles.patternValue}>{summary.averageCheckOut}</span>
+                <span className={styles.patternValue}>{safeTime(summary.averageCheckOut)}</span> {/* ✅ 수정 */}
               </div>
               <div className={styles.patternItem}>
                 <div className={styles.iconWrapper}>📆</div>

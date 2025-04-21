@@ -6,8 +6,8 @@ const DeptAttendance = () => {
   const [departments, setDepartments] = useState([]);
   const [selectedDept, setSelectedDept] = useState('');
   const [attendanceList, setAttendanceList] = useState([]);
-  const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
   const pageSize = 5;
 
   // 📌 부서 목록 불러오기
@@ -21,7 +21,7 @@ const DeptAttendance = () => {
       });
   }, []);
 
-  // 📌 부서 변경 시 목록 초기화
+  // 📌 부서 변경 시 목록 초기화ㄷ
   useEffect(() => {
     if (selectedDept) {
       setAttendanceList([]);
@@ -53,7 +53,6 @@ const DeptAttendance = () => {
       });
   }, [selectedDept, page]);
 
-  // 📌 스크롤 하단 도달 시 다음 페이지 로딩
   const handleScroll = (e) => {
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
     if (scrollTop + clientHeight >= scrollHeight - 20 && hasMore) {

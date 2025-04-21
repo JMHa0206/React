@@ -66,3 +66,20 @@
     justify-content:right;
     align-items: flex-end;
 }
+
+.delete-button {
+  background-color: #1a3c6c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.delete-button:hover {
+  background-color: #274b84;
+}

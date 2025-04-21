@@ -1,12 +1,12 @@
 :root {
     --fc-small-font-size: 0.9em;
-    --fc-page-bg-color: #f7fbff; /* 전체 배경 밝은 블루톤 */
+    --fc-page-bg-color: #f7fbff;
     --fc-neutral-bg-color: #e3edf5;
     --fc-neutral-text-color: #5c7080;
     --fc-border-color: #dce9f5;
   
     --fc-button-text-color: #fff;
-    --fc-button-bg-color: #1a3c6c; /* 진한 네이비 블루 */
+    --fc-button-bg-color: #1a3c6c; 
     --fc-button-border-color: #1a3c6c;
     --fc-button-hover-bg-color: #15416e;
     --fc-button-hover-border-color: #133b65;
@@ -40,6 +40,11 @@ a:visited {
   text-decoration: none; /* 밑줄 제거 */
 }
 
+.fc .fc-timegrid-slot {
+  height: 40px !important;  /* ← 픽셀로 고정!! */
+  border-bottom: 1px solid #dce9f5; /* 다시 칸 구분도 보이게 */
+}
+
   @media (max-width: 1200px) {
     /* 상단 툴바 */
     .fc .fc-toolbar {
@@ -68,5 +73,13 @@ a:visited {
       padding: 2px 4px;
       box-sizing: border-box;
     }
+
+    .fc .fc-timegrid-event {
+      margin: 0 !important;
+      padding: 2px 4px !important;
+      box-sizing: border-box !important;
+    }
     
+    
+
   }

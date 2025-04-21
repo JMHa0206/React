@@ -37,7 +37,7 @@ function MessengerPopup({ onClose }) {
 
 
       if (!mine || !mine.emp_code_id) {
-        console.error("내 정보가 잘못되었습니다:", mine);
+     
         return; // 데이터가 잘못되면 여기서 중단
       }
 
@@ -211,7 +211,7 @@ function MessengerPopup({ onClose }) {
       {currentChat ? (<Chatting userName={currentChat} />) : (
         <div className={style.contentStyle}>
           <div className={style.left}>
-            <button className={style.empbtn} title="사원 목록" onClick={() => navigate("/messenger/employee")} translate="no">사원</button>
+            <button className={style.empbtn} title="사원 목록" onClick={() => navigate("/messenger/employee")}  translate="no">사원</button>
             <button className={style.chatbtn} title="1:1 채팅방 목록" onClick={() => navigate("/messenger/chattingroom")}>1:1</button>
             <button className={style.groupbtn} title="그룹 채팅방 목록" onClick={() => navigate("/messenger/groupchatting")}>그룹</button>
           </div>

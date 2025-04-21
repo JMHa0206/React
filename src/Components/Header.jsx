@@ -28,17 +28,17 @@ const Header = () => {
   useEffect(()=>{
     const userId = sessionStorage.getItem("userId");
 
-     axios.get(`http://10.5.5.6/Employee/SelectMine`,{
+     axios.get(`http://221.150.27.169:8888/Employee/SelectMine`,{
       params:{userId:userId}
      })
      .then((resp) => {
         const id = resp.data.emp_code_id;
 
-         return axios.get(`http://10.5.5.6/Employee/ProfileImg`,{
+         return axios.get(`http://221.150.27.169:8888/Employee/ProfileImg`,{
           params: { empId: id }
          });
           }).then((imgResp)=>{
-            const fullPath = `http://10.5.5.6${imgResp.data}?t=${Date.now()}`;
+            const fullPath = `http://221.150.27.169:8888${imgResp.data}?t=${Date.now()}`;
             // setProfileImg(fullPath)
             setProfileImagePath(fullPath);  
           })
@@ -61,7 +61,7 @@ const Header = () => {
 
   // Close dropdown when clicking outside
 
-  console.log("🔥 Header에서 보는 프로필 이미지 경로:", profileImagePath);
+  
   useEffect(() => {
 
 
@@ -105,12 +105,14 @@ const Header = () => {
     setNotice(!notice);
   }
 
- 
+  const logo = () =>{
+    navi("/");
+  }
 
   return (
     <header className="header">
       <div className="header-content">
-      <div className="logo">CODEBREAKER</div>
+      <div className="logo" onClick={logo} >CODEBREAKER</div>
       <div className="header-buttons">
         <button><i className="fa-regular fa-bell" onMouseEnter={openNotice}></i></button>
         <button><i className="fa-regular fa-comment" onClick={openMessenger}></i></button>

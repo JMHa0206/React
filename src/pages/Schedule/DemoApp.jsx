@@ -153,37 +153,30 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
  
 
   const handleAddEvent = () => {
-    
     const calendarApi = selectedInfo.view.calendar;
     calendarApi.unselect();
-
     const startDate = new Date(eventInput.start_date);
     const endDate = new Date(eventInput.end_date || eventInput.start_date);
     const startTime = eventInput.startTime || "09:00";
     const endTime = eventInput.endTime || "18:00";
-
     if (startDate > endDate) {
-      alert("시작일은 종료일보다 앞서야 합니다.");
+      alert("선택한 날짜를 확인해주세요.");
       return;
     }
-
     const isSameDay = startDate.toDateString() === endDate.toDateString();
-
     if (isSameDay) {
       const startDateTime = new Date(`2000-01-01T${startTime}`);
       const endDateTime = new Date(`2000-01-01T${endTime}`);
   
       if (startDateTime >= endDateTime) {
-        alert("시작 시간은 종료 시간보다 이전이어야 합니다.");
+        alert("시작 시간과 종료 시간을 확인해주세요.");
         return;
       }
     }
-
     if (!eventInput.c_id) {
       alert("캘린더를 선택해주세요.");
       return;
     }
-
     if(!eventInput.title){
       alert("일정명을 입력해주세요.");
       return;
@@ -205,12 +198,8 @@ const DemoApp = ({ onRefresh, reloadKey }) => {
       }
     };
 
-  
-    
-
     addEvent(newEvent);
     calendarApi.addEvent(newEvent);
-
 
     const postData = {
       ...eventInput,

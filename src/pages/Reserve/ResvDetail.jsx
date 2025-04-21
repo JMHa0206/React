@@ -52,7 +52,7 @@ const ResvDetail = ({selectedResv, closeDetail, userInfo, onDeleteSuccess }) => 
             <div className={detailStyle.closeBtn}><button type="button" className="btn-close" aria-label="Close"  onClick={closeDetail}></button></div>
                 {
                     <>
-                    <div>예약 내용</div>
+                    <h3 style={{margin:'10px'}}>예약 내용</h3>
                     <div><strong>예약자:</strong>{empName}</div>
                     <div><strong>날짜:</strong> {resvDetail.resv_date}</div>
                     <div><strong>시간:</strong> {resvDetail.resv_stime} ~ {resvDetail.resv_etime}</div>
@@ -63,7 +63,7 @@ const ResvDetail = ({selectedResv, closeDetail, userInfo, onDeleteSuccess }) => 
         
               <div id="editBtns" className={detailStyle['detail-buttons']}>
                 {
-                  userInfo && selectedResv.extendedProps?.emp_id == userInfo.emp_code_id ? <button onClick={handleDelete}>삭제</button> : <></>
+                  userInfo && selectedResv.extendedProps?.emp_id == userInfo.emp_code_id ? <button onClick={handleDelete} className={detailStyle['delete-button']}>삭제</button> : <></>
                 }
               </div>
             </div>

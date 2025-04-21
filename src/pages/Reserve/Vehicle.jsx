@@ -12,7 +12,7 @@ import ResvDetail from './ResvDetail';
 
 
 const Vehicle = ({ userInfo })=> {
-
+    const [showWeekends, setShowWeekends] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedInfo, setSelectedInfo] = useState(null);
     const [ resouceList, setResourceList ] = useState([]);
@@ -36,7 +36,8 @@ const Vehicle = ({ userInfo })=> {
 
     useEffect(() => {
         
-        caxios.get(`/reserve/resources`).then((resp)=>{
+        caxios.get(`/reserve/resources`)
+        .then((resp)=>{
           const resources = resp.data;
           setResourceList(resources);
           const firstEquipment = resources.find(r => r.resc_type_id === 120);
@@ -52,26 +53,47 @@ const Vehicle = ({ userInfo })=> {
         caxios.get(`/reserve/reservations`).then((resp) => {
             console.log("🔥 서버에서 받아온 예약 목록 원본:", resp.data);
           
-            const fixDate = (dateStr) => dateStr.replace(/[./]/g, '-');
-          
+            //const fixDate = (dateStr) => dateStr.replace(/[./]/g, '-');
             const formatResev = resp.data.map((resv) => {
-              const startStr = `${fixDate(resv.resv_date)}T${resv.resv_stime}`;
-              const endStr = `${fixDate(resv.resv_date)}T${resv.resv_etime}`;
-              const startDate = new Date(startStr);
-              const endDate = new Date(endStr);
+              const formatTime = (time) => {
+                  const [h, m] = time.split(':');
+                  return `${h.padStart(2, '0')}:${m.padStart(2, '0')}:00+09:00`;
+                };
+                const fixDate = (dateStr) => dateStr.replace(/[./]/g, '-');
+                const startStr = `${fixDate(resv.resv_date)}T${formatTime(resv.resv_stime)}`;
+                const endStr = `${fixDate(resv.resv_date)}T${formatTime(resv.resv_etime)}`;
+             
+                return {
+              id: resv.resv_id,
+              title: resv.resv_title,
+              start: startStr,
+              end: endStr,
+              allDay: false,
+              overlap: false,
+              extendedProps: {
+                emp_id: resv.resv_emp,
+                resource_id: resv.resource_id
+              }
+            };
+          });
+            // const formatResev = resp.data.map((resv) => {
+            //   const startStr = `${fixDate(resv.resv_date)}T${resv.resv_stime}`;
+            //   const endStr = `${fixDate(resv.resv_date)}T${resv.resv_etime}`;
+            //   const startDate = new Date(startStr);
+            //   const endDate = new Date(endStr);
           
-               return {
-                id: resv.resv_id,
-                title: resv.resv_title,
-                start: startStr,
-                end: endStr,
-                allDay: false,
-                extendedProps: {
-                  emp_id: resv.resv_emp,
-                  resource_id: resv.resource_id
-                }
-              };
-            });
+            //    return {
+            //     id: resv.resv_id,
+            //     title: resv.resv_title,
+            //     start: startStr,
+            //     end: endStr,
+            //     allDay: false,
+            //     extendedProps: {
+            //       emp_id: resv.resv_emp,
+            //       resource_id: resv.resource_id
+            //     }
+            //   };
+            // });
             
             setReservations(formatResev);
           }).catch((error) => {
@@ -80,7 +102,6 @@ const Vehicle = ({ userInfo })=> {
       
     }, [reloadKey])
     
-    const [showWeekends, setShowWeekends] = useState(true);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
         const [ selectedResv , setSeletedResv] = useState(null); 
         const selectResv = (clickInfo) => {
@@ -96,17 +117,17 @@ const Vehicle = ({ userInfo })=> {
             setIsDetailOpen(true);
         };
 
-        const renderEventContent = (eventInfo) => {
-          const isMine = eventInfo.event.extendedProps.emp_id === userInfo.emp_code_id;
-          const bgColor = isMine ? '#4f7fd8' : '#d5e8fa'; 
+        // const renderEventContent = (eventInfo) => {
+        //   const isMine = eventInfo.event.extendedProps.emp_id === userInfo.emp_code_id;
+        //   const bgColor = isMine ? '#4f7fd8' : '#d5e8fa'; 
         
-          return (
-            <div style={{ backgroundColor: bgColor, borderRadius: '4px', padding: '2px', color: '1a3c6c' }}>
-              <b>{eventInfo.timeText}</b> <br />
-              <span>{eventInfo.event.title}</span>
-            </div>
-          );
-        };
+        //   return (
+        //     <div style={{ backgroundColor: bgColor, borderRadius: '4px', padding: '2px', color: '1a3c6c' }}>
+        //       <b>{eventInfo.timeText}</b> <br />
+        //       <span>{eventInfo.event.title}</span>
+        //     </div>
+        //   );
+        // };
 
     return (
         <div>
@@ -114,7 +135,7 @@ const Vehicle = ({ userInfo })=> {
             <div>
                 차량 예약 현황 조회
                 <br></br>
-                <select onChange={(e) => setTargetResc(e.target.value)}>
+                <select value={targetResc} onChange={(e) => setTargetResc(e.target.value)}>
                     {resouceList
                     .filter((resource)=>{
                         if(resource.resc_type_id != 120){
@@ -131,7 +152,7 @@ const Vehicle = ({ userInfo })=> {
                 
             </div>
             <div>
-            <table>
+            <table className={rStyle.infoTable}>
                 <thead>
                     <tr>
                     <th>수용인원</th>
@@ -156,7 +177,14 @@ const Vehicle = ({ userInfo })=> {
                 </tbody>
                 </table>
             </div>
-        <div>
+        <div style={{
+            fontFamily: 'initial',
+            fontSize: '14px',
+            lineHeight: 'normal',
+            boxSizing: 'content-box',
+            position: 'relative',
+            overflow: 'visible',
+        }}>
             <FullCalendar
             key={targetResc} 
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -166,6 +194,7 @@ const Vehicle = ({ userInfo })=> {
             slotMaxTime="21:00:00"
             slotDuration="00:30:00"
             snapDuration="00:30:00"
+            timeZone="local"
             locales={[koLocale]}
             locale="ko"
             titleFormat={{
@@ -187,15 +216,23 @@ const Vehicle = ({ userInfo })=> {
             weekends={showWeekends}
             height='auto'
             selectable={true}
+            selectOverlap={false}
             selectMirror={false}
+            eventOverlap={false}
             select={handleDateSelect}
             eventClick={selectResv}
             events={reservations.filter(resv => resv.extendedProps.resource_id == Number(targetResc))}
+            eventDidMount={(info) => {
+              info.el.style.backgroundColor = info.event.extendedProps.emp_id === userInfo.emp_code_id ? '#4f7fd8' : '#d5e8fa';
+              info.el.style.borderRadius = '4px';
+              info.el.style.color = info.event.extendedProps.emp_id === userInfo.emp_code_id ? '#1a3c6c' :'#4f7fd8';
+              info.el.style.border = 'none';
+            }}
             />
             </div>
         </div>
         {isModalOpen && (<InputResev closeModal={() => setIsModalOpen(false)} selectedInfo={selectedInfo} resourceId={targetResc}  userInfo={userInfo} onSuccess={() => setReloadKey(prev => prev + 1)} onDeleteSuccess={() => setReloadKey(prev => prev + 1)}/>)}
-        {isDetailOpen && (<ResvDetail selectedResv={selectedResv} closeDetail={() => setIsDetailOpen(false)}   userInfo={userInfo} onSuccess={() => setReloadKey(prev => prev + 1)} onDeleteSuccess={() => setReloadKey(prev => prev + 1)}/>)}
+        {isDetailOpen && selectedResv && (<ResvDetail selectedResv={selectedResv} closeDetail={() => setIsDetailOpen(false)}   userInfo={userInfo} onSuccess={() => setReloadKey(prev => prev + 1)} onDeleteSuccess={() => setReloadKey(prev => prev + 1)}/>)}
         </div>
     )
 };

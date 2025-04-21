@@ -97,7 +97,6 @@ function Chatting() {
 
         stompClient.onConnect = () => {
 
-            console.log("WebSocket 연결 성공");
 
             stompClient.subscribe(`/topic/messages/${seq}`, (msg) => {
                 const receivedMessage = JSON.parse(msg.body);
@@ -105,7 +104,7 @@ function Chatting() {
                 const emp_name = empMap[receivedMessage.msg_emp_id];
                 setMessages((prev) => [...prev, { ...receivedMessage, isMine, emp_name }]);
 
-                showMessages();
+               
             });
         };
 

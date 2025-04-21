@@ -107,7 +107,7 @@ const Board_club =()=>{
                             <select onChange={(e) => setSortOption(e.target.value)} value={sortOption}>
                                 <option value="option1">최신순</option>
                                 <option value="option2">조회순</option>
-                                <option value="option3">추천순</option>
+
                             </select>
                         </div>
                     </div>
@@ -129,7 +129,6 @@ const Board_club =()=>{
                                     <div className={bstyle.content} dangerouslySetInnerHTML={{ __html: message.post_content }}></div>
                                     <div className={bstyle.writeElse}>
                                         <div className={bstyle.writer}>작성자 : {message.emp_name}</div>
-                                        <div className={bstyle.good}>추천수 : {message.post_like}</div>
                                         <div className={bstyle.look}>조회수 : {message.post_view}</div>
                                         <div className={bstyle.writeTime}>{formatDate(message.post_date)}</div>
                                     </div>

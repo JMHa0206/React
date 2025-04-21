@@ -32,7 +32,6 @@ function EmployeePage({openChat}) {
                 params: { empId: mine.emp_code_id }
               });
             }).then((imgResp) => {
-                console.log(imgResp.data)
               setProfileImg(imgResp.data);
               
 
@@ -55,7 +54,6 @@ function EmployeePage({openChat}) {
 
               return axios.get("http://10.5.5.6/Employee/AllProfileImg");
         }).then((imgList)=>{
-            console.log(imgList);
             const map ={};
             imgList.data.forEach(img =>{
                 map[img.PROFILE_EMP_ID] = img.PROFILE_PATH;

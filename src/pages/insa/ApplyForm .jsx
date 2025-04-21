@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './ApplyForm.module.css';
 import daxios from '../../axios/axiosConfig';
 
@@ -11,6 +11,13 @@ const ApplyForm = () => {
   const [reason, setReason] = useState('');
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState('');
+  const [showNotice, setShowNotice] = useState(true); // 👈 커스텀 경고창
+
+  useEffect(() => {
+    // 3초 뒤에 자동으로 닫기
+    const timer = setTimeout(() => setShowNotice(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -35,14 +42,13 @@ const ApplyForm = () => {
     }
 
     try {
-      const res = await daxios.post('http://10.5.5.6/insa/apply', formData, {
+      await daxios.post('http://10.5.5.6/insa/apply', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
       setMessage(`${type} 신청 완료 ✅`);
-      // 초기화
       setStartDate('');
       setEndDate('');
       setStartTime('');
@@ -57,6 +63,21 @@ const ApplyForm = () => {
 
   return (
     <div className={styles.container}>
+      {/* ✅ 개발 중 알림 메시지 */}
+      {showNotice && (
+        <div style={{
+          backgroundColor: '#ffeeba',
+          padding: '12px 16px',
+          border: '1px solid #f5c6cb',
+          color: '#856404',
+          borderRadius: '6px',
+          marginBottom: '20px',
+          fontWeight: 'bold'
+        }}>
+          [인사관리] 🚧 현재 개발 중인 페이지입니다.
+        </div>
+      )}
+
       <h2>📌 휴가 / 출장 / 초과근무 신청</h2>
 
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -87,7 +108,7 @@ const ApplyForm = () => {
         <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows="4" required />
 
         <label>파일 첨부</label>
-        <input type="file"  onChange={handleFileChange} multiple/>
+        <input type="file" onChange={handleFileChange} multiple />
 
         <button type="submit">신청하기</button>
 

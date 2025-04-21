@@ -1,5 +1,6 @@
 import style from './ChattingRoom.module.css';
 import { useState, useEffect } from 'react';
+
 import axios from 'axios';
 import stompClient from "../../Components/websocket/websocket";
 
@@ -15,7 +16,6 @@ function ChattingRoom({ openChat }) {
                 myId: myId
             }
         }).then((room) => {
-            console.log(room.EMP_CODE_ID);
             const seqArray = room.data.map((roomItem) => roomItem.MSG_GROUP_ID);
             setSeq(seqArray);
 
@@ -60,7 +60,6 @@ function ChattingRoom({ openChat }) {
                     if(!subscribedGroups.includes(groupSeq)){
                     stompClient.subscribe(`/topic/messages/${groupSeq}`, (msg) => {
                         const updatedRoom = JSON.parse(msg.body);
-                        console.log("소켓 메시지 수신:", updatedRoom);
                         setRoomEmployees((prevRooms) => {
                             return prevRooms.map((room) =>
                                 room.MSG_GROUP_ID === updatedRoom.msg_group_id

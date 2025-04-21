@@ -28,11 +28,9 @@ const Sidebar = () => {
   const [todayAttendanceId, setTodayAttendanceId] = useState(null);
   const [todayWorkedTime, setTodayWorkedTime] = useState("00:00:00");
 
-  // ✅ 출근 정보 및 결재건수 같이 가져오기
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        // 출근 체크
         const res1 = await daxios.get("http://10.5.5.6/work/checkInTime", {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -43,8 +41,13 @@ const Sidebar = () => {
           setCheckInTime(new Date(checkIn));
           setIsCheckedIn(!checkOut);
           setIsCheckedOut(!!checkOut);
+
+          if (checkOut) {
+            setCheckOutTime(new Date(checkOut));
+          }
         } else {
           setCheckInTime(null);
+          setCheckOutTime(null);
           setIsCheckedIn(false);
           setIsCheckedOut(false);
         }
@@ -69,7 +72,6 @@ const Sidebar = () => {
     fetchAll();
   }, [token]);
 
-  // ✅ 근무 시간 타이머
   useEffect(() => {
     let interval;
     if (checkInTime && !isCheckedOut) {
@@ -94,11 +96,10 @@ const Sidebar = () => {
     return () => clearInterval(interval);
   }, [checkInTime, checkOutTime, isCheckedOut]);
 
-  // ✅ 출근 처리
   const handleCheckIn = async () => {
     const currentTime = new Date().toISOString();
     try {
-      const res = await daxios.post("http://10.5.5.6/work/checkIn", {}, {
+      const res = await daxios.post("http://221.150.27.169:8888/work/checkIn", {}, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -114,11 +115,10 @@ const Sidebar = () => {
     }
   };
 
-  // ✅ 퇴근 처리
   const handleCheckOut = async () => {
     const currentTime = new Date().toISOString();
     try {
-      const res = await daxios.post("http://10.5.5.6/work/checkOut", {
+      const res = await daxios.post("http://221.150.27.169:8888/work/checkOut", {
         checkOutTime: currentTime
       }, {
         headers: {
@@ -136,14 +136,13 @@ const Sidebar = () => {
     }
   };
 
-  // ✅ 외근 / 업무 시작
   const handleActivityStart = async (type) => {
     const now = new Date().toISOString();
     setCurrentActivity(type);
     setActiveActivity(type);
 
     try {
-      const res = await daxios.post("http://10.5.5.6/work/start", {
+      const res = await daxios.post("http://221.150.27.169:8888/work/start", {
         attendance_id: todayAttendanceId,
         activity_type: type,
         start_time: now
@@ -184,10 +183,29 @@ const Sidebar = () => {
         <div className="current-activity">
           {currentActivity && <p>현재 활동: {currentActivity}</p>}
         </div>
+
         <div className="time-logs">
           <p>총 근무 시간: {todayWorkedTime}</p>
-          {checkInTime && <p>출근 시간: {checkInTime.toLocaleString()}</p>}
-          {checkOutTime && <p>퇴근 시간: {checkOutTime.toLocaleString()}</p>}
+
+          {checkInTime && (
+            <p>출근 시간: {new Date(checkInTime).toLocaleString("ko-KR", {
+              hour12: true
+            })}</p>
+          )}
+
+          {/* ✅ 퇴근 시간 조건 */}
+          {checkOutTime &&
+            isCheckedOut &&
+            new Date(checkOutTime).toDateString() === new Date().toDateString() ? (
+            <p>퇴근 시간: {new Date(checkOutTime).toLocaleString("ko-KR", {
+              hour12: true
+            })}</p>
+          ) : (
+            // ✅ 퇴근하지 않은 경우 보여줄 메시지
+            isCheckedIn && !isCheckedOut && (
+              <p>퇴근하지 않았습니다.</p>
+            )
+          )}
         </div>
       </div>
 
