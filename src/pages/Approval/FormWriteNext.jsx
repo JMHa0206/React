@@ -1,11 +1,12 @@
-// FormWriteNext.jsx
+// FormWriteNext.jsx (통합 + 수정 버전)
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import DOMPurify from "dompurify";
 import daxios from "../../axios/axiosConfig";
 import { Editor } from "@tinymce/tinymce-react";
 import ApproverModal from "./ApproverModal";
-import RefDeptModal from "./RefDeptModal";
+// import RefDeptModal from "./RefDeptModal";
+// import RecvDeptModal from "./RecvDeptModal";
 
 const applyTemplateData = (template, data) => {
   const DYNAMIC_KEYS = [
@@ -15,12 +16,11 @@ const applyTemplateData = (template, data) => {
     "level4.approval?",
     "finalLevel.approval?",
   ];
-
   let result = template;
   Object.entries(data).forEach(([key, value]) => {
     if (DYNAMIC_KEYS.includes(key)) return;
     const safeKey = key.replace(/\./g, "\\.");
-    const regex = new RegExp(`{{\s*${safeKey}\s*}}`, "g");
+    const regex = new RegExp(`{{\\s*${safeKey}\\s*}}`, "g");
     result = result.replace(regex, value || "");
   });
   return result;
@@ -49,57 +49,18 @@ const FormWriteNext = () => {
     제목: "",
     연차사유: "",
   });
+
   const [templateHtml, setTemplateHtml] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTemplateApplied, setIsTemplateApplied] = useState(false);
   const [isEditorDisabled, setIsEditorDisabled] = useState(true);
   const [isEditorVisible, setIsEditorVisible] = useState(false);
-
   const [isRefModalOpen, setIsRefModalOpen] = useState(false);
-  const [refDeptIds, setRefDeptIds] = useState([]);
-
-  const isReadyForTemplate = () => {
-    if (!formData.제목.trim() || !formData.finalLevel) return false;
-
-    const includesStartEnd = templateHtml.includes("{{시작일}}") || templateHtml.includes("{{종료일}}");
-    const includesReason = templateHtml.includes("{{사유}}");
-
-    if (includesStartEnd && (!formData.시작일 || !formData.종료일)) return false;
-    if (includesReason && !formData.연차사유.trim()) return false;
-
-    return true;
-  };;
-
-  useEffect(() => {
-    const loadData = async () => {
-      if (!state?.formId) return;
-      try {
-        const codeRes = await daxios.get("http://221.150.27.169:8888/api/employee/code");
-        const code = codeRes.data;
-        const userRes = await daxios.get(`http://221.150.27.169:8888/api/employee/${code}`);
-
-        setUserInfo(userRes.data);
-        setFormData((prev) => ({ ...prev, ...state, comId: code }));
-
-        const res = await daxios.get(`http://221.150.27.169:8888/api/forms/${state.formId}`);
-        const template = res.data.formContent;
-        setTemplateHtml(template);
-
-        const updatedContent = applyTemplateData(template, {
-          제목: "",
-          시작일: "",
-          종료일: "",
-          사유: "",
-          신청자: userRes.data.empName,
-        });
-        setFormData((prev) => ({ ...prev, edmsContent: updatedContent }));
-      } catch (err) {
-        console.error("❌ Form 초기화 실패", err);
-      }
-    };
-    loadData();
-  }, [state]);
+  const [isRecvModalOpen, setIsRecvModalOpen] = useState(false);
+  const [refDeptList, setRefDeptList] = useState([]);
+  const [recvDeptList, setRecvDeptList] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -110,12 +71,36 @@ const FormWriteNext = () => {
     setFormData((prev) => ({ ...prev, edmsContent: content }));
   };
 
-  const handleApplyTemplate = () => {
-    const confirmApply = window.confirm("⚠ 템플릿을 적용하면 현재 작성된 세부내용이 사라집니다. 계속할까요?");
-    if (!confirmApply) return;
+  const handleFileUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    const formDataUpload = new FormData();
+    files.forEach((file) => formDataUpload.append("files", file));
 
+    try {
+      const res = await daxios.post("http://10.10.55.22/api/files/upload", formDataUpload, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setUploadedFiles((prev) => [...prev, ...res.data]);
+    } catch (err) {
+      console.error("❌ 파일 업로드 실패:", err);
+      alert("파일 업로드 실패");
+    }
+  };
+
+  const isReadyForTemplate = () => {
+    if (!formData.제목.trim() || !formData.finalLevel) return false;
+    const includesStartEnd =
+      templateHtml.includes("{{시작일}}") || templateHtml.includes("{{종료일}}")
+    const includesReason = templateHtml.includes("{{사유}}")
+    if (includesStartEnd && (!formData.시작일 || !formData.종료일)) return false;
+    if (includesReason && !formData.연차사유.trim()) return false;
+    return true;
+  };
+
+  const handleApplyTemplate = () => {
+    if (!window.confirm("⚠ 템플릿을 적용하면 현재 작성된 세부내용이 사라집니다. 계속할까요?")) return;
     sessionStorage.setItem("temp_edmsContent", formData.edmsContent);
-    console.log("📦 템플릿 적용 전 세부내용 백업:", formData.edmsContent);
 
     const replaced = applyTemplateData(templateHtml, {
       제목: formData.제목,
@@ -123,6 +108,8 @@ const FormWriteNext = () => {
       종료일: formData.종료일,
       사유: formData.연차사유,
       신청자: userInfo.empName,
+      수신부서: recvDeptList.map((d) => d.deptName).join(", "),
+      참조부서: refDeptList.map((d) => d.deptName).join(", "),
       "level1.name": formData.level1?.empName || "",
       "level2.name": formData.level2?.empName || "",
       "level3.name": formData.level3?.empName || "",
@@ -134,25 +121,10 @@ const FormWriteNext = () => {
       "level4.position": formData.level4?.jobName || "",
       "finalLevel.position": formData.finalLevel?.jobName || "",
     });
-
-    const sanitized = DOMPurify.sanitize(replaced);
-    setFormData((prev) => ({ ...prev, edmsContent: sanitized }));
+    setFormData((prev) => ({ ...prev, edmsContent: DOMPurify.sanitize(replaced) }));
     setIsTemplateApplied(true);
     setIsEditorVisible(true);
     setIsEditorDisabled(false);
-  };
-
-  const handleRestoreContent = () => {
-    const saved = sessionStorage.getItem("temp_edmsContent");
-    console.log("📥 복원할 세부내용:", saved);
-    if (saved) {
-      const restore = window.confirm("🧠 이전 작성 내용을 복원하시겠습니까?");
-      if (restore) {
-        setFormData((prev) => ({ ...prev, edmsContent: saved }));
-      }
-    } else {
-      alert("🔍 복원 가능한 내용이 없습니다.");
-    }
   };
 
   const handleSubmit = async (e) => {
@@ -166,32 +138,23 @@ const FormWriteNext = () => {
       return;
     }
 
-    const confirm = window.confirm("📄 본문 내용을 모두 확인하셨습니까?");
-    if (!confirm) {
-      setIsSubmitting(false);
-      return;
-    }
-
     if (!formData.finalLevel?.emp_code_id) {
       alert("❌ 최종결재자를 반드시 선택해야 합니다.");
       setIsSubmitting(false);
       return;
     }
 
-    if (formData.시작일 && formData.종료일 && formData.시작일 > formData.종료일) {
-      alert("❌ 종료일은 시작일보다 빠를 수 없습니다.");
-      setIsSubmitting(false);
-      return;
-    }
-
     try {
+      const attachments = uploadedFiles.map((f) => f.edmsSysName || f);
       const payload = {
         ...formData,
+        attachments,
         formId: Number(formData.formId),
         edmsCId: Number(formData.edmsCId),
         comId: Number(formData.comId),
         stateCode: Number(formData.stateCode),
-        refDept: refDeptIds.join(","),
+        refDeptList: refDeptList.map((d) => d.deptId),
+        recvDeptList: recvDeptList.map((d) => d.deptId),
         level1: formData.level1?.emp_code_id || null,
         level2: formData.level2?.emp_code_id || null,
         level3: formData.level3?.emp_code_id || null,
@@ -202,11 +165,8 @@ const FormWriteNext = () => {
         startDate: formData.시작일 || null,
         endDate: formData.종료일 || null,
       };
-
-      console.log("📤 제출할 formData:", JSON.stringify(payload, null, 2));
-      await daxios.post("http://10.10.55.22/api/edms/register", payload);
+      await daxios.post("http://10.5.5.6/api/edms/register", payload);
       sessionStorage.removeItem("temp_edmsContent");
-
       alert("✅ 제출 완료");
       navigate("/mainpage/maincontent/approval/requested", { state: { refresh: true } });
     } catch (err) {
@@ -217,13 +177,37 @@ const FormWriteNext = () => {
     }
   };
 
+  useEffect(() => {
+    const loadData = async () => {
+      if (!state?.formId) return;
+      try {
+        const codeRes = await daxios.get("http://10.5.5.6/api/employee/code");
+        const code = codeRes.data;
+        const userRes = await daxios.get(`http://10.5.5.6/api/employee/${code}`);
+        const templateRes = await daxios.get(`http://10.5.5.6/api/forms/${state.formId}`);
+        setUserInfo(userRes.data);
+        setTemplateHtml(templateRes.data.formContent);
+        setFormData((prev) => ({
+          ...prev,
+          formId: state.formId,
+          edmsCId: state.edmsCId || "",
+          comId: code,
+        }));
+      } catch (err) {
+        console.error("❌ 초기화 실패:", err);
+      }
+    };
+    loadData();
+  }, [state]);
+
   const isVacationOrBusiness = () =>
-    templateHtml.includes("{{시작일}}") || templateHtml.includes("{{종료일}}") || templateHtml.includes("{{사유}}");
+    templateHtml.includes("{{시작일}}") ||
+    templateHtml.includes("{{종료일}}") ||
+    templateHtml.includes("{{사유}}")
 
   return (
     <div style={{ padding: "2rem" }}>
       <h2>전자결재 작성</h2>
-
       <label>제목</label>
       <input name="제목" value={formData.제목} onChange={handleInputChange} required />
 
@@ -236,13 +220,16 @@ const FormWriteNext = () => {
             <option value="병가">병가</option>
             <option value="기타">기타</option>
           </select>
-
-          <label>출장/휴가 시작일</label>
+          <label>시작일</label>
           <input type="date" name="시작일" value={formData.시작일} onChange={handleInputChange} />
-          <label>출장/휴가 종료일</label>
+          <label>종료일</label>
           <input type="date" name="종료일" value={formData.종료일} onChange={handleInputChange} />
         </>
       )}
+
+      <label>첨부파일</label>
+      <input type="file" multiple onChange={(e) => handleFileUpload(e)} />
+      <ul>{uploadedFiles.map((f, i) => <li key={i}>{f.edmsOriName || f}</li>)}</ul>
 
       {isEditorVisible ? (
         <>
@@ -262,48 +249,66 @@ const FormWriteNext = () => {
           />
         </>
       ) : (
-        <div style={{ padding: "1rem", background: "#f0f0f0", borderRadius: "8px", marginTop: "1rem" }}>
-          ✍️ 템플릿을 먼저 적용해주세요. 그 후에 본문 작성이 가능합니다.
+        <div style={{ background: "#eee", padding: "1rem", marginTop: "1rem" }}>
+          ✍️ 템플릿을 먼저 적용해주세요.
         </div>
       )}
 
       <div style={{ margin: "1rem 0" }}>
-        <button type="button" onClick={handleApplyTemplate} disabled={!isReadyForTemplate()}>
-          📌 템플릿 적용하기
-        </button>
-        <button type="button" onClick={handleRestoreContent} style={{ marginLeft: "1rem" }}>
-          🔄 세부내용 복원
+        <button onClick={handleApplyTemplate} disabled={!isReadyForTemplate()}>
+          📌 템플릿 적용
         </button>
       </div>
 
-      <div>
+      {/* <div>
         <label>참조 부서</label>
-        <button type="button" onClick={() => setIsRefModalOpen(true)}>부서 선택</button>
-      </div>
+        <button type="button" onClick={() => {
+          console.log("👉 참조부서 모달 버튼 클릭됨");
+          setIsRefModalOpen(true);
+        }}>부서 선택</button>
+        <RefDeptModal
+          isOpen={isRefModalOpen}
+          selected={refDeptList.map(d => d.dept_id)}
+          onClose={() => setIsRefModalOpen(false)}
+          onSelect={(selectedIds) => {
+            daxios.get("http://10.5.5.6/emp/selectAllDepts").then(res => {
+              const all = res.data;
+              console.log("📥 모든 부서:", all);
+              const selected = all.filter(d => selectedIds.includes(d.dept_id));
+              console.log("✅ 선택된 참조부서:", selected);
+              setRefDeptList(selected);
+            });
+          }}
+        />
+      </div> */}
 
-      <RefDeptModal
-        isOpen={isRefModalOpen}
-        selected={refDeptIds}
-        onClose={() => setIsRefModalOpen(false)}
-        onSelect={(selected) => setRefDeptIds(selected)}
-      />
+      {/* <div>
+        <label>수신 부서</label>
+        <button type="button" onClick={() => {
+          console.log("👉 수신부서 모달 버튼 클릭됨");
+          setIsRecvModalOpen(true);
+        }}>부서 선택</button>
+        <RecvDeptModal
+          isOpen={isRecvModalOpen}
+          selected={recvDeptList.map(d => d.dept_id)}
+          onClose={() => setIsRecvModalOpen(false)}
+          onSelect={(selected) => {
+            console.log("✅ 선택된 수신부서:", selected);
+            setRecvDeptList(selected);
+          }}
+        />
+      </div> */}
 
       <button type="button" onClick={() => setIsModalOpen(true)}>결재자 선택</button>
-
       <ApproverModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSelect={(approvers) => {
-          const selectedIds = Object.values(approvers)
-            .filter(Boolean)
-            .map((emp) => emp.emp_code_id);
-
-          const hasDuplicates = new Set(selectedIds).size !== selectedIds.length;
-          if (hasDuplicates) {
-            alert("❌ 동일한 결재자를 여러 단계에 지정할 수 없습니다.");
+          const selected = Object.values(approvers).filter(Boolean).map((e) => e.emp_code_id);
+          if (new Set(selected).size !== selected.length) {
+            alert("❌ 동일한 결재자를 중복 지정할 수 없습니다.");
             return;
           }
-
           setFormData((prev) => ({
             ...prev,
             level1: approvers.level1,

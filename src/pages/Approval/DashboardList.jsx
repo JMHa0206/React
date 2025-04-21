@@ -5,8 +5,6 @@ import { useNavigate } from 'react-router-dom';
 const DashboardList = ({ list, type }) => {
   const navigate = useNavigate();
 
-  console.log("📦 들어온 list:", list);
-
   // 🛡 리스트가 없거나 비었을 경우
   if (!list || list.length === 0) {
     return <div style={{ padding: '1rem' }}>📭 문서가 없습니다</div>;
@@ -29,8 +27,6 @@ const DashboardList = ({ list, type }) => {
       <tbody>
         {safeList.map((item, index) => {
           if (!item) return null;
-
-          console.log("🔍 item sample:", item);
 
           const title = item.edmsTitle || item.title || '제목 없음';
           const drafter = item.drafterName || item.empName || '-';

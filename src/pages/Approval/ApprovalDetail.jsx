@@ -2,23 +2,32 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import daxios from '../../axios/axiosConfig';
-import DOMPurify from 'dompurify'; // ✅ 이 줄 추가
+import DOMPurify from 'dompurify';
 
-const applyApprovalStatus = (html, historyList) => {
+const applyApprovalStatus = (html, historyList, edms) => {
+  if (!html) return "";
   let updatedHtml = html;
+
   historyList.forEach(h => {
     const levelKey = `level${h.stepLevel}.status`;
     const nameKey = `level${h.stepLevel}.name`;
-    const regex = new RegExp(`{{\s*${levelKey}\s*}}`, 'g');
+    const regex = new RegExp(`{{\\s*${levelKey}\\s*}}`, 'g');
     const resultText = h.action === 'APPROVED' ? '✅ 승인' : '❌ 반려';
     updatedHtml = updatedHtml.replace(regex, resultText);
 
     if (h.action === 'REJECTED' || h.action === '반려') {
-      const nameRegex = new RegExp(`{{\s*${nameKey}\s*}}`, 'g');
+      const nameRegex = new RegExp(`{{\\s*${nameKey}\\s*}}`, 'g');
       const nameText = `<s>${h.approverName || h.approverId}</s>`;
       updatedHtml = updatedHtml.replace(nameRegex, nameText);
     }
   });
+
+  // 덤으로 수신부서/참조부서 템플릿 치환도 해주자
+  if (edms) {
+    updatedHtml = updatedHtml.replace(/{{\s*수신부서\s*}}/g, edms.receiverDept || "");
+    updatedHtml = updatedHtml.replace(/{{\s*참조부서\s*}}/g, edms.referenceDept || "");
+  }
+
   return updatedHtml;
 };
 
@@ -28,25 +37,40 @@ const ApprovalDetail = () => {
   const [historyList, setHistoryList] = useState([]);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [rejectReason, setRejectReason] = useState("");
+  const [fileList, setFileList] = useState([]);
+  const [htmlContent, setHtmlContent] = useState("");
+
+  const fetchData = async () => {
+    try {
+      const userRes = await daxios.get("http://10.5.5.6/api/employee/code");
+      setCurrentUserId(userRes.data);
+
+      const edmsRes = await daxios.get(`http://10.5.5.6/api/edms/${id}`);
+      const historyRes = await daxios.get(`http://10.5.5.6/api/edms/${id}/history`);
+
+      let filesData = [];
+      try {
+        const filesRes = await daxios.get(`http://10.5.5.6/api/files/by-edms/${id}`);
+        filesData = Array.isArray(filesRes.data) ? filesRes.data : [];
+      } catch (fileErr) {
+        console.warn(`📭 파일 없음 또는 실패 - edmsId: ${id}`, fileErr);
+      }
+
+      const edmsData = edmsRes.data;
+      const historyData = Array.isArray(historyRes.data) ? historyRes.data : [];
+
+      setEdms(edmsData);
+      setHistoryList(historyData);
+      setFileList(filesData);
+
+      const newHtml = applyApprovalStatus(edmsData.edmsContent, historyData, edmsData);
+      setHtmlContent(DOMPurify.sanitize(newHtml));
+    } catch (err) {
+      console.error("❌ 데이터 로딩 실패:", err);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userRes = await daxios.get("http://10.5.5.6/api/employee/code");
-        setCurrentUserId(userRes.data);
-
-        const edmsRes = await daxios.get(`http://10.5.5.6/api/edms/${id}`);
-        setEdms(edmsRes.data);
-
-        if (edmsRes.data) {
-          const historyRes = await daxios.get(`http://10.5.5.6/api/edms/${id}/history`);
-          setHistoryList(historyRes.data);
-        }
-      } catch (err) {
-        console.error("❌ 데이터 로딩 실패:", err);
-      }
-    };
-
     fetchData();
   }, [id]);
 
@@ -81,7 +105,7 @@ const ApprovalDetail = () => {
     try {
       await daxios.post(`http://10.5.5.6/api/edms/${id}/approve`);
       alert("결재 완료");
-      window.location.reload();
+      await fetchData();
     } catch (err) {
       console.error("🚫 결재 실패:", err);
       alert("결재 실패");
@@ -90,15 +114,19 @@ const ApprovalDetail = () => {
 
   const handleReject = async () => {
     try {
-      await daxios.post(`http://221.150.27.169:8888/api/edms/${id}/reject`, rejectReason, {
+      await daxios.post(`http://10.5.5.6/api/edms/${id}/reject`, rejectReason, {
         headers: { "Content-Type": "text/plain" },
       });
       alert("반려 완료");
-      window.location.reload();
+      await fetchData();
     } catch (err) {
       console.error("🚫 반려 실패:", err);
       alert("반려 실패");
     }
+  };
+
+  const handleDownload = (sysName) => {
+    window.location.href = `http://10.5.5.6/api/files/download/${sysName}`;
   };
 
   return (
@@ -108,13 +136,26 @@ const ApprovalDetail = () => {
       <p><strong>작성자:</strong> {edms.drafterName}</p>
       <p><strong>상태:</strong> {edms.stateCode === 1 ? "대기" : edms.stateCode === 2 ? "진행" : edms.stateCode === 3 ? "반려" : "완료"}</p>
       <p><strong>작성일:</strong> {new Date(edms.submitDate).toLocaleString()}</p>
-      <div
-        dangerouslySetInnerHTML={{
-          __html: DOMPurify.sanitize(
-            applyApprovalStatus(edms.edmsContent, historyList)
-          ),
-        }}
-      />
+
+      <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+
+      <div style={{ marginTop: "2rem" }}>
+        <h3>📎 첨부 파일</h3>
+        {Array.isArray(fileList) && fileList.length > 0 ? (
+          <ul>
+            {fileList.map((file) => (
+              <li key={file.edmsFileId}>
+                {file.edmsOriName}
+                <button onClick={() => handleDownload(file.edmsSysName)} style={{ marginLeft: "1rem" }}>
+                  다운로드
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>첨부된 파일이 없습니다.</p>
+        )}
+      </div>
 
       {canApprove && (
         <div style={{ marginTop: "2rem" }}>

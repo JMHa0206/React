@@ -51,7 +51,7 @@ const ApproverModal = ({ isOpen, onClose, onSelect }) => {
   useEffect(() => {
     if (!selectedDeptId) return;
     daxios
-      .get("http://10.10.55.22/emp/selectAllEmps")
+      .get("http://10.5.5.6/emp/selectAllEmps")
       .then((res) => {
         const filtered = res.data.filter(
           (emp) => emp.emp_dept_id === selectedDeptId

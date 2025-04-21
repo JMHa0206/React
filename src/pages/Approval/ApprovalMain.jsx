@@ -13,17 +13,11 @@ const ApprovalMain = () => {
       try {
         const [waitingRes, draftRes] = await Promise.all([
 
-          daxios.get("http://221.150.27.169:8888/api/edms/waiting"),
-          daxios.get("http://221.150.27.169:8888/api/edms/mydrafts"),
+          daxios.get("http://10.5.5.6/api/edms/waiting"),
+          daxios.get("http://10.5.5.6/api/edms/mydrafts"),
 
 
         ]);
-
-        console.log("✅ 대기 문서 응답:", waitingRes);
-        console.log("📦 대기 문서 데이터:", waitingRes.data);
-
-        console.log("✅ 기안 문서 응답:", draftRes);
-        console.log("📦 기안 문서 데이터:", draftRes.data);
 
         if (!Array.isArray(waitingRes.data)) {
           console.warn("❗대기 문서 응답이 배열이 아님:", waitingRes.data);

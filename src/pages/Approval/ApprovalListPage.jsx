@@ -22,10 +22,6 @@ const ApprovalListPage = () => {
     const path = fullPath.replace("/mainpage/maincontent/approval/", "");
     const apiSuffix = endpointMap[path];
 
-    console.log("🧭 현재 경로 pathname:", fullPath);
-    console.log("🔍 파싱된 key:", path);
-    console.log("📦 endpointMap으로부터 얻은 API suffix:", apiSuffix);
-
     if (!apiSuffix) {
       console.warn("❌ 알 수 없는 경로입니다:", path);
       setError("잘못된 경로입니다.");
@@ -33,12 +29,10 @@ const ApprovalListPage = () => {
     }
 
     try {
-      const url = `http://10.10.55.22/api/edms/${apiSuffix}`;
-      console.log(`🚀 API 호출: ${url}`);
+      const url = `http://10.5.5.6/api/edms/${apiSuffix}`;
       const res = await daxios.get(url);
 
       if (res.status === 200) {
-        console.log("✅ 문서 목록 수신 성공:", res.data);
         setDocs(res.data);
         setError(null);
       } else {
@@ -52,7 +46,6 @@ const ApprovalListPage = () => {
   };
 
   useEffect(() => {
-    console.log("📡 useEffect triggered → fetchList()");
     fetchList();
   }, [location.pathname]);
 
@@ -80,7 +73,6 @@ const ApprovalListPage = () => {
               <tr
                 key={doc.edmsId}
                 onClick={() => {
-                  console.log("🖱️ 문서 클릭:", doc.edmsId);
                   navigate(`/mainpage/maincontent/approval/detail/${doc.edmsId}`);
                 }}
                 style={{ cursor: "pointer" }}
